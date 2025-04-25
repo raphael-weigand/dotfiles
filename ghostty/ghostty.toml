@@ -1,0 +1,6 @@
+[keyboard.bindings]
+"ctrl+h" = "send:␛OD"  # Left
+"ctrl+l" = "send:␛OC"  # Right
+"ctrl+j" = "send:␛OB"  # Down
+"ctrl+k" = "send:␛OA"  # Up
+

@@ -3,4 +3,4 @@ nvim/lua/plugins/.luarc.json
 tmux/plugins/*
 !tmux/plugins/tpm
 .DS_Store
-
+.git

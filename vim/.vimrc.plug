@@ -1,0 +1,9 @@
+call plug#begin('~/.vim/plugged')
+
+" Fugitive Vim GitHub Wrapper
+" Plug 'neoclide/coc.nvim'
+Plug 'tpope/vim-fugitive'
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+
+call plug#end()
+

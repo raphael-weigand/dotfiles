@@ -4,3 +4,4 @@ tmux/plugins/*
 !tmux/plugins/tpm
 .DS_Store
 .git
+*.swp

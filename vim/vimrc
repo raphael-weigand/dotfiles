@@ -9,6 +9,10 @@ set tabstop=4
 set shiftwidth=4
 filetype indent on
 filetype on
+set foldenable
+set foldmethod=indent
+" set foldlevelstart=10   " Die meisten Folds sind offen
+" set foldnestmax=10      " Max 10 verschachtelte Folds
 
 " Von defaults.vim
 if 1
@@ -63,9 +67,9 @@ endif
 set backspace=indent,eol,start
 
 " Cursor Position wird gemerkt
-if has("autocmd")
-	au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-endif
+" if has("autocmd")
+" 	au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+" endif
 
 " Navigation & UI
 set number

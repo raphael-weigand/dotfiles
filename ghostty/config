@@ -1,4 +1,5 @@
-theme = catppuccin-mocha
+# theme = catppuccin-mocha
+theme = Adventure
 font-size = 16
 font-family = JetBrains Mono
 shell-integration-features=no-cursor,sudo,no-title
@@ -6,6 +7,7 @@ window-padding-balance = true
 window-save-state = always
 window-colorspace = "display-p3"
 copy-on-select=clipboard
+cursor-style-blink = true
 
 # split
 keybind = ctrl+t>shift+5=new_split:right

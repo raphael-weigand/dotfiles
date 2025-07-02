@@ -1,56 +1,79 @@
-vim.cmd("set nocompatible")
-
--- Dateiverwaltung
-vim.cmd("syntax on")
-vim.cmd("set autoread")
-vim.cmd("set hidden")
-vim.cmd("set autoindent")
-vim.cmd("set tabstop=2")
-vim.cmd("set expandtab")
-vim.cmd("set shiftwidth=2")
-vim.cmd("filetype indent on")
-vim.cmd("filetype on")
+-- Grundeinstellungen
+vim.opt.compatible = false
+vim.opt.syntax = "on"
+vim.opt.autoread = true
+vim.opt.hidden = true
 vim.opt.swapfile = false
 
+-- Einrückung und Tabs
+vim.opt.autoindent = true
+vim.opt.tabstop = 4
+vim.opt.expandtab = true
+vim.opt.shiftwidth = 4
+
+-- Dateityp-Erkennung
+vim.cmd("filetype indent on")
+vim.cmd("filetype on")
+
 -- Rücktaste
-vim.cmd("set backspace=indent,eol,start")
+vim.opt.backspace = {"indent", "eol", "start"}
 
 -- Navigation & UI
-vim.cmd("set number")
-vim.cmd("set relativenumber")
-vim.cmd("set showcmd")
-vim.cmd("set ruler")
-vim.cmd("set nowrap")
-vim.cmd("set scrolloff=8")
-vim.cmd("set colorcolumn=80")
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.showcmd = true
+vim.opt.ruler = true
+vim.opt.wrap = false
+vim.opt.scrolloff = 8
+vim.opt.colorcolumn = "80"
+vim.opt.signcolumn = "no"
+
+-- Highlight für colorcolumn
 vim.cmd("highlight ColorColumn ctermbg=darkgray guibg=#2c2c2c")
 
 -- Suche
-vim.cmd("set ignorecase")
-vim.cmd("set smartcase")
-vim.cmd("set incsearch")
-vim.cmd("set hlsearch")
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.incsearch = true
+vim.opt.hlsearch = true
 
--- Kommando Historie
-vim.cmd("set history=300")
+-- Historie
+vim.opt.history = 300
 
 -- Zwischenablage
-vim.cmd("set clipboard^=unnamed")
-vim.cmd("set clipboard^=unnamedplus")
+vim.opt.clipboard:prepend({"unnamed", "unnamedplus"})
 
--- Statuszeile 
-vim.cmd("set showmode")
-vim.cmd("set laststatus=2")
+-- Statuszeile
+vim.opt.showmode = true
+vim.opt.laststatus = 2
 
--- Dateipfade
-vim.cmd("set wildmenu")
-vim.cmd("set wildmode=longest:full,full")
-vim.cmd("set path+=**   ")
+-- Dateipfade und Wildmenu
+vim.opt.wildmenu = true
+vim.opt.wildmode = {"longest:full", "full"}
+vim.opt.path:append("**")
 
--- Set leader key to space
-vim.g.mapleader = " "     -- Setzt Space als Leader-Taste
-vim.g.maplocalleader = " " -- Setzt auch den lokalen Leader
+-- Folding basierend auf Syntax/Sprache
+vim.opt.foldmethod = "syntax"     -- Folding basierend auf Syntax
+vim.opt.foldlevelstart = 99       -- Beim Öffnen alle Folds geöffnet
+vim.opt.foldenable = true         -- Folding aktivieren
+vim.opt.foldnestmax = 10          -- Maximale Verschachtelungstiefe
 
-vim.opt.autoread = true
+-- Optional: Fallback auf indent für Sprachen ohne Syntax-Folding
+vim.cmd([[
+  augroup FoldingSettings
+    autocmd!
+    " Für Sprachen mit guter Syntax-Unterstützung
+    autocmd FileType javascript,typescript,python,java,c,cpp,rust,go setlocal foldmethod=syntax
+    " Für markup/config Dateien - indent-basiert
+    autocmd FileType yaml,json,xml,html setlocal foldmethod=indent
+    " Für Markdown - expr-basiert (falls verfügbar)
+    autocmd FileType markdown setlocal foldmethod=expr foldexpr=getline(v:lnum)=~'^#'
+  augroup END
+]])
+
+-- Shada (Session Data)
 vim.opt.shada = "!,'1000,<50,s10,h"
-
+--
+-- Leader Keys
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "

@@ -1,0 +1,13 @@
+GREEN=`tput setaf 112`;
+BLUE=`tput setaf 27`;
+END=`tput sgr0`;
+ 
+#PROMPT="%{${GREEN}%}raphael@%m%{${END}%}:%{${BLUE}%}%~%{${END}%}$ ";
+#PROMPT="%F{green}raphael%f %F{yellow}on%f %F{green}%m%f %F{yellow}in%f %F{cyan}%~%f
+#> "
+#RPROMPT="";
+
+PS1='%F{green}raphael@%m:%F{yellow}%~%f%F{white}$ %f';
+
+export CLICOLOR=1
+export LSCOLORS=ExFxCxDxBxegedabagacad

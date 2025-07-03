@@ -81,6 +81,7 @@ set scrolloff=8
 set colorcolumn=80
 highlight ColorColumn ctermbg=darkgray guibg=#2c2c2c
 " set termguicolors
+set guicursor=a:block-blinkon1
 
 " Suche
 set ignorecase

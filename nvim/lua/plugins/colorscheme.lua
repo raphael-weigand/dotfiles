@@ -8,7 +8,11 @@ return {
             transparent_background = false,
             -- Weitere Optionen nach Bedarf
         })
-        vim.cmd.colorscheme "catppuccin"
+        -- 1. Kein Farbschema laden
+        vim.cmd.colorscheme = ''
+
+        -- 2. Terminal-Farben explizit aktivieren
+        vim.o.termguicolors = false
     end,
 }
 

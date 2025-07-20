@@ -1,5 +1,41 @@
+# Vim/Neovim plugins und Cache
+nvim/plugged/
 nvim/lazy-lock.json
+nvim/.netrwhist
 nvim/lua/plugins/.luarc.json
-tmux/plugins/*
-!tmux/plugins/tpm
+vim/vim/.netrwhist
+vim/vim/bundle/
+vim/vim/plugged/
+vim/vim/pack/
+
+# Tmux plugins (falls Sie tpm verwenden)
+tmux/plugins/
+tmux/resurrect/
+
+# Ghostty Cache und temporäre Dateien
+ghostty/cache/
+ghostty/logs/
+ghostty/*.log
+
+# Allgemeine temporäre/Cache-Dateien
+**/.cache/
+**/.local/
+**/cache/
+**/logs/
+
+# Backup und temporäre Dateien
+*.swp
+*.swo
+*~
+*.bak
+*.backup
+.netrwhist
+
+# Other
+*.log
+Thumbs.db
+.DS_Store
+
+# Git Dateien (falls nested repos vorhanden)
+**/.git/
 

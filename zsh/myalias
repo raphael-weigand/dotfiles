@@ -1,0 +1,21 @@
+export EDITOR='nvim';
+
+alias rm="trash";
+
+alias la="ls -la";
+alias ll="ls -l";
+
+alias sync="echo 'brew update...'; brew update -v";
+alias upgrade="echo 'brew upgrade...'; brew upgrade; echo 'brew cleanup...'; brew cleanup; echo 'brew autoremove...'; brew autoremove";
+
+alias flushdns="echo 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder...'; sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder";
+
+alias cputemp="sudo powermetrics --samplers smc | grep -i -E 'die temperature|fan'"
+alias powerinfo="sudo powermetrics"
+
+eval "$(/usr/local/bin/brew shellenv)"
+export HOMEBREW_NO_AUTO_UPDATE=1   # Deaktiviert automatisches brew update bei jedem Install
+export HOMEBREW_BAT=1              # Nutzt `bat` für farbige Ausgaben (wenn installiert)
+export HOMEBREW_COLOR=1            # Aktiviert Farb-Ausgaben
+export HOMEBREW_CASK_OPTS="--appdir=/Applications"  # Installiert Casks direkt in /Applications
+

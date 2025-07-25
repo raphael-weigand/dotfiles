@@ -9,7 +9,8 @@ vim/vim/plugged/
 vim/vim/pack/
 
 # Tmux plugins (falls Sie tpm verwenden)
-tmux/plugins/
+tmux/plugins/*
+!tmux/plugins/git-branch-smart
 tmux/resurrect/
 
 # Ghostty Cache und temporäre Dateien

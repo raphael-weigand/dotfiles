@@ -27,6 +27,7 @@ vim.opt.wrap = false
 vim.opt.scrolloff = 8
 vim.opt.colorcolumn = "80"
 vim.opt.signcolumn = "no"
+vim.opt.termguicolors = false
 
 -- Highlight für colorcolumn
 vim.cmd("highlight ColorColumn ctermbg=darkgray guibg=#2c2c2c")
@@ -73,7 +74,11 @@ vim.cmd([[
 
 -- Shada (Session Data)
 vim.opt.shada = "!,'1000,<50,s10,h"
---
+
 -- Leader Keys
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+
+-- Blinking cursor
+vim.opt.guicursor = "n-v-c-i:block,a:blinkwait700-blinkoff400-blinkon250"
+

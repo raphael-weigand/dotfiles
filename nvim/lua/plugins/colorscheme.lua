@@ -13,6 +13,7 @@ return {
 
         -- 2. Terminal-Farben explizit aktivieren
         vim.o.termguicolors = false
+        -- vim.cmd.colorscheme "catppuccin"
     end,
 }
 

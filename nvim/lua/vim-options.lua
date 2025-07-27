@@ -80,5 +80,13 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- Blinking cursor
-vim.opt.guicursor = "n-v-c-i:block,a:blinkwait700-blinkoff400-blinkon250"
+vim.opt.guicursor = "n-v-i:block,a:blinkwait700-blinkoff400-blinkon250"
+
+-- In deiner init.lua
+vim.diagnostic.config({
+  virtual_text = true,  -- Zeigt Errors/Warnings inline
+  signs = true,         -- Zeigt Icons in der sign column
+  underline = true,     -- Unterstreicht problematische Stellen
+  update_in_insert = false,  -- Nicht während Insert Mode updaten
+})
 

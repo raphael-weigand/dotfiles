@@ -1,6 +1,6 @@
 # outsourced the config files
-[ -s "$HOME/.config/terminal/autocomplete" ] && \. "$HOME/.config/terminal/autocomplete" # load the autocomplete 
-[ -s "$HOME/.config/terminal/myalias" ] && \. "$HOME/.config/terminal/myalias" # load my aliases
-[ -s "$HOME/.config/terminal/prompt" ] && \. "$HOME/.config/terminal/prompt" # load the layout of the prompt
-[ -s "$HOME/.config/terminal/nvm_bash_completion" ] && \. "$HOME/.config/terminal/nvm_bash_completion" #load nvm bash completion
+[ -s "$HOME/dotfiles/zsh/autocomplete" ] && \. "$HOME/dotfiles/zsh/autocomplete" # load the autocomplete 
+[ -s "$HOME/dotfiles/zsh/myalias" ] && \. "$HOME/dotfiles/zsh/myalias" # load my aliases
+[ -s "$HOME/dotfiles/zsh/prompt" ] && \. "$HOME/dotfiles/zsh/prompt" # load the layout of the prompt
+[ -s "$HOME/dotfiles/zsh/nvm_bash_completion" ] && \. "$HOME/dotfiles/zsh/nvm_bash_completion" #load nvm bash completion
 

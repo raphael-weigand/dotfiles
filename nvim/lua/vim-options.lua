@@ -54,7 +54,7 @@ vim.opt.wildmode = {"longest:full", "full"}
 vim.opt.path:append("**")
 
 -- Folding basierend auf Syntax/Sprache
-vim.opt.foldmethod = "syntax"     -- Folding basierend auf Syntax
+vim.opt.foldmethod = "indent"     -- Folding basierend auf Syntax
 vim.opt.foldlevelstart = 99       -- Beim Öffnen alle Folds geöffnet
 vim.opt.foldenable = true         -- Folding aktivieren
 vim.opt.foldnestmax = 10          -- Maximale Verschachtelungstiefe
@@ -64,7 +64,7 @@ vim.cmd([[
   augroup FoldingSettings
     autocmd!
     " Für Sprachen mit guter Syntax-Unterstützung
-    autocmd FileType javascript,typescript,python,java,c,cpp,rust,go setlocal foldmethod=syntax
+    " autocmd FileType javascript,typescript,python,java,cpp,rust,go setlocal foldmethod=syntax
     " Für markup/config Dateien - indent-basiert
     autocmd FileType yaml,json,xml,html setlocal foldmethod=indent
     " Für Markdown - expr-basiert (falls verfügbar)

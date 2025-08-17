@@ -19,3 +19,4 @@ export HOMEBREW_BAT=1              # Nutzt `bat` für farbige Ausgaben (wenn ins
 export HOMEBREW_COLOR=1            # Aktiviert Farb-Ausgaben
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"  # Installiert Casks direkt in /Applications
 
+export PATH="/usr/local/opt/trash/bin:$PATH" 

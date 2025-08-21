@@ -82,7 +82,7 @@ vim.g.maplocalleader = " "
 -- Blinking cursor
 vim.opt.guicursor = "n-v-i:block,a:blinkwait700-blinkoff400-blinkon250"
 
--- In deiner init.lua
+-- Show diagnostic
 vim.diagnostic.config({
     virtual_text = true,  -- Zeigt Errors/Warnings inline
     signs = true,         -- Zeigt Icons in der sign column
@@ -92,4 +92,7 @@ vim.diagnostic.config({
         border = "single"   -- Weiße Rahmen für Diagnostic Popups
     }
 })
+
+-- Finally an article showing how to enable borders: https://samuellawrentz.com/blog/vim-lsp-hover-borders/
+vim.o.winborder = 'rounded'
 

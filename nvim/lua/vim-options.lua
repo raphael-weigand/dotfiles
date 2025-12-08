@@ -95,4 +95,3 @@ vim.diagnostic.config({
 
 -- Finally an article showing how to enable borders: https://samuellawrentz.com/blog/vim-lsp-hover-borders/
 vim.o.winborder = 'rounded'
-

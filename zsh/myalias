@@ -6,7 +6,7 @@ alias la="ls -la";
 alias ll="ls -l";
 
 alias sync="echo 'brew update...'; brew update -v";
-alias upgrade="echo 'brew upgrade...'; brew upgrade; echo 'brew cleanup...'; brew cleanup; echo 'brew autoremove...'; brew autoremove";
+alias upgrade="echo 'brew upgrade...'; brew upgrade; echo 'brew cleanup...'; brew cleanup -s; echo 'brew autoremove...'; brew autoremove";
 
 alias flushdns="echo 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder...'; sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder";
 

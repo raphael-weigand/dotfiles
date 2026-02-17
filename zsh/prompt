@@ -12,3 +12,7 @@ PS1="%F{yellow}%~%f%F{white}"$'\n'"> %f";
 
 export CLICOLOR=1
 export LSCOLORS=ExFxCxDxBxegedabagacad
+
+export DOTNET_ROOT="/usr/local/Cellar/dotnet/10.0.102/libexec"
+export PATH="$DOTNET_ROOT:$PATH"
+

@@ -9,6 +9,9 @@ window-colorspace = "display-p3"
 copy-on-select=clipboard
 cursor-style = block
 cursor-style-blink = true
+macos-option-as-alt = false
+clipboard-paste-protection = false
+
 
 # split
 keybind = ctrl+t>shift+5=new_split:right

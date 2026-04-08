@@ -27,7 +27,7 @@ vim.opt.wrap = false
 vim.opt.scrolloff = 8
 vim.opt.colorcolumn = "80"
 vim.opt.signcolumn = "no"
-vim.opt.termguicolors = false
+-- vim.opt.termguicolors = false
 
 -- Highlight für colorcolumn
 vim.cmd("highlight ColorColumn ctermbg=darkgray guibg=#2c2c2c")
@@ -64,7 +64,7 @@ vim.cmd([[
   augroup FoldingSettings
     autocmd!
     " Für Sprachen mit guter Syntax-Unterstützung
-    autocmd FileType javascript,typescript,python,java,cpp,rust,go setlocal foldmethod=syntax
+    autocmd FileType javascript,typescript,c,python,java,cpp,rust,go setlocal foldmethod=syntax
     " Für markup/config Dateien - indent-basiert
     autocmd FileType yaml,json,xml,html setlocal foldmethod=indent
     " Für Markdown - expr-basiert (falls verfügbar)

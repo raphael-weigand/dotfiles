@@ -1,36 +1,37 @@
+-- ~/.config/nvim/lua/plugins/colorscheme.lua
 return {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    priority = 1000,
-    config = function()
-        require("catppuccin").setup({
-            flavour = "mocha",
-            transparent_background = false,
-            -- Weitere Optionen nach Bedarf
-        })
-        local function set_custom_highlights()
-            local white = "#ffffff"
-            vim.api.nvim_set_hl(0, "FloatBorder", { fg = white })
-            vim.api.nvim_set_hl(0, "LspInfoBorder", { fg = white })
-            vim.api.nvim_set_hl(0, "PmenuBorder", { fg = white })
-            vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = white })
-            vim.api.nvim_set_hl(0, "TelescopePromptBorder", { fg = white })
-            vim.api.nvim_set_hl(0, "TelescopeResultsBorder", { fg = white })
-            vim.api.nvim_set_hl(0, "TelescopePreviewBorder", { fg = white })
-            vim.api.nvim_set_hl(0, "DiagnosticFloatingError", { fg = white })
-            vim.api.nvim_set_hl(0, "DiagnosticFloatingWarn", { fg = white })
-            vim.api.nvim_set_hl(0, "DiagnosticFloatingInfo", { fg = white })
-            vim.api.nvim_set_hl(0, "DiagnosticFloatingHint", { fg = white })
-            vim.api.nvim_set_hl(0, "LspSignatureActiveParameter", { fg = white, bold = true })
-            vim.api.nvim_set_hl(0, "LspCodeLens", { fg = white })
-            vim.api.nvim_set_hl(0, "LspCodeLensSeparator", { fg = white })
-            vim.api.nvim_set_hl(0, "LspReferenceText", { fg = white })
-            vim.api.nvim_set_hl(0, "LspReferenceRead", { fg = white })
-            vim.api.nvim_set_hl(0, "LspReferenceWrite", { fg = white })
-            vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
-            vim.api.nvim_set_hl(0, "LspCodeActionBorder", { fg = white })
-            vim.api.nvim_set_hl(0, "LspRenameBorder", { fg = white })
-        end
-        set_custom_highlights()
-    end,
+    {
+        "blazkowolf/gruber-darker.nvim",
+        priority = 1000, -- sollte früh geladen werden
+        opts = {
+            bold = false,
+            italic = {
+                strings = false,
+                comments = true,
+                operators = false,
+                folds = true,
+            },
+            undercurl = true,
+            underline = true,
+            invert = {
+                signs = false,
+                tabline = false,
+                visual = false,
+            },
+            inverse = true,
+            transparent = false,
+        },
+        config = function(_, opts)
+            require("gruber-darker").setup(opts)
+            vim.o.background = "dark"
+            vim.cmd.colorscheme("gruber-darker")
+            -- aktuelle Zeilennummer gelb machen
+            vim.api.nvim_set_hl(0, 'LineNrAbove', { fg='#52494e', bold=false })
+            vim.api.nvim_set_hl(0, "LineNr", {
+                fg = "#ffdd33", -- schönes gelb (kannst du anpassen)
+                bold = true,
+            })
+            vim.api.nvim_set_hl(0, 'LineNrBelow', { fg='#52494e', bold=false })
+        end,
+    },
 }

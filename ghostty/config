@@ -1,5 +1,5 @@
 # theme = catppuccin-mocha
-theme = Adventure
+theme = gruber darker
 font-size = 16
 font-family = JetBrains Mono
 shell-integration-features=no-cursor,sudo,no-title

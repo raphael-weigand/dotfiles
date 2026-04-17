@@ -23,11 +23,11 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.showcmd = true
 vim.opt.ruler = true
-vim.opt.wrap = false
+vim.opt.wrap = true
 vim.opt.scrolloff = 8
 vim.opt.colorcolumn = "80"
 vim.opt.signcolumn = "no"
--- vim.opt.termguicolors = false
+vim.opt.termguicolors = true
 
 -- Highlight für colorcolumn
 vim.cmd("highlight ColorColumn ctermbg=darkgray guibg=#2c2c2c")
@@ -54,23 +54,23 @@ vim.opt.wildmode = {"longest:full", "full"}
 vim.opt.path:append("**")
 
 -- Folding basierend auf Syntax/Sprache
-vim.opt.foldmethod = "indent"     -- Folding basierend auf Indent
+vim.opt.foldmethod = "syntax"     -- Folding basierend auf Indent
 vim.opt.foldlevelstart = 99       -- Beim Öffnen alle Folds geöffnet
 vim.opt.foldenable = true         -- Folding aktivieren
 vim.opt.foldnestmax = 10          -- Maximale Verschachtelungstiefe
 
 -- Optional: Fallback auf indent für Sprachen ohne Syntax-Folding
-vim.cmd([[
-  augroup FoldingSettings
-    autocmd!
-    " Für Sprachen mit guter Syntax-Unterstützung
-    autocmd FileType javascript,typescript,c,python,java,cpp,rust,go setlocal foldmethod=syntax
-    " Für markup/config Dateien - indent-basiert
-    autocmd FileType yaml,json,xml,html setlocal foldmethod=indent
-    " Für Markdown - expr-basiert (falls verfügbar)
-    " autocmd FileType markdown setlocal foldmethod=expr foldexpr=getline(v:lnum)=~'^#'
-  augroup END
-]])
+-- vim.cmd([[
+--   augroup FoldingSettings
+--     autocmd!
+--     " Für Sprachen mit guter Syntax-Unterstützung
+--     autocmd FileType javascript,typescript,c,python,java,cpp,rust,go setlocal foldmethod=syntax
+--     " Für markup/config Dateien - indent-basiert
+--     autocmd FileType yaml,json,xml,html setlocal foldmethod=indent
+--     " Für Markdown - expr-basiert (falls verfügbar)
+--     " autocmd FileType markdown setlocal foldmethod=expr foldexpr=getline(v:lnum)=~'^#'
+--   augroup END
+-- ]])
 
 -- Shada (Session Data)
 vim.opt.shada = "!,'1000,<50,s10,h"

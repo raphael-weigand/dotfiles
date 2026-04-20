@@ -55,7 +55,7 @@ vim.opt.path:append("**")
 
 -- Folding basierend auf Syntax/Sprache
 vim.opt.foldmethod = "expr"     -- Folding basierend auf Indent
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldlevelstart = 99       -- Beim Öffnen alle Folds geöffnet
 vim.opt.foldenable = true         -- Folding aktivieren
 vim.opt.foldnestmax = 10          -- Maximale Verschachtelungstiefe

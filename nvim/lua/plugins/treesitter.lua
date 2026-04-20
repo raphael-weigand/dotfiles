@@ -9,19 +9,14 @@ return {
 		config.setup({
 			auto_install = true,
 			highlight = { enable = true },
-			indent = { enable = true },
+			indent = { enable = true, disable = {"c"} },
 			ensure_installed = {"c", "lua", "javascript", "html", "css", "python"},
-			fold = { enable = true },
+			fold = { enable = true, disable={"c"}},
 		})
 
-        -- Tree-sitter für bereits geöffnete Buffer erzwingen
-        vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
-            callback = function(args)
-                local buf = args.buf
-                if vim.bo[buf].filetype ~= "" then
-                    pcall(vim.treesitter.start, buf)
-                end
-            end,
-        })
+        vim.opt.foldmethod = "expr"
+        vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+        vim.opt.foldlevel = 99
+        vim.opt.foldenable = true
 	end,
 }

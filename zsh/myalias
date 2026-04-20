@@ -1,23 +1,48 @@
 export EDITOR='nvim'
-export TERM=xterm-256color
+export VISUAL='nvim'
+export PAGER='less'
 
+# Homebrew path statisch setzen statt brew shellenv
+export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+
+# User binaries
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="/usr/local/opt/trash/bin:$PATH"
+
+# dotnet
+export DOTNET_ROOT="/usr/local/Cellar/dotnet/10.0.102/libexec"
+export PATH="$DOTNET_ROOT:$PATH"
+
+# Terminal
+export TERM="xterm-256color"
+export CLICOLOR=1
+export LSCOLORS=ExFxCxDxBxegedabagacad
+
+# Homebrew behavior
+export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_BAT=1
+export HOMEBREW_COLOR=1
+export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+
+# Aliases
 alias rm="trash"
 
 alias la="ls -la"
 alias ll="ls -l"
 
-alias tmx="tmux a || tmux"
-
 alias sync="echo 'brew update...'; brew update -v"
 alias upgrade="echo 'brew upgrade...'; brew upgrade; echo 'brew cleanup...'; brew cleanup -s; echo 'brew autoremove...'; brew autoremove"
 
-# Homebrew
-export HOMEBREW_NO_AUTO_UPDATE=1
-export HOMEBREW_BAT=1
-export HOMEBREW_COLOR=1
-export HOMEBREW_CASK_OPTS="--appdir=/Applications"
-export PATH="/usr/local/bin:/usr/local/sbin:/usr/local/opt/trash/bin:$PATH"
+alias flushdns="echo 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder...'; sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
 
-# Dotnet exports
-export DOTNET_ROOT="/usr/local/Cellar/dotnet/10.0.102/libexec"
-export PATH="$DOTNET_ROOT:$PATH"
+alias cputemp="sudo powermetrics --samplers smc | grep -i -E 'die temperature|fan'"
+alias powerinfo="sudo powermetrics"
+
+alias tmx="tmux attach || tmux"
+
+# Better defaults if installed
+# command -v eza >/dev/null 2>&1 && alias ls="eza"
+# command -v bat >/dev/null 2>&1 && alias cat="bat"
+setopt AUTO_CD
+setopt AUTO_PUSHD
+setopt PUSHD_IGNORE_DUPS

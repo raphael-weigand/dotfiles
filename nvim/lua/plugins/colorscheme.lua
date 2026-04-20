@@ -28,10 +28,19 @@ return {
             -- aktuelle Zeilennummer gelb machen
             vim.api.nvim_set_hl(0, 'LineNrAbove', { fg='#52494e', bold=false })
             vim.api.nvim_set_hl(0, "LineNr", {
-                fg = "#ffdd33", -- schönes gelb (kannst du anpassen)
+                fg = "#ffdd33",
                 bold = true,
             })
             vim.api.nvim_set_hl(0, 'LineNrBelow', { fg='#52494e', bold=false })
+
+            -- vim.api.nvim_set_hl(0, "Comment", { fg = "#75715e", italic = true })
+
+            -- Tree-sitter Highlights nach Colorscheme neu setzen
+            vim.api.nvim_create_autocmd("ColorScheme", {
+                callback = function()
+                    vim.cmd("TSBufEnable highlight")
+                end,
+            })
         end,
     },
 }

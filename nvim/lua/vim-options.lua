@@ -5,6 +5,10 @@ vim.opt.autoread = true
 vim.opt.hidden = true
 vim.opt.swapfile = false
 
+-- Leader Keys
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
 -- Einrückung und Tabs
 vim.opt.autoindent = true
 vim.opt.tabstop = 4
@@ -75,10 +79,6 @@ vim.opt.foldnestmax = 10          -- Maximale Verschachtelungstiefe
 
 -- Shada (Session Data)
 vim.opt.shada = "!,'1000,<50,s10,h"
-
--- Leader Keys
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
 
 -- Blinking cursor
 vim.opt.guicursor = "n-v-i:block,a:blinkwait700-blinkoff400-blinkon250"

@@ -14,7 +14,8 @@ return {
         "neovim/nvim-lspconfig",
         config = function()
             -- capabilities (Autocomplete etc.)
-            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            local capabilities = vim.lsp.protocol.make_client_capabilities()
+            capabilities = vim.tbl_deep_extend('force', capabilities, require("cmp_nvim_lsp").default_capabilities())
 
             -- Gemeinsame Funktion für Keymaps etc.
             local on_attach = function(_, bufnr)

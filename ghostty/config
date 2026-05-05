@@ -1,7 +1,7 @@
 # theme = catppuccin-mocha
 theme = gruber darker
 font-size = 16
-font-family = Iosevka Term Regular
+font-family = Iosevka Term Extended
 shell-integration-features=no-cursor,sudo,no-title
 window-padding-balance = true
 window-save-state = always

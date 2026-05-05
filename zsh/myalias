@@ -38,7 +38,7 @@ alias flushdns="echo 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSRespon
 alias cputemp="sudo powermetrics --samplers smc | grep -i -E 'die temperature|fan'"
 alias powerinfo="sudo powermetrics"
 
-alias tmx="tmux attach || tmux"
+alias tmx="tmux attach || tmux new -c ~/Programming/"
 
 # Better defaults if installed
 # command -v eza >/dev/null 2>&1 && alias ls="eza"

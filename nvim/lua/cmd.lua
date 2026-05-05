@@ -6,3 +6,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
         vim.highlight.on_yank()
     end,
 })
+
+-- Copy to clipboard over SSH
+vim.g.clipboard = 'osc52'

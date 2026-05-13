@@ -27,8 +27,8 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 # Aliases
 alias rm="trash"
 
-alias la="ls -la"
-alias ll="ls -l"
+alias la="ls -lah"
+alias ll="ls -lh"
 
 alias sync="echo 'brew update...'; brew update -v"
 alias upgrade="echo 'brew upgrade...'; brew upgrade; echo 'brew cleanup...'; brew cleanup -s; echo 'brew autoremove...'; brew autoremove"

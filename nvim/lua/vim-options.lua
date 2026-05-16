@@ -47,6 +47,8 @@ vim.opt.history = 300
 
 -- Zwischenablage
 vim.opt.clipboard:prepend({"unnamed", "unnamedplus"})
+-- Copy to clipboard over SSH
+vim.g.clipboard = 'osc52'
 
 -- Statuszeile
 vim.opt.showmode = true

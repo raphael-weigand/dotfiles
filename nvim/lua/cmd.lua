@@ -7,5 +7,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     end,
 })
 
--- Copy to clipboard over SSH
-vim.g.clipboard = 'osc52'
+-- Visual mode
+vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv")
+vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv")

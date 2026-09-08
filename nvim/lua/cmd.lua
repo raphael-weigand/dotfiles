@@ -7,6 +7,19 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     end,
 })
 
+-- Remove trailing whitespace before saving while preserving the cursor position.
+local trim_whitespace_group = vim.api.nvim_create_augroup("trim-trailing-whitespace", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePre", {
+    desc = "Remove trailing whitespace",
+    group = trim_whitespace_group,
+    pattern = { "*.c", "*.h", "*.cpp", "*.hpp", "*.cc", "*.hh", "*.lua", "*.py", "*.php", "*.js", "*.ts", "*.json", "*.css", "*.scss", "*.html", "*.md", "*.yml", "*.yaml", "*.sh" },
+    callback = function()
+        local cursor = vim.api.nvim_win_get_cursor(0)
+        vim.cmd([[silent! keepjumps keeppatterns %s/\s\+$//e]])
+        pcall(vim.api.nvim_win_set_cursor, 0, cursor)
+    end,
+})
+
 -- Keep search highlighting while actively searching/navigating, but clear it
 -- as soon as another Normal-mode command is used.
 local search_keys = {

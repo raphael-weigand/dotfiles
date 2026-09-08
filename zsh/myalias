@@ -2,31 +2,31 @@ export EDITOR='nvim'
 export VISUAL='nvim'
 export PAGER='less'
 
-# Homebrew path statisch setzen statt brew shellenv
+# Homebrew on Intel macOS.
 export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 
-# User binaries
+# User binaries.
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="/usr/local/opt/trash/bin:$PATH"
 
-# dotnet
-export DOTNET_ROOT="/usr/local/Cellar/dotnet/10.0.102/libexec"
-export PATH="$DOTNET_ROOT:$PATH"
+# .NET: use Homebrew's stable opt symlink instead of a versioned Cellar path.
+if [ -d "/usr/local/opt/dotnet/libexec" ]; then
+    export DOTNET_ROOT="/usr/local/opt/dotnet/libexec"
+    export PATH="$DOTNET_ROOT:$PATH"
+fi
 
-# Terminal
-export TERM="xterm-256color"
+# Terminal colors. TERM is deliberately left to Ghostty/tmux.
 export CLICOLOR=1
 export LSCOLORS=ExFxCxDxBxegedabagacad
 
-# Homebrew behavior
+# Homebrew behavior.
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_BAT=1
 export HOMEBREW_COLOR=1
 export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
-# Aliases
+# Aliases.
 alias rm="trash"
-
 alias la="ls -lah"
 alias ll="ls -lh"
 
@@ -38,11 +38,13 @@ alias flushdns="echo 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSRespon
 alias cputemp="sudo powermetrics --samplers smc | grep -i -E 'die temperature|fan'"
 alias powerinfo="sudo powermetrics"
 
-alias tmx="tmux attach || tmux new -c ~/Programming/"
+# Attach to the main session or create it in the programming directory.
+alias tmx="tmux new-session -A -s main -c ~/Programming/"
 
-# Better defaults if installed
+# Better defaults if installed.
 # command -v eza >/dev/null 2>&1 && alias ls="eza"
 # command -v bat >/dev/null 2>&1 && alias cat="bat"
+
 setopt AUTO_CD
 setopt AUTO_PUSHD
 setopt PUSHD_IGNORE_DUPS

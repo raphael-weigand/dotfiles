@@ -26,6 +26,10 @@ vim.on_key(function(key)
     end
 end, search_highlight_ns)
 
+-- Toggle comments using Neovim's native, language-aware commenting.
+vim.keymap.set("n", "<leader>/", "gcc", { remap = true, desc = "Toggle comment" })
+vim.keymap.set("x", "<leader>/", "gc", { remap = true, desc = "Toggle comment selection" })
+
 -- Replace the word under the cursor throughout the current buffer.
 vim.keymap.set("n", "<leader>sr", function()
     local word = vim.fn.expand("<cword>")

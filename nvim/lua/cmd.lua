@@ -40,7 +40,7 @@ vim.keymap.set("n", "<leader>sr", function()
 
         local pattern = vim.fn.escape(word, [[\/]])
         local escaped_replacement = vim.fn.escape(replacement, [[\/&]])
-        vim.cmd("%%s/\\<" .. pattern .. "\\>/" .. escaped_replacement .. "/gc")
+        vim.cmd("%s/\\<" .. pattern .. "\\>/" .. escaped_replacement .. "/gc")
     end)
 end, { desc = "Replace word under cursor" })
 

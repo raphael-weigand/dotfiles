@@ -34,10 +34,22 @@ return {
                 desc = "Multi-cursor: add next match",
             },
             {
+                "<leader>mp",
+                "<cmd>MultipleCursorsAddJumpPrevMatch<CR>",
+                mode = { "n", "x" },
+                desc = "Multi-cursor: add previous match",
+            },
+            {
                 "<leader>ms",
                 "<cmd>MultipleCursorsJumpNextMatch<CR>",
                 mode = { "n", "x" },
                 desc = "Multi-cursor: skip next match",
+            },
+            {
+                "<leader>mS",
+                "<cmd>MultipleCursorsJumpPrevMatch<CR>",
+                mode = { "n", "x" },
+                desc = "Multi-cursor: skip previous match",
             },
             {
                 "<leader>md",

@@ -1,8 +1,7 @@
--- ~/.config/nvim/lua/plugins/colorscheme.lua
 return {
     {
         "blazkowolf/gruber-darker.nvim",
-        priority = 1000, -- sollte früh geladen werden
+        priority = 1000,
         opts = {
             bold = false,
             italic = {
@@ -25,22 +24,10 @@ return {
             require("gruber-darker").setup(opts)
             vim.o.background = "dark"
             vim.cmd.colorscheme("gruber-darker")
-            -- aktuelle Zeilennummer gelb machen
-            vim.api.nvim_set_hl(0, 'LineNrAbove', { fg='#52494e', bold=false })
-            vim.api.nvim_set_hl(0, "LineNr", {
-                fg = "#ffdd33",
-                bold = true,
-            })
-            vim.api.nvim_set_hl(0, 'LineNrBelow', { fg='#52494e', bold=false })
 
-            -- vim.api.nvim_set_hl(0, "Comment", { fg = "#75715e", italic = true })
-
-            -- Tree-sitter Highlights nach Colorscheme neu setzen
-            vim.api.nvim_create_autocmd("ColorScheme", {
-                callback = function()
-                    vim.cmd("TSBufEnable highlight")
-                end,
-            })
+            vim.api.nvim_set_hl(0, "LineNrAbove", { fg = "#52494e", bold = false })
+            vim.api.nvim_set_hl(0, "LineNr", { fg = "#ffdd33", bold = true })
+            vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#52494e", bold = false })
         end,
     },
 }

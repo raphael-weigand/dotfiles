@@ -1,25 +1,19 @@
--- Highlight when yanking (copying) text
-vim.api.nvim_create_autocmd('TextYankPost', {
-    desc = 'Highlight when yanking (copying) test',
-    group = vim.api.nvim_create_augroup('kickstart-highlight-yank', {clear=true}),
-    callback = function ()
+-- Highlight yanked text
+vim.api.nvim_create_autocmd("TextYankPost", {
+    desc = "Highlight yanked text",
+    group = vim.api.nvim_create_augroup("highlight-yank", { clear = true }),
+    callback = function()
         vim.highlight.on_yank()
     end,
 })
 
--- Move lines up and down in visual mode
-vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv")
-vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv")
+-- Move selected lines while keeping the selection
+vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
+vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
 
--- Insert mode: move cursor
-vim.keymap.set("i", "<C-k>", "<Up>")
-vim.keymap.set("i", "<C-j>", "<Down>")
-vim.keymap.set("i", "<C-l>", "<Right>")
-vim.keymap.set("i", "<C-h>", "<Left>")
-
+-- Show whitespace only while selecting text
 local visual_list_group = vim.api.nvim_create_augroup("VisualListChars", { clear = true })
 
--- Enter Visual Mode
 vim.api.nvim_create_autocmd("ModeChanged", {
     group = visual_list_group,
     pattern = "*:[vV\22]*",
@@ -28,7 +22,6 @@ vim.api.nvim_create_autocmd("ModeChanged", {
     end,
 })
 
--- Leave Visual Mode
 vim.api.nvim_create_autocmd("ModeChanged", {
     group = visual_list_group,
     pattern = "[vV\22]*:*",

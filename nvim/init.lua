@@ -1,11 +1,6 @@
--- Load vim commands
+-- Load editor options
 require("vim-options")
--- Load config 
-require("config.options")
--- Load custom key maps
+-- Load custom commands and keymaps
 require("cmd")
--- Setup Plugin Manager
+-- Setup plugin manager
 require("config.lazy")
-
--- Load vb lsp 
--- require("lsp.vb_ls")

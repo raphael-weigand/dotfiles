@@ -5,6 +5,10 @@ return {
     priority = 1000,
     lazy = false,
     config = function()
+        require("nvim-treesitter").setup({
+            install_dir = vim.fn.stdpath("data") .. "/site",
+        })
+
         vim.api.nvim_create_autocmd("FileType", {
             group = vim.api.nvim_create_augroup("treesitter-start", { clear = true }),
             callback = function(args)

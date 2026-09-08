@@ -83,15 +83,15 @@ return {
             set(0, "Folded", { fg = colors.quartz, bg = colors.bg1 })
             set(0, "FoldColumn", { fg = colors.bg4, bg = colors.bg })
 
-            -- Floating windows and completion menus approximate Emacs tooltip
-            -- and Helm selection faces using the same original palette.
-            set(0, "NormalFloat", { fg = colors.white, bg = colors.bg4 })
-            set(0, "FloatBorder", { fg = colors.bg2, bg = colors.bg4 })
-            set(0, "FloatTitle", { fg = colors.yellow, bg = colors.bg4, bold = true })
+            -- Keep floating documentation and LSP hover dark and high contrast.
+            -- Completion itself uses Pmenu and intentionally has no visible border.
+            set(0, "NormalFloat", { fg = colors.fg, bg = colors.bg1 })
+            set(0, "FloatBorder", { fg = colors.bg4, bg = colors.bg1 })
+            set(0, "FloatTitle", { fg = colors.yellow, bg = colors.bg1, bold = true })
             set(0, "Pmenu", { fg = colors.fg, bg = colors.bg })
-            set(0, "PmenuSel", { fg = colors.fg, bg = colors.bg1 })
+            set(0, "PmenuSel", { fg = colors.white, bg = colors.bg2 })
             set(0, "PmenuKind", { fg = colors.niagara, bg = colors.bg })
-            set(0, "PmenuExtra", { fg = colors.bg4, bg = colors.bg })
+            set(0, "PmenuExtra", { fg = colors.quartz, bg = colors.bg })
             set(0, "PmenuSbar", { bg = colors.bg1 })
             set(0, "PmenuThumb", { bg = colors.bg4 })
 

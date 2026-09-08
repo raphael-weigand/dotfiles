@@ -49,6 +49,21 @@ return {
                     map("<leader>gf", function()
                         vim.lsp.buf.format({ async = true })
                     end, "LSP: Format buffer")
+
+                    -- Tsoding formats whole C-family buffers with astyle. Keep
+                    -- the same workflow, but use the attached LSP/clangd so
+                    -- project .clang-format settings are respected.
+                    if vim.bo[event.buf].filetype == "c" or vim.bo[event.buf].filetype == "cpp" then
+                        map("<leader>cf", function()
+                            vim.lsp.buf.format({
+                                async = false,
+                                bufnr = event.buf,
+                                filter = function(client)
+                                    return client.name == "clangd"
+                                end,
+                            })
+                        end, "C/C++: Format buffer")
+                    end
                 end,
             })
         end,

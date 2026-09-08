@@ -30,6 +30,60 @@ end, search_highlight_ns)
 vim.keymap.set("n", "<leader>/", "gcc", { remap = true, desc = "Toggle comment" })
 vim.keymap.set("x", "<leader>/", "gc", { remap = true, desc = "Toggle comment selection" })
 
+-- Swap the two sides of a visual selection around a chosen separator.
+-- Examples: hello_world -> world_hello, a = b; -> b = a;
+vim.keymap.set("x", "<leader>x", function()
+    local start_pos = vim.fn.getpos("v")
+    local end_pos = vim.fn.getpos(".")
+
+    if start_pos[2] ~= end_pos[2] then
+        vim.notify("Swap by separator currently supports a single line", vim.log.levels.WARN)
+        return
+    end
+
+    local row = start_pos[2] - 1
+    local start_col = math.min(start_pos[3], end_pos[3]) - 1
+    local end_col = math.max(start_pos[3], end_pos[3])
+    local text = vim.api.nvim_buf_get_text(0, row, start_col, row, end_col, {})[1]
+
+    local separator = vim.fn.getcharstr()
+    if separator == "" or separator == "\27" then
+        return
+    end
+
+    local separator_start, separator_end = text:find(separator, 1, true)
+    if not separator_start then
+        vim.notify("Separator '" .. separator .. "' not found in selection", vim.log.levels.WARN)
+        return
+    end
+
+    local left = text:sub(1, separator_start - 1)
+    local right = text:sub(separator_end + 1)
+
+    local prefix = left:match("^%s*") or ""
+    local left_space = left:match("%s*$") or ""
+    local right_space = right:match("^%s*") or ""
+    local suffix_space = right:match("%s*$") or ""
+
+    local left_value = left:sub(#prefix + 1, #left - #left_space)
+    local right_body = right:sub(#right_space + 1, #right - #suffix_space)
+
+    -- Keep common statement punctuation at the end instead of swapping it.
+    local punctuation = right_body:match("[;,]+$") or ""
+    local right_value = right_body:sub(1, #right_body - #punctuation)
+
+    local swapped = prefix
+        .. right_value
+        .. left_space
+        .. separator
+        .. right_space
+        .. left_value
+        .. punctuation
+        .. suffix_space
+
+    vim.api.nvim_buf_set_text(0, row, start_col, row, end_col, { swapped })
+end, { desc = "Swap selection by separator" })
+
 -- Replace the word under the cursor throughout the current buffer.
 vim.keymap.set("n", "<leader>sr", function()
     local word = vim.fn.expand("<cword>")

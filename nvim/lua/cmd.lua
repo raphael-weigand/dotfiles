@@ -17,29 +17,28 @@ vim.keymap.set("i", "<C-j>", "<Down>")
 vim.keymap.set("i", "<C-l>", "<Right>")
 vim.keymap.set("i", "<C-h>", "<Left>")
 
-local visual_list_group =
-  vim.api.nvim_create_augroup("VisualListChars", { clear = true })
+local visual_list_group = vim.api.nvim_create_augroup("VisualListChars", { clear = true })
 
 -- Enter Visual Mode
 vim.api.nvim_create_autocmd("ModeChanged", {
-  group = visual_list_group,
-  pattern = "*:[vV\22]*",
-  callback = function()
-    vim.opt_local.list = true
-  end,
+    group = visual_list_group,
+    pattern = "*:[vV\22]*",
+    callback = function()
+        vim.opt_local.list = true
+    end,
 })
 
 -- Leave Visual Mode
 vim.api.nvim_create_autocmd("ModeChanged", {
-  group = visual_list_group,
-  pattern = "[vV\22]*:*",
-  callback = function()
-    vim.opt_local.list = false
-  end,
+    group = visual_list_group,
+    pattern = "[vV\22]*:*",
+    callback = function()
+        vim.opt_local.list = false
+    end,
 })
 
 vim.opt.listchars = {
-  space = "·",
-  tab = "» ",
-  trail = "·",
+    space = "·",
+    tab = "» ",
+    trail = "·",
 }

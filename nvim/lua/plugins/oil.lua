@@ -43,6 +43,9 @@ return {
         },
         skip_confirm_for_simple_edits = true,
         prompt_save_on_select_new_entry = false,
+        win_options = {
+            winbar = "%!v:lua.require('oil').get_current_dir()",
+        },
     },
     keys = {
         {

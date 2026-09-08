@@ -7,3 +7,5 @@ require("cmd")
 -- Setup Plugin Manager
 require("config.lazy")
 
+-- Load vb lsp 
+-- require("lsp.vb_ls")

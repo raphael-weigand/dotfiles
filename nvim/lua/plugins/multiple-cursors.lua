@@ -34,6 +34,12 @@ return {
                 desc = "Multi-cursor: add next match",
             },
             {
+                "<leader>ms",
+                "<cmd>MultipleCursorsJumpNextMatch<CR>",
+                mode = { "n", "x" },
+                desc = "Multi-cursor: skip next match",
+            },
+            {
                 "<leader>md",
                 "<cmd>MultipleCursorsAddDelete<CR>",
                 mode = { "n", "x" },

@@ -7,6 +7,11 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     end,
 })
 
+-- Automatically hide search highlighting after returning to normal editing.
+-- This is Neovim's built-in nohlsearch package: searches and n/N keep
+-- highlighting active, while entering Insert mode (and inactivity) clears it.
+vim.cmd("packadd! nohlsearch")
+
 -- Move selected lines while keeping the selection
 vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })

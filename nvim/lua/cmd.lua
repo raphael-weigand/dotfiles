@@ -30,8 +30,97 @@ end, search_highlight_ns)
 vim.keymap.set("n", "<leader>/", "gcc", { remap = true, desc = "Toggle comment" })
 vim.keymap.set("x", "<leader>/", "gc", { remap = true, desc = "Toggle comment selection" })
 
--- Swap the two sides of a visual selection around a chosen separator.
--- Examples: hello_world -> world_hello, a = b; -> b = a;
+local function swap_text(text, separator, keep_prefix)
+    local separator_start, separator_end = text:find(separator, 1, true)
+    if not separator_start then
+        return nil
+    end
+
+    local left = text:sub(1, separator_start - 1)
+    local right = text:sub(separator_end + 1)
+    local prefix = ""
+
+    if keep_prefix then
+        local before, operand = left:match("^(.-)([^%s]+)%s*$")
+        if operand then
+            prefix = before
+            left = operand .. (left:match("%s*$") or "")
+        end
+    end
+
+    local left_leading = left:match("^%s*") or ""
+    local left_space = left:match("%s*$") or ""
+    local right_space = right:match("^%s*") or ""
+    local suffix_space = right:match("%s*$") or ""
+
+    local left_value = left:sub(#left_leading + 1, #left - #left_space)
+    local right_body = right:sub(#right_space + 1, #right - #suffix_space)
+    local punctuation = right_body:match("[;,]+$") or ""
+    local right_value = right_body:sub(1, #right_body - #punctuation)
+
+    return prefix
+        .. left_leading
+        .. right_value
+        .. left_space
+        .. separator
+        .. right_space
+        .. left_value
+        .. punctuation
+        .. suffix_space
+end
+
+local function read_separator()
+    local separator = vim.fn.getcharstr()
+    if separator == "" or separator == "\27" then
+        return nil
+    end
+    return separator
+end
+
+-- Normal mode: swap around a separator on the current expression/line.
+-- `hello_world` + <leader>x_ -> `world_hello`
+-- `unsigned long amount_fresh = 1;` + <leader>x= -> `unsigned long 1 = amount_fresh;`
+vim.keymap.set("n", "<leader>x", function()
+    local separator = read_separator()
+    if not separator then
+        return
+    end
+
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local line = vim.api.nvim_get_current_line()
+
+    -- Prefer the WORD under the cursor when it already contains the separator.
+    local word_start = col + 1
+    while word_start > 1 and not line:sub(word_start - 1, word_start - 1):match("%s") do
+        word_start = word_start - 1
+    end
+
+    local word_end = col + 1
+    while word_end < #line and not line:sub(word_end + 1, word_end + 1):match("%s") do
+        word_end = word_end + 1
+    end
+
+    local word = line:sub(word_start, word_end)
+    if word:find(separator, 1, true) then
+        local swapped = swap_text(word, separator, false)
+        if swapped then
+            vim.api.nvim_buf_set_text(0, row - 1, word_start - 1, row - 1, word_end, { swapped })
+        end
+        return
+    end
+
+    -- Otherwise swap the operand before the separator with the value after it,
+    -- while preserving declarations/indentation before the left operand.
+    local swapped = swap_text(line, separator, true)
+    if not swapped then
+        vim.notify("Separator '" .. separator .. "' not found on current line", vim.log.levels.WARN)
+        return
+    end
+
+    vim.api.nvim_set_current_line(swapped)
+end, { desc = "Swap around separator" })
+
+-- Visual mode: swap the two sides of the selected text.
 vim.keymap.set("x", "<leader>x", function()
     local start_pos = vim.fn.getpos("v")
     local end_pos = vim.fn.getpos(".")
@@ -45,41 +134,16 @@ vim.keymap.set("x", "<leader>x", function()
     local start_col = math.min(start_pos[3], end_pos[3]) - 1
     local end_col = math.max(start_pos[3], end_pos[3])
     local text = vim.api.nvim_buf_get_text(0, row, start_col, row, end_col, {})[1]
-
-    local separator = vim.fn.getcharstr()
-    if separator == "" or separator == "\27" then
+    local separator = read_separator()
+    if not separator then
         return
     end
 
-    local separator_start, separator_end = text:find(separator, 1, true)
-    if not separator_start then
+    local swapped = swap_text(text, separator, false)
+    if not swapped then
         vim.notify("Separator '" .. separator .. "' not found in selection", vim.log.levels.WARN)
         return
     end
-
-    local left = text:sub(1, separator_start - 1)
-    local right = text:sub(separator_end + 1)
-
-    local prefix = left:match("^%s*") or ""
-    local left_space = left:match("%s*$") or ""
-    local right_space = right:match("^%s*") or ""
-    local suffix_space = right:match("%s*$") or ""
-
-    local left_value = left:sub(#prefix + 1, #left - #left_space)
-    local right_body = right:sub(#right_space + 1, #right - #suffix_space)
-
-    -- Keep common statement punctuation at the end instead of swapping it.
-    local punctuation = right_body:match("[;,]+$") or ""
-    local right_value = right_body:sub(1, #right_body - #punctuation)
-
-    local swapped = prefix
-        .. right_value
-        .. left_space
-        .. separator
-        .. right_space
-        .. left_value
-        .. punctuation
-        .. suffix_space
 
     vim.api.nvim_buf_set_text(0, row, start_col, row, end_col, { swapped })
 end, { desc = "Swap selection by separator" })

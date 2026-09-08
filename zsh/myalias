@@ -2,41 +2,62 @@ export EDITOR='nvim'
 export VISUAL='nvim'
 export PAGER='less'
 
-# Homebrew on Intel macOS.
-export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
-
-# User binaries.
+# User binaries. Platform-specific package manager paths are added only when present.
 export PATH="$HOME/.local/bin:$PATH"
-export PATH="/usr/local/opt/trash/bin:$PATH"
+
+if [ -d "/usr/local/bin" ]; then
+    export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
+fi
+
+if [ -d "/opt/homebrew/bin" ]; then
+    export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
+fi
+
+if [ -d "/usr/local/opt/trash/bin" ]; then
+    export PATH="/usr/local/opt/trash/bin:$PATH"
+fi
 
 # .NET: use Homebrew's stable opt symlink instead of a versioned Cellar path.
 if [ -d "/usr/local/opt/dotnet/libexec" ]; then
     export DOTNET_ROOT="/usr/local/opt/dotnet/libexec"
     export PATH="$DOTNET_ROOT:$PATH"
+elif [ -d "/opt/homebrew/opt/dotnet/libexec" ]; then
+    export DOTNET_ROOT="/opt/homebrew/opt/dotnet/libexec"
+    export PATH="$DOTNET_ROOT:$PATH"
 fi
 
 # Terminal colors. TERM is deliberately left to Ghostty/tmux.
 export CLICOLOR=1
-export LSCOLORS=ExFxCxDxBxegedabagacad
+if [ "$(uname -s)" = "Darwin" ]; then
+    export LSCOLORS=ExFxCxDxBxegedabagacad
+fi
 
-# Homebrew behavior.
-export HOMEBREW_NO_AUTO_UPDATE=1
-export HOMEBREW_BAT=1
-export HOMEBREW_COLOR=1
-export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+# Homebrew behavior only matters on macOS/Homebrew systems.
+if command -v brew >/dev/null 2>&1; then
+    export HOMEBREW_NO_AUTO_UPDATE=1
+    export HOMEBREW_BAT=1
+    export HOMEBREW_COLOR=1
+    export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+fi
 
-# Aliases.
-alias rm="trash"
+# Prefer trash over destructive rm when an implementation is available.
+if command -v trash >/dev/null 2>&1; then
+    alias rm="trash"
+fi
+
 alias la="ls -lah"
 alias ll="ls -lh"
 
-alias sync="echo 'brew update...'; brew update -v"
-alias upgrade="echo 'brew upgrade...'; brew upgrade; echo 'brew cleanup...'; brew cleanup -s; echo 'brew autoremove...'; brew autoremove"
+if command -v brew >/dev/null 2>&1; then
+    alias sync="echo 'brew update...'; brew update -v"
+    alias upgrade="echo 'brew upgrade...'; brew upgrade; echo 'brew cleanup...'; brew cleanup -s; echo 'brew autoremove...'; brew autoremove"
+fi
 
-alias flushdns="echo 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder...'; sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
-
-alias cputemp="sudo powermetrics --samplers smc | grep -i -E 'die temperature|fan'"
-alias powerinfo="sudo powermetrics"
+if [ "$(uname -s)" = "Darwin" ]; then
+    alias flushdns="echo 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder...'; sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
+    alias cputemp="sudo powermetrics --samplers smc | grep -i -E 'die temperature|fan'"
+    alias powerinfo="sudo powermetrics"
+fi
 
 # Attach to the main session or create it in the programming directory.
 alias tmx="tmux new-session -A -s main -c ~/Programming/"

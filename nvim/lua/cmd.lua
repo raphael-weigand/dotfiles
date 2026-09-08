@@ -55,6 +55,7 @@ local function toggle_terminal()
 end
 
 vim.keymap.set({ "n", "t" }, "<leader>t", toggle_terminal, { desc = "Toggle terminal" })
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { desc = "Terminal normal mode" })
 
 -- Show whitespace only while selecting text
 local visual_list_group = vim.api.nvim_create_augroup("VisualListChars", { clear = true })

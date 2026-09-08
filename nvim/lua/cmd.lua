@@ -26,6 +26,24 @@ vim.on_key(function(key)
     end
 end, search_highlight_ns)
 
+-- Replace the word under the cursor throughout the current buffer.
+vim.keymap.set("n", "<leader>sr", function()
+    local word = vim.fn.expand("<cword>")
+    if word == "" then
+        return
+    end
+
+    vim.ui.input({ prompt = "Replace '" .. word .. "' with: " }, function(replacement)
+        if replacement == nil then
+            return
+        end
+
+        local pattern = vim.fn.escape(word, [[\/]])
+        local escaped_replacement = vim.fn.escape(replacement, [[\/&]])
+        vim.cmd("%%s/\\<" .. pattern .. "\\>/" .. escaped_replacement .. "/gc")
+    end)
+end, { desc = "Replace word under cursor" })
+
 -- Move selected lines while keeping the selection
 vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })

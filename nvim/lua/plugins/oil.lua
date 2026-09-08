@@ -2,9 +2,9 @@ return {
     "stevearc/oil.nvim",
     opts = {
         columns = {
-            "permissions",
-            "size",
-            "mtime",
+            { "permissions", highlight = "OilPermissions" },
+            { "size", highlight = "OilSize" },
+            { "mtime", highlight = "OilMtime" },
         },
         keymaps = {
             -- ["<C-n>"] = "actions.select",
@@ -67,7 +67,7 @@ return {
                 if #oil_wins > 0 then
                     for _, win in ipairs(oil_wins) do
                         -- avoid closing last window
-                        if #vim.api.nvim_list_wins() > 1 then
+                        if #vim.api.nvim_list_wins()) > 1 then
                             vim.api.nvim_win_close(win, true)
                         else
                             -- fallback: just leave Oil buffer instead of closing window

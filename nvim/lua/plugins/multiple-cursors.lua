@@ -34,6 +34,12 @@ return {
                 desc = "Multi-cursor: add next match",
             },
             {
+                "<leader>md",
+                "<cmd>MultipleCursorsAddDelete<CR>",
+                mode = { "n", "x" },
+                desc = "Multi-cursor: add/remove cursor",
+            },
+            {
                 "<leader>mv",
                 "<cmd>MultipleCursorsAddVisualArea<CR>",
                 mode = "x",

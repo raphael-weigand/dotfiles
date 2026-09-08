@@ -1,5 +1,6 @@
 return {
     "neovim-treesitter/nvim-treesitter",
+    branch = "main",
     build = ":TSUpdate",
     priority = 1000,
     lazy = false,

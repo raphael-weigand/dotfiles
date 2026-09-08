@@ -116,6 +116,21 @@ return {
             set(0, "Directory", { fg = colors.niagara, bold = true })
             set(0, "Special", { fg = colors.wisteria })
 
+            -- Oil: keep the explorer readable without turning it into a rainbow.
+            set(0, "OilDir", { fg = colors.niagara, bold = true })
+            set(0, "OilDirIcon", { fg = colors.niagara })
+            set(0, "OilLink", { fg = colors.wisteria })
+            set(0, "OilLinkTarget", { fg = colors.wisteria })
+            set(0, "OilSocket", { fg = colors.brown })
+            set(0, "OilCreate", { fg = colors.green })
+            set(0, "OilDelete", { fg = colors.red })
+            set(0, "OilMove", { fg = colors.yellow })
+            set(0, "OilCopy", { fg = colors.niagara })
+            set(0, "OilChange", { fg = colors.brown })
+            set(0, "OilPermissions", { fg = colors.quartz })
+            set(0, "OilSize", { fg = colors.quartz })
+            set(0, "OilMtime", { fg = colors.bg4 })
+
             -- Tree-sitter equivalents so modern Neovim syntax follows the
             -- same semantic palette as the Emacs font-lock faces.
             set(0, "@comment", { link = "Comment" })

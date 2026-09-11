@@ -183,6 +183,26 @@ end, { desc = "Replace word under cursor" })
 vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
 
+-- Buffers: same bindings as VsVim's previous/next document.
+vim.keymap.set("n", "[b", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+vim.keymap.set("n", "]b", "<cmd>bnext<CR>", { desc = "Next buffer" })
+
+-- Windows/splits: keep the same spatial navigation used in Visual Studio.
+vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Focus window left" })
+vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Focus window below" })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Focus window above" })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Focus window right" })
+vim.keymap.set("n", "<leader>sh", "<cmd>split<CR>", { desc = "Horizontal split" })
+vim.keymap.set("n", "<leader>sv", "<cmd>vsplit<CR>", { desc = "Vertical split" })
+vim.keymap.set("n", "<leader>sc", "<cmd>close<CR>", { desc = "Close split" })
+vim.keymap.set("n", "<leader>sx", "<C-w>x", { desc = "Swap split" })
+
+-- Documents: mirror the VsVim window/document workflow.
+vim.keymap.set("n", "<leader>ws", "<cmd>write<CR>", { desc = "Save buffer" })
+vim.keymap.set("n", "<leader>wa", "<cmd>wall<CR>", { desc = "Save all buffers" })
+vim.keymap.set("n", "<leader>wc", "<cmd>bdelete<CR>", { desc = "Close buffer" })
+vim.keymap.set("n", "<leader>wo", "<cmd>only<CR>", { desc = "Close other windows" })
+
 -- Build and quickfix
 vim.keymap.set("n", "<leader>m", "<cmd>make<CR>", { desc = "Build with :make" })
 vim.keymap.set("n", "]q", "<cmd>cnext<CR>", { desc = "Next quickfix item" })

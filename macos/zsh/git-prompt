@@ -9,13 +9,13 @@
 git_prompt_segment() {
     command git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return
 
-    local branch status
+    local branch git_status
     local staged=0 modified=0 deleted=0 untracked=0
 
     branch="$(command git symbolic-ref --quiet --short HEAD 2>/dev/null \
         || command git rev-parse --short HEAD 2>/dev/null)"
 
-    status="$(command git status --porcelain 2>/dev/null)"
+    git_status="$(command git status --porcelain 2>/dev/null)"
 
     while IFS= read -r line; do
         [ -z "$line" ] && continue
@@ -34,7 +34,7 @@ git_prompt_segment() {
             M|T) (( modified++ )) ;;
             D)   (( deleted++ )) ;;
         esac
-    done <<< "$status"
+    done <<< "$git_status"
 
     printf ' %%F{cyan}[%s ≡ +%d ~%d -%d ?%d]%%f' \
         "$branch" "$staged" "$modified" "$deleted" "$untracked"

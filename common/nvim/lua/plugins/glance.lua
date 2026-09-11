@@ -5,17 +5,17 @@ return {
         opts = {},
         keys = {
             {
-                "gp",
+                "<leader>gp",
                 "<cmd>Glance definitions<CR>",
                 desc = "Peek definition",
             },
             {
-                "gpi",
+                "<leader>gpi",
                 "<cmd>Glance implementations<CR>",
                 desc = "Peek implementation",
             },
             {
-                "gpr",
+                "<leader>gpr",
                 "<cmd>Glance references<CR>",
                 desc = "Peek references",
             },

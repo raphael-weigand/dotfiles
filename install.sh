@@ -10,6 +10,22 @@ log() {
     printf '\n==> %s\n' "$1"
 }
 
+ensure_real_directory() {
+    local dir="$1"
+
+    # Older versions of these dotfiles linked complete config directories.
+    # The current layout links individual files for tmux/Ghostty instead.
+    # Replace an old directory symlink with a real directory first, otherwise
+    # mkdir/ln fail when the symlink points at a path that moved in the repo.
+    if [ -L "$dir" ]; then
+        local backup="${dir}.backup-${TIMESTAMP}"
+        printf 'backup: %s -> %s\n' "$dir" "$backup"
+        mv "$dir" "$backup"
+    fi
+
+    mkdir -p "$dir"
+}
+
 backup_and_link() {
     local source="$1"
     local target="$2"
@@ -161,11 +177,20 @@ install_links() {
     mkdir -p "$HOME/Programming" "$HOME/.config"
 
     backup_and_link "$DOTFILES_DIR/common/nvim" "$HOME/.config/nvim"
+
+    # tmux used to be linked as the whole ~/.config/tmux directory.
+    # Keep the runtime/plugin directory outside the repository and link only
+    # the tracked config file.
+    ensure_real_directory "$HOME/.config/tmux"
     backup_and_link "$DOTFILES_DIR/common/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
+
     backup_and_link "$DOTFILES_DIR/common/zsh/zshrc" "$HOME/.zshrc"
 
     if [ "$OS" = "Darwin" ]; then
         log "Linking macOS dotfiles"
+
+        # Ghostty also used to be linked as a complete directory.
+        ensure_real_directory "$HOME/.config/ghostty"
         backup_and_link "$DOTFILES_DIR/macos/ghostty/config" "$HOME/.config/ghostty/config"
     fi
 

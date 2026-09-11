@@ -1,11 +1,16 @@
-# Resolve the dotfiles repository from this file's symlink when possible.
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
+ZSH_COMMON="$DOTFILES_DIR/common/zsh"
 
-[ -s "$DOTFILES_DIR/zsh/autocomplete" ] && . "$DOTFILES_DIR/zsh/autocomplete"
-[ -s "$DOTFILES_DIR/zsh/myalias" ] && . "$DOTFILES_DIR/zsh/myalias"
-[ -s "$DOTFILES_DIR/zsh/prompt" ] && . "$DOTFILES_DIR/zsh/prompt"
-[ -s "$DOTFILES_DIR/zsh/nvm_bash_completion" ] && . "$DOTFILES_DIR/zsh/nvm_bash_completion"
-[ -s "$DOTFILES_DIR/zsh/history" ] && . "$DOTFILES_DIR/zsh/history"
+[ -s "$ZSH_COMMON/autocomplete" ] && . "$ZSH_COMMON/autocomplete"
+[ -s "$ZSH_COMMON/myalias" ] && . "$ZSH_COMMON/myalias"
+[ -s "$ZSH_COMMON/nvm_bash_completion" ] && . "$ZSH_COMMON/nvm_bash_completion"
+[ -s "$ZSH_COMMON/history" ] && . "$ZSH_COMMON/history"
+
+if [ "$(uname -s)" = "Darwin" ]; then
+    [ -s "$DOTFILES_DIR/macos/zsh/git-prompt" ] && . "$DOTFILES_DIR/macos/zsh/git-prompt"
+fi
+
+[ -s "$ZSH_COMMON/prompt" ] && . "$ZSH_COMMON/prompt"
 
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 export PATH="$PATH:$HOME/.dotnet/tools"

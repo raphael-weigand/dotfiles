@@ -126,9 +126,10 @@ vnoremap <leader>/ :vsc Edit.ToggleLineComment<CR>
 " Build
 " ============================================================================
 
-nnoremap <leader>m :vsc Build.BuildSolution<CR>
-nnoremap <leader>mr :vsc Build.RebuildSolution<CR>
-nnoremap <leader>mc :vsc Build.Cancel<CR>
+" Build has its own namespace; <leader>m remains reserved for multi-cursor.
+nnoremap <leader>bb :vsc Build.BuildSolution<CR>
+nnoremap <leader>br :vsc Build.RebuildSolution<CR>
+nnoremap <leader>bc :vsc Build.Cancel<CR>
 
 
 " ============================================================================

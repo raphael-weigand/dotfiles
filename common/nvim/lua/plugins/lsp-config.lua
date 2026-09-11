@@ -43,9 +43,14 @@ return {
                         vim.keymap.set("n", lhs, rhs, vim.tbl_extend("force", opts, { desc = desc }))
                     end
 
-                    map("<leader>gd", vim.lsp.buf.definition, "LSP: Go to definition")
-                    map("<leader>gr", vim.lsp.buf.references, "LSP: References")
+                    -- Keep the same navigation muscle memory as VsVim.
+                    map("gd", vim.lsp.buf.definition, "LSP: Go to definition")
+                    map("gi", vim.lsp.buf.implementation, "LSP: Go to implementation")
+                    map("gr", vim.lsp.buf.references, "LSP: References")
+                    map("K", vim.lsp.buf.hover, "LSP: Hover")
+
                     map("<leader>ca", vim.lsp.buf.code_action, "LSP: Code action")
+                    map("<leader>rn", vim.lsp.buf.rename, "LSP: Rename")
                     map("<leader>gf", function()
                         vim.lsp.buf.format({ async = true })
                     end, "LSP: Format buffer")

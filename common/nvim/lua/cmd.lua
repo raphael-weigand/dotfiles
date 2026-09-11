@@ -203,8 +203,10 @@ vim.keymap.set("n", "<leader>wa", "<cmd>wall<CR>", { desc = "Save all buffers" }
 vim.keymap.set("n", "<leader>wc", "<cmd>bdelete<CR>", { desc = "Close buffer" })
 vim.keymap.set("n", "<leader>wo", "<cmd>only<CR>", { desc = "Close other windows" })
 
--- Build and quickfix
-vim.keymap.set("n", "<leader>m", "<cmd>make<CR>", { desc = "Build with :make" })
+-- Build gets its own namespace; <leader>m remains reserved for multi-cursor.
+vim.keymap.set("n", "<leader>bb", "<cmd>make<CR>", { desc = "Build with :make" })
+
+-- Quickfix
 vim.keymap.set("n", "]q", "<cmd>cnext<CR>", { desc = "Next quickfix item" })
 vim.keymap.set("n", "[q", "<cmd>cprevious<CR>", { desc = "Previous quickfix item" })
 

@@ -7,6 +7,7 @@ vim/vim/.netrwhist
 vim/vim/bundle/
 vim/vim/plugged/
 vim/vim/pack/
+common/nvim/lazy-lock.json
 
 # Tmux plugins (falls Sie tpm verwenden)
 tmux/plugins/*

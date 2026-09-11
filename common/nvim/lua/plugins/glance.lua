@@ -2,7 +2,20 @@ return {
     {
         "DNLHC/glance.nvim",
         cmd = "Glance",
-        opts = {},
+        opts = function()
+            local actions = require("glance").actions
+
+            return {
+                mappings = {
+                    list = {
+                        ["<C-l>"] = actions.enter_win("preview"),
+                    },
+                    preview = {
+                        ["<C-h>"] = actions.enter_win("list"),
+                    },
+                },
+            }
+        end,
         keys = {
             {
                 "<leader>gp",

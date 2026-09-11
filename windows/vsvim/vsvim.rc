@@ -1,0 +1,315 @@
+" ============================================================================
+" VsVim configuration
+" ============================================================================
+"
+" Visual Studio functionality mapped to Vim / Neovim-style keybindings.
+"
+" ============================================================================
+
+let mapleader = " "
+
+
+" ============================================================================
+" Editor
+" ============================================================================
+
+set number
+set relativenumber
+set scrolloff=8
+
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set autoindent
+
+
+" ============================================================================
+" Clipboard
+" ============================================================================
+
+" Every yank goes to the Windows clipboard.
+nnoremap y "+y
+vnoremap y "+y
+
+" Explicitly handle line yank.
+nnoremap yy "+yy
+
+" Y -> yank to end of line into Windows clipboard.
+nnoremap Y "+y$
+
+" Windows-style Ctrl-V paste.
+nnoremap <C-v> <C-S-v>
+inoremap <C-v> <C-S-v>
+
+
+" ============================================================================
+" Search
+" ============================================================================
+
+" Center search results.
+nnoremap n nzz
+nnoremap N Nzz
+
+" Clear search highlighting.
+nnoremap <leader><Esc> :nohlsearch<CR>
+
+
+" ============================================================================
+" Visual mode
+" ============================================================================
+
+" Keep selection after indent.
+vnoremap < <gv
+vnoremap > >gv
+
+" Move selected lines down/up using Visual Studio commands.
+vnoremap <C-j> :vsc Edit.MoveSelectedLinesDown<CR>
+vnoremap <C-k> :vsc Edit.MoveSelectedLinesUp<CR>
+
+
+" ============================================================================
+" Files / Project
+" ============================================================================
+
+" Neovim: Ctrl-N -> Oil
+" VS: Solution Explorer
+nnoremap <C-n> :vsc View.SolutionExplorer<CR>
+
+" Neovim: Ctrl-P -> Telescope find_files
+" VS: Go To All
+nnoremap <C-p> :vsc Edit.GoToAll<CR>
+
+" Neovim: <leader>fg -> Telescope live_grep
+" VS: Find in Files
+nnoremap <leader>fg :vsc Edit.FindinFiles<CR>
+
+" Neovim: <leader>fb -> buffers
+" VS: open documents
+nnoremap <leader>fb :vsc Window.Windows<CR>
+
+" Hide / Pin offenes Fenster (Terminal, Fehler, ...)
+nnoremap <leader>p :vsc Window.AutoHide<CR>
+
+" ============================================================================
+" Code Navigation
+" ============================================================================
+
+" Definition.
+nnoremap gd :vsc Edit.GoToDefinition<CR>
+
+" Implementation.
+nnoremap gi :vsc Edit.GoToImplementation<CR>
+
+" References.
+nnoremap gr :vsc Edit.FindAllReferences<CR>
+
+" Quick Info / LSP Hover equivalent.
+nnoremap K :vsc Edit.QuickInfo<CR>
+
+" Peek definition.
+nnoremap gp :vsc Edit.PeekDefinition<CR>
+ 
+" Previous / next open document
+nnoremap [b :vsc Window.PreviousDocumentWindow<CR>
+nnoremap ]b :vsc Window.NextDocumentWindow<CR>
+
+" ============================================================================
+" Multi Cursor
+" ============================================================================
+
+" Add cursor to ALL matching occurrences
+" Neovim: <leader>ma
+nnoremap <leader>ma :vsc Edit.InsertCaretsatAllMatching<CR>
+vnoremap <leader>ma :vsc Edit.InsertCaretsatAllMatching<CR>
+
+" Add cursor to NEXT matching occurrence
+" Neovim: <leader>mn
+nnoremap <leader>mn :vsc Edit.InsertNextMatchingCaret<CR>
+vnoremap <leader>mn :vsc Edit.InsertNextMatchingCaret<CR>
+
+" Add cursor above
+nnoremap <C-Up> :vsc Edit.LineUpExtendColumn<CR>
+vnoremap <C-Up> :vsc Edit.LineUpExtendColumn<CR>
+
+" Add cursor below
+nnoremap <C-Down> :vsc Edit.LineDownExtendColumn<CR>
+vnoremap <C-Down> :vsc Edit.LineDownExtendColumn<CR>
+
+
+" ============================================================================
+" Refactoring / LSP-like functionality
+" ============================================================================
+
+" Code Action / Quick Actions.
+nnoremap <leader>ca :vsc View.QuickActions<CR>
+
+" Rename symbol.
+nnoremap <leader>rn :vsc Refactor.Rename<CR>
+
+" Format document.
+nnoremap <leader>gf :vsc Edit.FormatDocument<CR>
+
+
+" ============================================================================
+" Comments
+" ============================================================================
+
+" Same as Neovim <leader>/.
+nnoremap <leader>/ :vsc Edit.ToggleLineComment<CR>
+vnoremap <leader>/ :vsc Edit.ToggleLineComment<CR>
+
+
+" ============================================================================
+" Build
+" ============================================================================
+
+" Neovim: <leader>m -> :make
+" VS: Build Solution
+nnoremap <leader>m :vsc Build.BuildSolution<CR>
+
+" Rebuild solution.
+nnoremap <leader>mr :vsc Build.RebuildSolution<CR>
+
+" Cancel build.
+nnoremap <leader>mc :vsc Build.Cancel<CR>
+
+
+" ============================================================================
+" Errors / Quickfix
+" ============================================================================
+
+" Neovim: <leader>q -> Quickfix
+" VS: Error List
+nnoremap <leader>q :vsc View.ErrorList<CR>
+
+" Next error.
+nnoremap ]q :vsc View.NextError<CR>
+
+" Previous error.
+nnoremap [q :vsc View.PreviousError<CR>
+
+
+" ============================================================================
+" Terminal
+" ============================================================================
+
+" Neovim: <leader>t -> Terminal
+" VS: Integrated Terminal
+nnoremap <leader>t :vsc View.Terminal<CR>
+
+
+" ============================================================================
+" Navigation history
+" ============================================================================
+
+" Navigate backwards.
+nnoremap <C-o> :vsc View.NavigateBackward<CR>
+
+" Navigate forwards.
+nnoremap <C-i> :vsc View.NavigateForward<CR>
+
+
+" ============================================================================
+" Debugging
+" ============================================================================
+
+" Continue / Start debugging.
+nnoremap <leader>dc :vsc Debug.ReattachtoProcess<CR>
+
+" Stop debugging.
+nnoremap <leader>ds :vsc Debug.StopDebugging<CR>
+
+" Restart debugging.
+nnoremap <leader>dr :vsc Debug.Restart<CR>
+
+" Toggle breakpoint.
+nnoremap <leader>db :vsc Debug.ToggleBreakpoint<CR>
+
+" Step over / next.
+nnoremap <leader>dn :vsc Debug.StepOver<CR>
+
+" Step into.
+nnoremap <leader>di :vsc Debug.StepInto<CR>
+
+" Step out.
+nnoremap <leader>do :vsc Debug.StepOut<CR>
+
+
+" ============================================================================
+" Tests
+" ============================================================================
+nnoremap <leader>ra :vsc TestExplorer.RunAllTestsInContext<CR>:vsc TestExplorer.ShowTestExplorer<CR>
+nnoremap <leader>rA :vsc TestExplorer.RunAllTests<CR>:vsc TestExplorer.ShowTestExplorer<CR>
+nnoremap <leader>rd :vsc TestExplorer.DebugAllTestsInContext<CR>:vsc TestExplorer.ShowTestExplorer<CR>
+
+" ============================================================================
+" Documents
+" ============================================================================
+
+" Save current document.
+nnoremap <leader>ws :vsc File.SaveSelectedItems<CR>
+
+" Save all.
+nnoremap <leader>wa :vsc File.SaveAll<CR>
+
+" Close current document.
+nnoremap <leader>wc :vsc File.Close<CR>
+
+" Alle Dokumente außer dem aktuellen schließen
+nnoremap <leader>wo :vsc File.CloseOtherTabs<CR>
+
+
+" ============================================================
+" Splits / Windows
+" ============================================================
+
+" Horizontal split – same document
+nnoremap <leader>sh :vsc Window.Split<CR>
+
+" Vertical split – second view of same document
+nnoremap <leader>sv :vsc Window.NewWindow<CR>:vsc Window.NewVerticalTabGroup<CR>
+
+" Navigate between splits / document groups
+nnoremap <C-h> :vsc Window.PreviousPane<CR>
+nnoremap <C-l> :vsc Window.NextPane<CR>
+
+" Close/remove current split
+nnoremap <leader>sc :vsc Window.CloseDocumentWindow<CR>
+nnoremap <leader>sx :vsc Window.Window.SwapPanes<CR>
+
+" New document groups using current document
+nnoremap <leader>sgv :vsc Window.NewVerticalTabGroup<CR>
+nnoremap <leader>sgh :vsc Window.NewHorizontalTabGroup<CR>
+
+" Move current document to another group
+nnoremap <leader>smn :vsc Window.MoveToNextTabGroup<CR>
+nnoremap <leader>smp :vsc Window.MoveToPreviousTabGroup<CR>
+
+
+" ============================================================================
+" Git
+" ============================================================================
+
+" Open Git Changes.
+nnoremap <leader>gg :vsc Team.Git.GoToGitChanges<CR>
+
+" Git fetch & pull
+nnoremap <leader>gp :vsc Tools.ExternalCommand2<CR>
+
+" ============================================================================
+" Vim editing conveniences
+" ============================================================================
+
+" Join lines without moving cursor.
+" nnoremap J mzJ`z
+
+" Y -> yank to end of line.
+nnoremap Y y$
+
+" Reload VsVim config
+nnoremap <leader>rc :source ~\.vimrc<CR>

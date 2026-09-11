@@ -2,6 +2,10 @@ setopt PROMPT_SUBST
 
 autoload -Uz colors && colors
 
-PROMPT='%F{yellow}%~%f
-%F{white}>%f '
+if (( $+functions[git_prompt_segment] )); then
+    PROMPT='%F{yellow}%~%f$(git_prompt_segment)\n%F{white}>%f '
+else
+    PROMPT='%F{yellow}%~%f\n%F{white}>%f '
+fi
+
 RPROMPT=''

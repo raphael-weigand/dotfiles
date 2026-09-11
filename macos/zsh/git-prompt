@@ -1,15 +1,17 @@
 # Git status segment for the macOS zsh prompt.
-# Example: [development ≡ +0 ~1 -0 ?0]
+# Example: [development ≡ ~1 ?2]
 #
 # + staged changes
 # ~ modified (unstaged) files
 # - deleted (unstaged) files
 # ? untracked files
+#
+# Counters with value 0 are omitted.
 
 git_prompt_segment() {
     command git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return
 
-    local branch git_status
+    local branch git_status segment
     local staged=0 modified=0 deleted=0 untracked=0
 
     branch="$(command git symbolic-ref --quiet --short HEAD 2>/dev/null \
@@ -36,6 +38,12 @@ git_prompt_segment() {
         esac
     done <<< "$git_status"
 
-    printf ' %%F{cyan}[%s ≡ +%d ~%d -%d ?%d]%%f' \
-        "$branch" "$staged" "$modified" "$deleted" "$untracked"
+    segment="%F{cyan}[$branch ≡"
+    (( staged > 0 )) && segment+=" +$staged"
+    (( modified > 0 )) && segment+=" ~$modified"
+    (( deleted > 0 )) && segment+=" -$deleted"
+    (( untracked > 0 )) && segment+=" ?$untracked"
+    segment+="]%f"
+
+    printf ' %s' "$segment"
 }

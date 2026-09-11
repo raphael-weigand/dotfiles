@@ -8,10 +8,10 @@ return {
             return {
                 mappings = {
                     list = {
-                        ["<C-l>"] = actions.enter_win("preview"),
+                        ["<C-h>"] = actions.enter_win("preview"),
                     },
                     preview = {
-                        ["<C-h>"] = actions.enter_win("list"),
+                        ["<C-l>"] = actions.enter_win("list"),
                     },
                 },
             }

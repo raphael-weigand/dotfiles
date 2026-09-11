@@ -156,16 +156,17 @@ install_linux() {
 }
 
 install_links() {
-    log "Linking dotfiles"
+    log "Linking common dotfiles"
 
     mkdir -p "$HOME/Programming" "$HOME/.config"
 
-    backup_and_link "$DOTFILES_DIR/nvim" "$HOME/.config/nvim"
-    backup_and_link "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
-    backup_and_link "$DOTFILES_DIR/zsh/zshrc" "$HOME/.zshrc"
+    backup_and_link "$DOTFILES_DIR/common/nvim" "$HOME/.config/nvim"
+    backup_and_link "$DOTFILES_DIR/common/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
+    backup_and_link "$DOTFILES_DIR/common/zsh/zshrc" "$HOME/.zshrc"
 
     if [ "$OS" = "Darwin" ]; then
-        backup_and_link "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config"
+        log "Linking macOS dotfiles"
+        backup_and_link "$DOTFILES_DIR/macos/ghostty/config" "$HOME/.config/ghostty/config"
     fi
 
     if [ ! -d "$HOME/.config/tmux/plugins/tpm/.git" ]; then

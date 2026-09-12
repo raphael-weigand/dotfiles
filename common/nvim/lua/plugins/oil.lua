@@ -7,12 +7,12 @@ return {
             { "mtime", highlight = "OilMtime" },
         },
         keymaps = {
-            -- ["<C-n>"] = "actions.select",
+            ["<C-n>"] = { "actions.parent", mode = "n" },
             ["<C-s>"] = { "actions.select", opts = { vertical = true } },
             ["<C-h>"] = { "actions.select", opts = { horizontal = true } },
             ["<C-t>"] = { "actions.select", opts = { tab = true } },
             ["<C-p>"] = "actions.preview",
-            ["-"] = { "actions.parent", mode = "n" },
+            ["-"] = { "actions.close", mode = "n" },
             ["_"] = { "actions.open_cwd", mode = "n" },
         },
         view_options = {
@@ -87,4 +87,3 @@ return {
     dependencies = { { "nvim-mini/mini.icons", opts = {} } },
     lazy = false,
 }
-

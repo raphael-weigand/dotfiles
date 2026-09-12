@@ -83,7 +83,7 @@ install_neovim_linux() {
 
     local tmpdir
     tmpdir="$(mktemp -d)"
-    trap 'rm -rf "$tmpdir"' RETURN
+    trap 'rm -rf -- "${tmpdir:-}"' RETURN
 
     curl -fL "https://github.com/neovim/neovim/releases/latest/download/${archive}" -o "$tmpdir/nvim.tar.gz"
     tar -xzf "$tmpdir/nvim.tar.gz" -C "$tmpdir"
@@ -95,6 +95,9 @@ install_neovim_linux() {
     extracted="$(find "$tmpdir" -maxdepth 1 -type d -name 'nvim-linux-*' -print -quit)"
     mv "$extracted" "$HOME/.local/opt/neovim"
     ln -sfn "$HOME/.local/opt/neovim/bin/nvim" "$HOME/.local/bin/nvim"
+
+    rm -rf -- "$tmpdir"
+    trap - RETURN
 }
 
 version_ge() {

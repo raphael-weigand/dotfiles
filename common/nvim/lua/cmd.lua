@@ -204,6 +204,70 @@ vim.keymap.set("n", "<leader>wc", "<cmd>bdelete<CR>", { desc = "Close buffer" })
 vim.keymap.set("n", "<leader>wo", "<cmd>only<CR>", { desc = "Close other windows" })
 
 -- Build gets its own namespace; <leader>m remains reserved for multi-cursor.
+local function find_makefile()
+    local start_path = vim.api.nvim_buf_get_name(0)
+    if start_path == "" then
+        start_path = vim.fn.getcwd()
+    else
+        start_path = vim.fs.dirname(start_path)
+    end
+
+    return vim.fs.find({ "Makefile", "makefile", "GNUmakefile" }, {
+        path = start_path,
+        upward = true,
+        type = "file",
+    })[1]
+end
+
+local function make_target()
+    local makefile = find_makefile()
+    if not makefile then
+        vim.notify("No Makefile found", vim.log.levels.WARN)
+        return
+    end
+
+    local targets = {}
+    local seen = {}
+
+    for line in io.lines(makefile) do
+        if not line:match("^%s") and not line:match("^#") then
+            local colon = line:find(":", 1, true)
+            if colon and line:sub(colon + 1, colon + 1) ~= "=" then
+                local lhs = line:sub(1, colon - 1):match("^%s*(.-)%s*$")
+                if lhs and lhs ~= "" then
+                    for target in lhs:gmatch("%S+") do
+                        if not target:match("^%.")
+                            and not target:find("%%", 1, true)
+                            and not target:find("$", 1, true)
+                            and not seen[target]
+                        then
+                            seen[target] = true
+                            table.insert(targets, target)
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    if #targets == 0 then
+        vim.notify("No Make targets found", vim.log.levels.WARN)
+        return
+    end
+
+    table.sort(targets)
+
+    vim.ui.select(targets, { prompt = "Make target:" }, function(target)
+        if not target then
+            return
+        end
+
+        local make_dir = vim.fs.dirname(makefile)
+        vim.cmd("make -C " .. vim.fn.fnameescape(make_dir) .. " " .. vim.fn.fnameescape(target))
+    end)
+end
+
+vim.keymap.set("n", "<leader>b", make_target, { desc = "Select Make target" })
 vim.keymap.set("n", "<leader>bb", "<cmd>make<CR>", { desc = "Build with :make" })
 
 -- Quickfix

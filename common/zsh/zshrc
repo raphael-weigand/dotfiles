@@ -1,6 +1,8 @@
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 ZSH_COMMON="$DOTFILES_DIR/common/zsh"
 
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+
 [ -s "$ZSH_COMMON/autocomplete" ] && . "$ZSH_COMMON/autocomplete"
 [ -s "$ZSH_COMMON/myalias" ] && . "$ZSH_COMMON/myalias"
 [ -s "$ZSH_COMMON/nvm_bash_completion" ] && . "$ZSH_COMMON/nvm_bash_completion"

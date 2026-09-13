@@ -192,9 +192,25 @@ install_links() {
     if [ "$OS" = "Darwin" ]; then
         log "Linking macOS dotfiles"
 
-        # Ghostty also used to be linked as a complete directory.
-        ensure_real_directory "$HOME/.config/ghostty"
-        backup_and_link "$DOTFILES_DIR/macos/ghostty/config" "$HOME/.config/ghostty/config"
+        # Ghostty supports XDG config paths on macOS, but the native macOS
+        # location is loaded afterwards. Keep only the native config active so
+        # there is a single source of truth and no later override surprises.
+        local ghostty_xdg_config="$HOME/.config/ghostty/config"
+        local ghostty_xdg_config_new="$HOME/.config/ghostty/config.ghostty"
+        local ghostty_config_dir="$HOME/Library/Application Support/com.mitchellh.ghostty"
+
+        if [ -e "$ghostty_xdg_config" ] || [ -L "$ghostty_xdg_config" ]; then
+            printf 'remove old Ghostty config: %s\n' "$ghostty_xdg_config"
+            rm -f "$ghostty_xdg_config"
+        fi
+
+        if [ -e "$ghostty_xdg_config_new" ] || [ -L "$ghostty_xdg_config_new" ]; then
+            printf 'remove old Ghostty config: %s\n' "$ghostty_xdg_config_new"
+            rm -f "$ghostty_xdg_config_new"
+        fi
+
+        ensure_real_directory "$ghostty_config_dir"
+        backup_and_link "$DOTFILES_DIR/macos/ghostty/config" "$ghostty_config_dir/config"
     fi
 
     if [ ! -d "$HOME/.config/tmux/plugins/tpm/.git" ]; then

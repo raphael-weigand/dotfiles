@@ -5,7 +5,7 @@
   "spacing": 8,
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["tray", "network", "bluetooth", "pulseaudio", "battery"],
+  "modules-right": ["battery", "custom/control-center"],
   "hyprland/workspaces": {
     "format": "{name}",
     "on-click": "activate"
@@ -14,32 +14,17 @@
     "format": "{:%a %d.%m.  %H:%M}",
     "tooltip-format": "<tt>{calendar}</tt>"
   },
-  "network": {
-    "format-wifi": "󰤨  {essid}",
-    "format-ethernet": "󰈀  Ethernet",
-    "format-disconnected": "󰤭  Offline",
-    "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
-  },
-  "bluetooth": {
-    "format": "󰂯",
-    "format-connected": "󰂱 {num_connections}",
-    "format-disabled": "󰂲",
-    "on-click": "blueman-manager",
-    "tooltip-format": "Bluetooth: {status}",
-    "tooltip-format-connected": "{device_enumerate}",
-    "tooltip-format-enumerate-connected": "{device_alias}"
-  },
-  "pulseaudio": {
-    "format": "{icon} {volume}%",
-    "format-muted": "󰝟",
-    "format-icons": {"default": ["󰕿", "󰖀", "󰕾"]},
-    "on-click": "pavucontrol"
-  },
   "battery": {
     "states": {"warning": 30, "critical": 15},
     "format": "{icon} {capacity}%",
     "format-charging": "󰂄 {capacity}%",
     "format-plugged": "󰚥 {capacity}%",
     "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+  },
+  "custom/control-center": {
+    "format": "󰒓",
+    "tooltip": true,
+    "tooltip-format": "Control Center",
+    "on-click": "bash ~/.config/quickshell/toggle.sh"
   }
 }

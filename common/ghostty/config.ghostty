@@ -1,6 +1,6 @@
 # Shared Ghostty configuration (macOS + Linux)
-# theme = catppuccin-mocha
-theme = gruber darker
+# theme = Catppuccin Mocha
+theme = Gruber Darker
 font-size = 16
 font-family = Iosevka Term Extended
 shell-integration-features = no-cursor,sudo,no-title,ssh-env,ssh-terminfo

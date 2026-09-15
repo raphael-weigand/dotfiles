@@ -125,6 +125,18 @@ install_t2_arch() {
     sudo systemctl enable --now amdgpu-t2-performance.service
 }
 
+configure_linux_defaults() {
+    [ "$OS" = Linux ] || return
+    command -v xdg-mime >/dev/null 2>&1 || return
+
+    log "Configuring Linux default applications"
+    xdg-mime default thunar.desktop inode/directory
+    xdg-mime default org.pwmt.zathura.desktop application/pdf
+    xdg-mime default chromium.desktop x-scheme-handler/http
+    xdg-mime default chromium.desktop x-scheme-handler/https
+    xdg-mime default chromium.desktop text/html
+}
+
 install_links() {
     log "Linking common dotfiles"
     mkdir -p "$HOME/Programming" "$HOME/.config"
@@ -162,6 +174,7 @@ install_links() {
 main() {
     case "$OS" in Darwin) install_macos ;; Linux) install_linux ;; *) printf 'Unsupported operating system: %s\n' "$OS" >&2; exit 1 ;; esac
     install_links
+    configure_linux_defaults
     install_t2_arch
     log "Installed"
     printf 'OS: %s\nArch: %s\n' "$OS" "$ARCH"

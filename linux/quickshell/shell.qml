@@ -52,13 +52,13 @@ ShellRoot {
                         Button {
                             Layout.fillWidth: true
                             text: "Wi-Fi"
-                            onClicked: wifiToggle.running = true
+                            onClicked: wifiSettings.running = true
                         }
 
                         Button {
                             Layout.fillWidth: true
                             text: "Bluetooth"
-                            onClicked: bluetoothToggle.running = true
+                            onClicked: bluetoothSettings.running = true
                         }
                     }
 
@@ -77,6 +77,12 @@ ShellRoot {
                         onPressedChanged: if (!pressed) volumeSet.running = true
                     }
 
+                    Button {
+                        Layout.fillWidth: true
+                        text: "Audio settings"
+                        onClicked: audioSettings.running = true
+                    }
+
                     Label {
                         text: "Brightness"
                         color: "#e4e4ef"
@@ -93,28 +99,14 @@ ShellRoot {
                     }
 
                     Item { Layout.fillHeight: true }
-
-                    Label {
-                        text: "First prototype — live status follows next"
-                        color: "#777777"
-                        font.family: "Iosevka Term Extended"
-                        font.pixelSize: 11
-                    }
                 }
             }
         }
     }
 
-    Process {
-        id: wifiToggle
-        command: ["sh", "-c", "nmcli radio wifi | grep -q enabled && nmcli radio wifi off || nmcli radio wifi on"]
-    }
-
-    Process {
-        id: bluetoothToggle
-        command: ["sh", "-c", "bluetoothctl show | grep -q 'Powered: yes' && bluetoothctl power off || bluetoothctl power on"]
-    }
-
+    Process { id: wifiSettings; command: ["nm-connection-editor"] }
+    Process { id: bluetoothSettings; command: ["blueman-manager"] }
+    Process { id: audioSettings; command: ["pavucontrol"] }
     Process { id: volumeSet }
     Process { id: brightnessSet }
 }

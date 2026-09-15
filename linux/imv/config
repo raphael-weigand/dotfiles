@@ -3,5 +3,5 @@
 # Keep q as an additional standard way to quit.
 
 [binds]
-<Space> = quit
+<space> = quit
 q = quit

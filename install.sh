@@ -96,7 +96,7 @@ install_arch() {
         hyprland xdg-desktop-portal-hyprland xdg-desktop-portal-gtk qt5-wayland qt6-wayland polkit-gnome \
         ghostty chromium wl-clipboard waybar fuzzel mako libnotify hyprpaper hyprlock hypridle grim slurp cliphist \
         brightnessctl playerctl pavucontrol network-manager-applet bluez bluez-utils blueman \
-        thunar tumbler ffmpegthumbnailer file-roller zathura zathura-pdf-mupdf \
+        thunar tumbler ffmpegthumbnailer file-roller zathura zathura-pdf-mupdf imv \
         ttf-iosevka-nerd noto-fonts-emoji
     sudo systemctl enable --now bluetooth
 }
@@ -135,6 +135,10 @@ configure_linux_defaults() {
     xdg-mime default chromium.desktop x-scheme-handler/http
     xdg-mime default chromium.desktop x-scheme-handler/https
     xdg-mime default chromium.desktop text/html
+    xdg-mime default imv-dir.desktop image/jpeg
+    xdg-mime default imv-dir.desktop image/png
+    xdg-mime default imv-dir.desktop image/webp
+    xdg-mime default imv-dir.desktop image/gif
 }
 
 install_links() {

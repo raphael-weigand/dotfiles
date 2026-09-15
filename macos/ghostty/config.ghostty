@@ -1,0 +1,5 @@
+# macOS-specific Ghostty configuration
+config-file = ../../common/ghostty/config.ghostty
+
+window-colorspace = "display-p3"
+macos-option-as-alt = false

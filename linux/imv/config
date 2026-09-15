@@ -1,5 +1,7 @@
 # imv image viewer
-# Keep the default key bindings, but make Space toggle fullscreen.
+# Space closes the image preview again, matching the Space-to-open workflow in Thunar.
+# Keep q as an additional standard way to quit.
 
 [binds]
-<Space> = fullscreen
+<Space> = quit
+q = quit

@@ -95,7 +95,7 @@ install_arch() {
         base-devel curl git neovim tree-sitter-cli tmux zsh zsh-autosuggestions ripgrep fd trash-cli \
         hyprland xdg-desktop-portal-hyprland xdg-desktop-portal-gtk qt5-wayland qt6-wayland polkit-kde-agent \
         ghostty wl-clipboard waybar fuzzel swaync hyprpaper hyprlock hypridle grim slurp cliphist \
-        brightnessctl playerctl pavucontrol network-manager-applet bluez bluez-utils ttf-iosevka-nerd
+        brightnessctl playerctl pavucontrol network-manager-applet bluez bluez-utils blueman ttf-iosevka-nerd
     sudo systemctl enable --now bluetooth
 }
 

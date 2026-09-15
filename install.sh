@@ -167,6 +167,7 @@ install_links() {
         backup_and_link "$DOTFILES_DIR/linux/waybar" "$HOME/.config/waybar"
         backup_and_link "$DOTFILES_DIR/linux/mako" "$HOME/.config/mako"
         backup_and_link "$DOTFILES_DIR/linux/imv" "$HOME/.config/imv"
+        backup_and_link "$DOTFILES_DIR/linux/fuzzel" "$HOME/.config/fuzzel"
     fi
 
     if [ ! -d "$HOME/.config/tmux/plugins/tpm/.git" ]; then

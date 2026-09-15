@@ -1,0 +1,11 @@
+[Unit]
+Description=Set AMDGPU performance level for T2 Mac
+After=systemd-modules-load.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'for i in $(seq 1 300); do if [ -e /sys/bus/pci/drivers/amdgpu/0000:03:00.0/power_dpm_force_performance_level ]; then echo high > /sys/bus/pci/drivers/amdgpu/0000:03:00.0/power_dpm_force_performance_level; exit 0; fi; sleep 0.2; done; echo "AMDGPU sysfs node did not appear within 60 seconds" >&2; exit 1'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -6,43 +6,30 @@ OS="$(uname -s)"
 ARCH="$(uname -m)"
 TIMESTAMP="$(date +%Y%m%d-%H%M%S)"
 
-log() {
-    printf '\n==> %s\n' "$1"
-}
+log() { printf '\n==> %s\n' "$1"; }
 
 ensure_real_directory() {
     local dir="$1"
-
-    # Older versions of these dotfiles linked complete config directories.
-    # The current layout links individual files for tmux/Ghostty instead.
-    # Replace an old directory symlink with a real directory first, otherwise
-    # mkdir/ln fail when the symlink points at a path that moved in the repo.
     if [ -L "$dir" ]; then
         local backup="${dir}.backup-${TIMESTAMP}"
         printf 'backup: %s -> %s\n' "$dir" "$backup"
         mv "$dir" "$backup"
     fi
-
     mkdir -p "$dir"
 }
 
 backup_and_link() {
-    local source="$1"
-    local target="$2"
-
+    local source="$1" target="$2"
     mkdir -p "$(dirname "$target")"
-
     if [ -L "$target" ] && [ "$(readlink "$target")" = "$source" ]; then
         printf 'ok: %s\n' "$target"
         return
     fi
-
     if [ -e "$target" ] || [ -L "$target" ]; then
         local backup="${target}.backup-${TIMESTAMP}"
         printf 'backup: %s -> %s\n' "$target" "$backup"
         mv "$target" "$backup"
     fi
-
     ln -s "$source" "$target"
     printf 'link: %s -> %s\n' "$target" "$source"
 }
@@ -51,166 +38,111 @@ install_macos() {
     if ! command -v brew >/dev/null 2>&1; then
         log "Installing Homebrew"
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-        if [ -x /usr/local/bin/brew ]; then
-            eval "$(/usr/local/bin/brew shellenv)"
-        elif [ -x /opt/homebrew/bin/brew ]; then
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        fi
+        if [ -x /usr/local/bin/brew ]; then eval "$(/usr/local/bin/brew shellenv)"; elif [ -x /opt/homebrew/bin/brew ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
     fi
-
     log "Installing macOS development tools"
     brew install neovim tree-sitter tmux zsh-autosuggestions ripgrep fd
 }
 
 install_neovim_linux() {
     local archive
-
     case "$ARCH" in
-        aarch64|arm64)
-            archive="nvim-linux-arm64.tar.gz"
-            ;;
-        x86_64|amd64)
-            archive="nvim-linux-x86_64.tar.gz"
-            ;;
-        *)
-            printf 'Unsupported Linux architecture for Neovim binaries: %s\n' "$ARCH" >&2
-            exit 1
-            ;;
+        aarch64|arm64) archive="nvim-linux-arm64.tar.gz" ;;
+        x86_64|amd64) archive="nvim-linux-x86_64.tar.gz" ;;
+        *) printf 'Unsupported Linux architecture for Neovim binaries: %s\n' "$ARCH" >&2; exit 1 ;;
     esac
-
     log "Installing latest stable Neovim from the official release"
-
-    local tmpdir
-    tmpdir="$(mktemp -d)"
+    local tmpdir; tmpdir="$(mktemp -d)"
     trap 'rm -rf -- "${tmpdir:-}"' RETURN
-
     curl -fL "https://github.com/neovim/neovim/releases/latest/download/${archive}" -o "$tmpdir/nvim.tar.gz"
     tar -xzf "$tmpdir/nvim.tar.gz" -C "$tmpdir"
-
     mkdir -p "$HOME/.local/opt" "$HOME/.local/bin"
     rm -rf "$HOME/.local/opt/neovim"
-
-    local extracted
-    extracted="$(find "$tmpdir" -maxdepth 1 -type d -name 'nvim-linux-*' -print -quit)"
+    local extracted; extracted="$(find "$tmpdir" -maxdepth 1 -type d -name 'nvim-linux-*' -print -quit)"
     mv "$extracted" "$HOME/.local/opt/neovim"
     ln -sfn "$HOME/.local/opt/neovim/bin/nvim" "$HOME/.local/bin/nvim"
-
-    rm -rf -- "$tmpdir"
-    trap - RETURN
+    rm -rf -- "$tmpdir"; trap - RETURN
 }
 
-version_ge() {
-    printf '%s\n%s\n' "$2" "$1" | sort -V -C
-}
+version_ge() { printf '%s\n%s\n' "$2" "$1" | sort -V -C; }
 
 install_tree_sitter_linux() {
-    local required="0.26.1"
-    local current=""
-
-    if command -v tree-sitter >/dev/null 2>&1; then
-        current="$(tree-sitter --version 2>/dev/null | awk '{print $2}' | head -n1)"
-    fi
-
-    if [ -n "$current" ] && version_ge "$current" "$required"; then
-        log "tree-sitter-cli $current already satisfies >= $required"
-        return
-    fi
-
-    log "Installing current tree-sitter-cli (Debian's package is too old for nvim-treesitter main)"
-
-    if ! command -v cargo >/dev/null 2>&1; then
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
-    fi
-
+    local required="0.26.1" current=""
+    if command -v tree-sitter >/dev/null 2>&1; then current="$(tree-sitter --version 2>/dev/null | awk '{print $2}' | head -n1)"; fi
+    if [ -n "$current" ] && version_ge "$current" "$required"; then log "tree-sitter-cli $current already satisfies >= $required"; return; fi
+    log "Installing current tree-sitter-cli"
+    if ! command -v cargo >/dev/null 2>&1; then curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal; fi
     # shellcheck disable=SC1091
     [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
-
     cargo install tree-sitter-cli --locked
-
     current="$("$HOME/.cargo/bin/tree-sitter" --version | awk '{print $2}' | head -n1)"
-    if ! version_ge "$current" "$required"; then
-        printf 'tree-sitter-cli installation failed: got %s, need >= %s\n' "$current" "$required" >&2
-        exit 1
-    fi
+    version_ge "$current" "$required" || { printf 'tree-sitter-cli installation failed\n' >&2; exit 1; }
 }
 
 install_debian() {
     log "Installing Debian development tools"
     sudo apt-get update
-    sudo apt-get install -y \
-        build-essential \
-        ca-certificates \
-        curl \
-        fd-find \
-        git \
-        pkg-config \
-        ripgrep \
-        tmux \
-        trash-cli \
-        zsh \
-        zsh-autosuggestions
-
+    sudo apt-get install -y build-essential ca-certificates curl fd-find git pkg-config ripgrep tmux trash-cli zsh zsh-autosuggestions
     mkdir -p "$HOME/.local/bin"
-    if command -v fdfind >/dev/null 2>&1; then
-        ln -sfn "$(command -v fdfind)" "$HOME/.local/bin/fd"
-    fi
-
+    if command -v fdfind >/dev/null 2>&1; then ln -sfn "$(command -v fdfind)" "$HOME/.local/bin/fd"; fi
     install_neovim_linux
     install_tree_sitter_linux
 }
 
+install_arch() {
+    log "Installing Arch development and Hyprland desktop tools"
+    sudo pacman -Syu --needed --noconfirm \
+        base-devel curl git neovim tree-sitter-cli tmux zsh zsh-autosuggestions ripgrep fd trash-cli \
+        hyprland xdg-desktop-portal-hyprland xdg-desktop-portal-gtk qt5-wayland qt6-wayland polkit-kde-agent \
+        ghostty wl-clipboard waybar fuzzel swaync hyprpaper hyprlock hypridle grim slurp cliphist \
+        brightnessctl playerctl pavucontrol network-manager-applet bluez bluez-utils ttf-iosevka-nerd
+    sudo systemctl enable --now bluetooth
+}
+
 install_linux() {
-    if [ -r /etc/os-release ]; then
-        # shellcheck disable=SC1091
+    if [ -r /etc/os-release ]; then # shellcheck disable=SC1091
         . /etc/os-release
     fi
-
-    if command -v apt-get >/dev/null 2>&1; then
-        install_debian
-    else
-        printf 'Linux distribution is not supported automatically yet.\n' >&2
-        exit 1
+    if command -v pacman >/dev/null 2>&1; then install_arch
+    elif command -v apt-get >/dev/null 2>&1; then install_debian
+    else printf 'Linux distribution is not supported automatically yet.\n' >&2; exit 1
     fi
+}
+
+install_t2_arch() {
+    [ "$OS" = Linux ] || return
+    [ -r /etc/os-release ] || return
+    # shellcheck disable=SC1091
+    . /etc/os-release
+    [ "${ID:-}" = arch ] || return
+    [ -e /sys/bus/pci/drivers/amdgpu/0000:03:00.0 ] || return
+
+    log "Installing T2 AMDGPU stability service"
+    sudo install -Dm644 "$DOTFILES_DIR/linux/systemd/amdgpu-t2-performance.service" /etc/systemd/system/amdgpu-t2-performance.service
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now amdgpu-t2-performance.service
 }
 
 install_links() {
     log "Linking common dotfiles"
-
     mkdir -p "$HOME/Programming" "$HOME/.config"
-
     backup_and_link "$DOTFILES_DIR/common/nvim" "$HOME/.config/nvim"
-
-    # tmux used to be linked as the whole ~/.config/tmux directory.
-    # Keep the runtime/plugin directory outside the repository and link only
-    # the tracked config file.
     ensure_real_directory "$HOME/.config/tmux"
     backup_and_link "$DOTFILES_DIR/common/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
-
     backup_and_link "$DOTFILES_DIR/common/zsh/zshrc" "$HOME/.zshrc"
 
-    if [ "$OS" = "Darwin" ]; then
+    if [ "$OS" = Darwin ]; then
         log "Linking macOS dotfiles"
-
-        # Ghostty supports XDG config paths on macOS, but the native macOS
-        # location is loaded afterwards. Keep only the native config active so
-        # there is a single source of truth and no later override surprises.
-        local ghostty_xdg_config="$HOME/.config/ghostty/config"
-        local ghostty_xdg_config_new="$HOME/.config/ghostty/config.ghostty"
-        local ghostty_config_dir="$HOME/Library/Application Support/com.mitchellh.ghostty"
-
-        if [ -e "$ghostty_xdg_config" ] || [ -L "$ghostty_xdg_config" ]; then
-            printf 'remove old Ghostty config: %s\n' "$ghostty_xdg_config"
-            rm -f "$ghostty_xdg_config"
-        fi
-
-        if [ -e "$ghostty_xdg_config_new" ] || [ -L "$ghostty_xdg_config_new" ]; then
-            printf 'remove old Ghostty config: %s\n' "$ghostty_xdg_config_new"
-            rm -f "$ghostty_xdg_config_new"
-        fi
-
-        ensure_real_directory "$ghostty_config_dir"
-        backup_and_link "$DOTFILES_DIR/macos/ghostty/config" "$ghostty_config_dir/config"
+        local old="$HOME/.config/ghostty/config" old_new="$HOME/.config/ghostty/config.ghostty"
+        local dir="$HOME/Library/Application Support/com.mitchellh.ghostty"
+        [ ! -e "$old" ] && [ ! -L "$old" ] || rm -f "$old"
+        [ ! -e "$old_new" ] && [ ! -L "$old_new" ] || rm -f "$old_new"
+        ensure_real_directory "$dir"
+        backup_and_link "$DOTFILES_DIR/macos/ghostty/config" "$dir/config"
+    elif [ "$OS" = Linux ]; then
+        log "Linking Linux desktop dotfiles"
+        backup_and_link "$DOTFILES_DIR/linux/hypr" "$HOME/.config/hypr"
+        backup_and_link "$DOTFILES_DIR/linux/waybar" "$HOME/.config/waybar"
     fi
 
     if [ ! -d "$HOME/.config/tmux/plugins/tpm/.git" ]; then
@@ -221,27 +153,11 @@ install_links() {
 }
 
 main() {
-    case "$OS" in
-        Darwin)
-            install_macos
-            ;;
-        Linux)
-            install_linux
-            ;;
-        *)
-            printf 'Unsupported operating system: %s\n' "$OS" >&2
-            exit 1
-            ;;
-    esac
-
+    case "$OS" in Darwin) install_macos ;; Linux) install_linux ;; *) printf 'Unsupported operating system: %s\n' "$OS" >&2; exit 1 ;; esac
     install_links
-
+    install_t2_arch
     log "Installed"
-    printf 'OS:          %s\n' "$OS"
-    printf 'Arch:        %s\n' "$ARCH"
-    printf 'Neovim:      %s\n' "$(nvim --version | head -n1)"
-    printf 'tree-sitter: %s\n' "$(tree-sitter --version)"
-    printf 'tmux:        %s\n' "$(tmux -V)"
+    printf 'OS: %s\nArch: %s\n' "$OS" "$ARCH"
     printf '\nStart a new shell, then use: tmx\n'
 }
 

@@ -20,6 +20,12 @@ zmodload zsh/complist
 compinit -C
 _comp_options+=(globdots)
 
-[ -s "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ] && \
-  . "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-
+# zsh-autosuggestions: Homebrew on macOS, system package on Linux/Arch.
+if command -v brew >/dev/null 2>&1; then
+  BREW_ZSH_AUTOSUGGESTIONS="$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  [ -s "$BREW_ZSH_AUTOSUGGESTIONS" ] && . "$BREW_ZSH_AUTOSUGGESTIONS"
+elif [ -s /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  . /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+elif [ -s /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  . /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi

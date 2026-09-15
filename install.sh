@@ -93,9 +93,11 @@ install_arch() {
     log "Installing Arch development and Hyprland desktop tools"
     sudo pacman -Syu --needed --noconfirm \
         base-devel curl git neovim tree-sitter-cli tmux zsh zsh-autosuggestions ripgrep fd trash-cli \
-        hyprland xdg-desktop-portal-hyprland xdg-desktop-portal-gtk qt5-wayland qt6-wayland polkit-kde-agent \
-        ghostty wl-clipboard waybar fuzzel swaync hyprpaper hyprlock hypridle grim slurp cliphist \
-        brightnessctl playerctl pavucontrol network-manager-applet bluez bluez-utils blueman ttf-iosevka-nerd
+        hyprland xdg-desktop-portal-hyprland xdg-desktop-portal-gtk qt5-wayland qt6-wayland polkit-gnome \
+        ghostty wl-clipboard waybar fuzzel mako libnotify hyprpaper hyprlock hypridle grim slurp cliphist \
+        brightnessctl playerctl pavucontrol network-manager-applet bluez bluez-utils blueman \
+        thunar tumbler ffmpegthumbnailer file-roller zathura zathura-pdf-mupdf \
+        ttf-iosevka-nerd noto-fonts-emoji
     sudo systemctl enable --now bluetooth
 }
 
@@ -147,6 +149,7 @@ install_links() {
         log "Linking Linux desktop dotfiles"
         backup_and_link "$DOTFILES_DIR/linux/hypr" "$HOME/.config/hypr"
         backup_and_link "$DOTFILES_DIR/linux/waybar" "$HOME/.config/waybar"
+        backup_and_link "$DOTFILES_DIR/linux/mako" "$HOME/.config/mako"
     fi
 
     if [ ! -d "$HOME/.config/tmux/plugins/tpm/.git" ]; then

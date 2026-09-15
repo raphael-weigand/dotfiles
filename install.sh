@@ -94,7 +94,7 @@ install_arch() {
     sudo pacman -Syu --needed --noconfirm \
         base-devel curl git neovim tree-sitter-cli tmux zsh zsh-autosuggestions ripgrep fd trash-cli \
         hyprland hyprpm xdg-desktop-portal-hyprland xdg-desktop-portal-gtk qt5-wayland qt6-wayland polkit-gnome \
-        ghostty chromium wl-clipboard waybar fuzzel mako libnotify hyprpaper hyprlock hypridle grim slurp cliphist \
+        ghostty chromium wl-clipboard waybar fuzzel quickshell mako libnotify hyprpaper hyprlock hypridle grim slurp cliphist \
         brightnessctl playerctl pavucontrol network-manager-applet bluez bluez-utils blueman \
         thunar tumbler ffmpegthumbnailer file-roller zathura zathura-pdf-mupdf imv remmina freerdp \
         ttf-iosevka-nerd noto-fonts-emoji
@@ -176,6 +176,7 @@ install_links() {
         backup_and_link "$DOTFILES_DIR/linux/mako" "$HOME/.config/mako"
         backup_and_link "$DOTFILES_DIR/linux/imv" "$HOME/.config/imv"
         backup_and_link "$DOTFILES_DIR/linux/fuzzel" "$HOME/.config/fuzzel"
+        backup_and_link "$DOTFILES_DIR/linux/quickshell" "$HOME/.config/quickshell"
     fi
 
     if [ ! -d "$HOME/.config/tmux/plugins/tpm/.git" ]; then

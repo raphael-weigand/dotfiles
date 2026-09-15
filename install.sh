@@ -93,12 +93,20 @@ install_arch() {
     log "Installing Arch development and Hyprland desktop tools"
     sudo pacman -Syu --needed --noconfirm \
         base-devel curl git neovim tree-sitter-cli tmux zsh zsh-autosuggestions ripgrep fd trash-cli \
-        hyprland xdg-desktop-portal-hyprland xdg-desktop-portal-gtk qt5-wayland qt6-wayland polkit-gnome \
+        hyprland hyprpm xdg-desktop-portal-hyprland xdg-desktop-portal-gtk qt5-wayland qt6-wayland polkit-gnome \
         ghostty chromium wl-clipboard waybar fuzzel mako libnotify hyprpaper hyprlock hypridle grim slurp cliphist \
         brightnessctl playerctl pavucontrol network-manager-applet bluez bluez-utils blueman \
         thunar tumbler ffmpegthumbnailer file-roller zathura zathura-pdf-mupdf imv remmina freerdp \
         ttf-iosevka-nerd noto-fonts-emoji
     sudo systemctl enable --now bluetooth
+
+    log "Installing HyMission overview plugin"
+    hyprpm update
+    if ! hyprpm list 2>/dev/null | grep -q 'hymission'; then
+        hyprpm add https://github.com/gfhdhytghd/hymission
+    fi
+    hyprpm enable hymission
+    hyprpm reload || true
 }
 
 install_linux() {

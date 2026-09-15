@@ -94,7 +94,7 @@ install_arch() {
     sudo pacman -Syu --needed --noconfirm \
         base-devel curl git neovim tree-sitter-cli tmux zsh zsh-autosuggestions ripgrep fd trash-cli \
         hyprland xdg-desktop-portal-hyprland xdg-desktop-portal-gtk qt5-wayland qt6-wayland polkit-gnome \
-        ghostty wl-clipboard waybar fuzzel mako libnotify hyprpaper hyprlock hypridle grim slurp cliphist \
+        ghostty chromium wl-clipboard waybar fuzzel mako libnotify hyprpaper hyprlock hypridle grim slurp cliphist \
         brightnessctl playerctl pavucontrol network-manager-applet bluez bluez-utils blueman \
         thunar tumbler ffmpegthumbnailer file-roller zathura zathura-pdf-mupdf \
         ttf-iosevka-nerd noto-fonts-emoji

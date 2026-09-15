@@ -1,5 +1,4 @@
-# macOS-specific Ghostty configuration
-config-file = ../../common/ghostty/config.ghostty
-
+# macOS-specific Ghostty overrides.
+# Ghostty loads this after the shared XDG config.
 window-colorspace = "display-p3"
 macos-option-as-alt = false

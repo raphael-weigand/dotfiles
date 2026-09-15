@@ -1,0 +1,5 @@
+# imv image viewer
+# Keep the default key bindings, but make Space toggle fullscreen.
+
+[binds]
+<Space> = fullscreen

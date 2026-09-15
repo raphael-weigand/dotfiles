@@ -69,7 +69,7 @@ version_ge() { printf '%s\n%s\n' "$2" "$1" | sort -V -C; }
 install_tree_sitter_linux() {
     local required="0.26.1" current=""
     if command -v tree-sitter >/dev/null 2>&1; then current="$(tree-sitter --version 2>/dev/null | awk '{print $2}' | head -n1)"; fi
-    if [ -n "$current" ] && version_ge "$current" "$required"; then log "tree-sitter-cli $current already satisfies >= $required"; return; fi
+    if [ -n "$current" ] && version_ge "$current" "$required" ]; then log "tree-sitter-cli $current already satisfies >= $required"; return; fi
     log "Installing current tree-sitter-cli"
     if ! command -v cargo >/dev/null 2>&1; then curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal; fi
     # shellcheck disable=SC1091
@@ -96,7 +96,7 @@ install_arch() {
         hyprland xdg-desktop-portal-hyprland xdg-desktop-portal-gtk qt5-wayland qt6-wayland polkit-gnome \
         ghostty chromium wl-clipboard waybar fuzzel mako libnotify hyprpaper hyprlock hypridle grim slurp cliphist \
         brightnessctl playerctl pavucontrol network-manager-applet bluez bluez-utils blueman \
-        thunar tumbler ffmpegthumbnailer file-roller zathura zathura-pdf-mupdf imv \
+        thunar tumbler ffmpegthumbnailer file-roller zathura zathura-pdf-mupdf imv remmina freerdp \
         ttf-iosevka-nerd noto-fonts-emoji
     sudo systemctl enable --now bluetooth
 }

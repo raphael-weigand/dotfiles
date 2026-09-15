@@ -131,14 +131,18 @@ install_links() {
     backup_and_link "$DOTFILES_DIR/common/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
     backup_and_link "$DOTFILES_DIR/common/zsh/zshrc" "$HOME/.zshrc"
 
+    # Ghostty uses the XDG config path on both Linux and macOS.
+    # Keep the shared settings here so both platforms behave the same.
+    ensure_real_directory "$HOME/.config/ghostty"
+    backup_and_link "$DOTFILES_DIR/common/ghostty/config.ghostty" "$HOME/.config/ghostty/config.ghostty"
+    [ ! -e "$HOME/.config/ghostty/config" ] && [ ! -L "$HOME/.config/ghostty/config" ] || rm -f "$HOME/.config/ghostty/config"
+
     if [ "$OS" = Darwin ]; then
         log "Linking macOS dotfiles"
-        local old="$HOME/.config/ghostty/config" old_new="$HOME/.config/ghostty/config.ghostty"
         local dir="$HOME/Library/Application Support/com.mitchellh.ghostty"
-        [ ! -e "$old" ] && [ ! -L "$old" ] || rm -f "$old"
-        [ ! -e "$old_new" ] && [ ! -L "$old_new" ] || rm -f "$old_new"
         ensure_real_directory "$dir"
-        backup_and_link "$DOTFILES_DIR/macos/ghostty/config" "$dir/config"
+        [ ! -e "$dir/config" ] && [ ! -L "$dir/config" ] || rm -f "$dir/config"
+        backup_and_link "$DOTFILES_DIR/macos/ghostty/config.ghostty" "$dir/config.ghostty"
     elif [ "$OS" = Linux ]; then
         log "Linking Linux desktop dotfiles"
         backup_and_link "$DOTFILES_DIR/linux/hypr" "$HOME/.config/hypr"

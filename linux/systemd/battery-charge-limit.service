@@ -1,0 +1,12 @@
+[Unit]
+Description=Set Apple T2 battery charge limit to 80%%
+After=multi-user.target
+ConditionPathExists=/sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:104/APP0001:00/battery_charge_limit
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'echo 80 > /sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:104/APP0001:00/battery_charge_limit'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -92,7 +92,7 @@ install_debian() {
 install_arch() {
     log "Installing Arch development and Hyprland desktop tools"
     sudo pacman -Syu --needed --noconfirm \
-        base-devel curl git neovim tree-sitter-cli tmux zsh zsh-autosuggestions ripgrep fd trash-cli \
+        base-devel curl git jq neovim tree-sitter-cli tmux zsh zsh-autosuggestions ripgrep fd trash-cli \
         hyprland hyprpm xdg-desktop-portal-hyprland xdg-desktop-portal-gtk qt5-wayland qt6-wayland polkit-gnome \
         ghostty chromium wl-clipboard waybar fuzzel quickshell mako libnotify hyprpaper hyprlock hypridle grim slurp cliphist \
         brightnessctl playerctl pavucontrol network-manager-applet bluez bluez-utils blueman \
@@ -179,6 +179,7 @@ install_links() {
         backup_and_link "$DOTFILES_DIR/macos/ghostty/config.ghostty" "$dir/config.ghostty"
     elif [ "$OS" = Linux ]; then
         log "Linking Linux desktop dotfiles"
+        find "$DOTFILES_DIR/linux/hypr" -maxdepth 1 -type f -name '*.sh' -exec chmod +x {} +
         backup_and_link "$DOTFILES_DIR/linux/hypr" "$HOME/.config/hypr"
         backup_and_link "$DOTFILES_DIR/linux/waybar" "$HOME/.config/waybar"
         backup_and_link "$DOTFILES_DIR/linux/mako" "$HOME/.config/mako"

@@ -11,6 +11,28 @@ ShellRoot {
     property string tempText: "…"
     property string diskText: "…"
     property string uptimeText: "…"
+    property string networkDownText: "…"
+    property string networkUpText: "…"
+    property string networkReceivedText: "…"
+    property string networkSentText: "…"
+    property double previousRxBytes: -1
+    property double previousTxBytes: -1
+    property double previousNetworkTimestamp: 0
+
+    function formatRate(bytesPerSecond) {
+        if (bytesPerSecond >= 1073741824) return (bytesPerSecond / 1073741824).toFixed(1) + " GiB/s"
+        if (bytesPerSecond >= 1048576) return (bytesPerSecond / 1048576).toFixed(1) + " MiB/s"
+        if (bytesPerSecond >= 1024) return (bytesPerSecond / 1024).toFixed(1) + " KiB/s"
+        return Math.max(0, bytesPerSecond).toFixed(0) + " B/s"
+    }
+
+    function formatBytes(bytes) {
+        if (bytes >= 1099511627776) return (bytes / 1099511627776).toFixed(1) + " TiB"
+        if (bytes >= 1073741824) return (bytes / 1073741824).toFixed(1) + " GiB"
+        if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + " MiB"
+        if (bytes >= 1024) return (bytes / 1024).toFixed(1) + " KiB"
+        return bytes.toFixed(0) + " B"
+    }
 
     Variants {
         model: Quickshell.screens
@@ -27,7 +49,7 @@ ShellRoot {
             }
 
             implicitWidth: 380
-            implicitHeight: 560
+            implicitHeight: 620
             margins.top: 44
             margins.right: 12
 
@@ -128,6 +150,14 @@ ShellRoot {
                         Label { text: cpuText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
                         Label { text: "RAM"; color: "#999999"; font.family: "Iosevka Term Extended" }
                         Label { text: ramText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        Label { text: "Network ↓"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                        Label { text: networkDownText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        Label { text: "Network ↑"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                        Label { text: networkUpText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        Label { text: "Received"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                        Label { text: networkReceivedText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        Label { text: "Sent"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                        Label { text: networkSentText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
                         Label { text: "Temperature"; color: "#999999"; font.family: "Iosevka Term Extended" }
                         Label { text: tempText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
                         Label { text: "Disk /"; color: "#999999"; font.family: "Iosevka Term Extended" }
@@ -145,7 +175,10 @@ ShellRoot {
         running: true
         repeat: true
         triggeredOnStart: true
-        onTriggered: systemStats.running = true
+        onTriggered: {
+            systemStats.running = true
+            networkStats.running = true
+        }
     }
 
     Process {
@@ -161,6 +194,39 @@ ShellRoot {
                     diskText = values[3]
                     uptimeText = values[4]
                 }
+            }
+        }
+    }
+
+    Process {
+        id: networkStats
+        command: ["sh", "-c", "awk -F'[: ]+' 'NR>2 && $1 != \"lo\" {rx += $3; tx += $11} END {printf \"%.0f|%.0f\\n\", rx, tx}' /proc/net/dev"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const values = text.trim().split("|")
+                if (values.length !== 2) return
+
+                const rx = Number(values[0])
+                const tx = Number(values[1])
+                const now = Date.now()
+
+                networkReceivedText = formatBytes(rx)
+                networkSentText = formatBytes(tx)
+
+                if (previousRxBytes >= 0 && previousTxBytes >= 0 && previousNetworkTimestamp > 0) {
+                    const seconds = (now - previousNetworkTimestamp) / 1000
+                    if (seconds > 0) {
+                        networkDownText = formatRate((rx - previousRxBytes) / seconds)
+                        networkUpText = formatRate((tx - previousTxBytes) / seconds)
+                    }
+                } else {
+                    networkDownText = "0 B/s"
+                    networkUpText = "0 B/s"
+                }
+
+                previousRxBytes = rx
+                previousTxBytes = tx
+                previousNetworkTimestamp = now
             }
         }
     }

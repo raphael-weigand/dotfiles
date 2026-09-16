@@ -104,200 +104,196 @@ ShellRoot {
                             ColumnLayout {
                                 anchors.fill: parent; anchors.margins: 12; spacing: 5
                                 RowLayout { Layout.fillWidth: true; spacing: 9
-                                    Rectangle { width: 38; height: 38; radius: 19; color: "#303030"; Label { anchors.centerIn: parent; text: volumeMuted ? "󰝟" : "󰕾"; color: volumeMuted ? "#999999" : "#e4e4ef"; font.family: "Iosevka Term Extended"; font.pixelSize: 18 } }
-                                    ColumnLayout { Layout.fillWidth: true; spacing: 1; Label { text: "Audio"; color: "#ffffff"; font.family: "Iosevka Term Extended"; font.bold: true } Label { text: audioOutputName + " · " + (volumeMuted ? "Muted" : volumePercent + "%"); color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 10; elide: Text.ElideRight; Layout.fillWidth: true } }
-                                    Label { text: "›"; color: outputMouse.containsMouse ? "#ffdd33" : "#777777"; font.pixelSize: 20 }
-                                }
-                                Slider {
-                                    Layout.fillWidth: true; from: 0; to: 1.5; value: volumeLevel
-                                    onMoved: { volumeLevel = value; volumePercent = Math.round(value * 100); volumeSet.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", value.toFixed(2)] }
-                                    onPressedChanged: if (!pressed) { volumeSet.running = true; Qt.callLater(function() { audioStatus.running = true }) }
-                                }
+                                Rectangle { width: 38; height: 38; radius: 19; color: "#303030"; Label { anchors.centerIn: parent; text: volumeMuted ? "󰝟" : "󰕾"; color: volumeMuted ? "#999999" : "#e4e4ef"; font.family: "Iosevka Term Extended"; font.pixelSize: 18 } }
+                                ColumnLayout { Layout.fillWidth: true; spacing: 1; Label { text: "Audio"; color: "#ffffff"; font.family: "Iosevka Term Extended"; font.bold: true } Label { text: audioOutputName + " · " + (volumeMuted ? "Muted" : volumePercent + "%"); color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 10; elide: Text.ElideRight; Layout.fillWidth: true } }
+                                Label { text: "›"; color: outputMouse.containsMouse ? "#ffdd33" : "#777777"; font.pixelSize: 20 }
                             }
-                            MouseArea { id: audioCardMouse; anchors.fill: parent; anchors.bottomMargin: 30; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: audioOutputMenu.running = true }
-                            MouseArea { id: outputMouse; anchors.right: parent.right; anchors.top: parent.top; width: 36; height: 60; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: audioSettings.running = true }
+                            Slider {
+                                Layout.fillWidth: true; from: 0; to: 1.5; value: volumeLevel
+                                onMoved: { volumeLevel = value; volumePercent = Math.round(value * 100); volumeSet.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", value.toFixed(2)] }
+                                onPressedChanged: if (!pressed) { volumeSet.running = true; Qt.callLater(function() { audioStatus.running = true }) }
+                            }
                         }
+                        MouseArea { id: audioCardMouse; anchors.fill: parent; anchors.bottomMargin: 30; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: audioOutputMenu.running = true }
+                        MouseArea { id: outputMouse; anchors.right: parent.right; anchors.top: parent.top; width: 36; height: 60; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: audioSettings.running = true }
+                    }
+                    Rectangle {
+                        Layout.fillWidth: true; Layout.preferredHeight: 92; radius: 12; color: displayCardMouse.containsMouse ? "#2b2b2b" : "#222222"; border.width: 1; border.color: "#303030"
+                        ColumnLayout {
+                            anchors.fill: parent; anchors.margins: 12; spacing: 5
+                            RowLayout { Layout.fillWidth: true; spacing: 9
+                            Rectangle { width: 38; height: 38; radius: 19; color: "#303030"; Label { anchors.centerIn: parent; text: "󰍹"; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; font.pixelSize: 18 } }
+                            ColumnLayout { Layout.fillWidth: true; spacing: 1; Label { text: "Display"; color: "#ffffff"; font.family: "Iosevka Term Extended"; font.bold: true } Label { text: "Brightness · " + brightnessPercent + "%"; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 10 } }
+                        }
+                        Slider {
+                            Layout.fillWidth: true; from: 1; to: 100; value: brightnessPercent
+                            onMoved: { brightnessPercent = Math.round(value); brightnessSet.command = ["brightnessctl", "set", brightnessPercent + "%"] }
+                            onPressedChanged: if (!pressed) { brightnessSet.running = true; Qt.callLater(function() { brightnessStatus.running = true }) }
+                        }
+                    }
+                    MouseArea { id: displayCardMouse; anchors.fill: parent; anchors.bottomMargin: 30; hoverEnabled: true; acceptedButtons: Qt.NoButton }
+                }
+            }
+
+            Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: "#303030" }
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 112
+                radius: 12
+                color: "#222222"
+                border.width: 1
+                border.color: "#303030"
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: 14
+                    spacing: 10
+
+                    RowLayout {
+                        Layout.fillWidth: true
+
                         Rectangle {
-                            Layout.fillWidth: true; Layout.preferredHeight: 92; radius: 12; color: displayCardMouse.containsMouse ? "#2b2b2b" : "#222222"; border.width: 1; border.color: "#303030"
-                            ColumnLayout {
-                                anchors.fill: parent; anchors.margins: 12; spacing: 5
-                                RowLayout { Layout.fillWidth: true; spacing: 9
-                                    Rectangle { width: 38; height: 38; radius: 19; color: "#303030"; Label { anchors.centerIn: parent; text: "󰍹"; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; font.pixelSize: 18 } }
-                                    ColumnLayout { Layout.fillWidth: true; spacing: 1; Label { text: "Display"; color: "#ffffff"; font.family: "Iosevka Term Extended"; font.bold: true } Label { text: "Brightness · " + brightnessPercent + "%"; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 10 } }
-                                }
-                                Slider {
-                                    Layout.fillWidth: true; from: 1; to: 100; value: brightnessPercent
-                                    onMoved: { brightnessPercent = Math.round(value); brightnessSet.command = ["brightnessctl", "set", brightnessPercent + "%"] }
-                                    onPressedChanged: if (!pressed) { brightnessSet.running = true; Qt.callLater(function() { brightnessStatus.running = true }) }
-                                }
+                            width: 42
+                            height: 42
+                            radius: 21
+                            color: "#3a3520"
+
+                            Label {
+                                anchors.centerIn: parent
+                                text: "󰁹"
+                                color: "#ffdd33"
+                                font.family: "Iosevka Term Extended"
+                                font.pixelSize: 20
                             }
-                            MouseArea { id: displayCardMouse; anchors.fill: parent; anchors.bottomMargin: 30; hoverEnabled: true; acceptedButtons: Qt.NoButton }
+                        }
+
+                        ColumnLayout {
+                            Layout.leftMargin: 4
+                            spacing: 1
+
+                            Label {
+                                text: "Battery"
+                                color: "#ffffff"
+                                font.family: "Iosevka Term Extended"
+                                font.bold: true
+                            }
+
+                            Label {
+                                text: batteryText
+                                color: "#999999"
+                                font.family: "Iosevka Term Extended"
+                                font.pixelSize: 10
+                            }
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
+                        }
+
+                        Label {
+                            text: batteryText.split("%")[0] + "%"
+                            color: "#ffffff"
+                            font.family: "Iosevka Term Extended"
+                            font.pixelSize: 22
+                            font.bold: true
                         }
                     }
 
-                    Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: "#303030" }
-Rectangle {
-    Layout.fillWidth: true
-    Layout.preferredHeight: 112
-    radius: 12
-    color: "#222222"
-    border.width: 1
-    border.color: "#303030"
+                    RowLayout {
+                        Layout.fillWidth: true
 
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: 14
-        spacing: 10
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 1
 
-        RowLayout {
-            Layout.fillWidth: true
+                            Label {
+                                text: "Health"
+                                color: "#777777"
+                                font.family: "Iosevka Term Extended"
+                                font.pixelSize: 10
+                            }
 
+                            Label {
+                                text: batteryHealthText
+                                color: "#e4e4ef"
+                                font.family: "Iosevka Term Extended"
+                                font.bold: true
+                            }
+                        }
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 1
+
+                            Label {
+                                text: "Cycles"
+                                color: "#777777"
+                                font.family: "Iosevka Term Extended"
+                                font.pixelSize: 10
+                            }
+
+                            Label {
+                                text: batteryCyclesText
+                                color: "#e4e4ef"
+                                font.family: "Iosevka Term Extended"
+                                font.bold: true
+                            }
+                        }
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 1
+
+                            Label {
+                                text: "Charge limit"
+                                color: "#777777"
+                                font.family: "Iosevka Term Extended"
+                                font.pixelSize: 10
+                            }
+
+                            Label {
+                                text: batteryLimitText
+                                color: "#ffdd33"
+                                font.family: "Iosevka Term Extended"
+                                font.bold: true
+                            }
+                        }
+                    }
+                }
+            }
+            Label { text: "System"; color: "#ffffff"; font.family: "Iosevka Term Extended"; font.pixelSize: 14; font.bold: true }
             Rectangle {
-                width: 42
-                height: 42
-                radius: 21
-                color: "#3a3520"
-
-                Label {
-                    anchors.centerIn: parent
-                    text: "󰁹"
-                    color: "#ffdd33"
-                    font.family: "Iosevka Term Extended"
-                    font.pixelSize: 20
+                Layout.fillWidth: true; Layout.preferredHeight: systemGrid.implicitHeight + 24; radius: 12; color: "#222222"; border.width: 1; border.color: "#303030"
+                GridLayout {
+                    id: systemGrid; anchors.fill: parent; anchors.margins: 12; columns: 2; columnSpacing: 16; rowSpacing: 7
+                    Label { text: "CPU"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: cpuText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                    Label { text: "RAM"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: ramText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                    Label { text: "Temperature"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: tempText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
                 }
             }
-
-            ColumnLayout {
-                Layout.leftMargin: 4
-                spacing: 1
-
-                Label {
-                    text: "Battery"
-                    color: "#ffffff"
-                    font.family: "Iosevka Term Extended"
-                    font.bold: true
-                }
-
-                Label {
-                    text: batteryText
-                    color: "#999999"
-                    font.family: "Iosevka Term Extended"
-                    font.pixelSize: 10
-                }
-            }
-
-            Item {
-                Layout.fillWidth: true
-            }
-
-            Label {
-                text: batteryText.split("%")[0] + "%"
-                color: "#ffffff"
-                font.family: "Iosevka Term Extended"
-                font.pixelSize: 22
-                font.bold: true
-            }
-        }
-
-        RowLayout {
-            Layout.fillWidth: true
-
-            ColumnLayout {
-                Layout.fillWidth: true
-                spacing: 1
-
-                Label {
-                    text: "Health"
-                    color: "#777777"
-                    font.family: "Iosevka Term Extended"
-                    font.pixelSize: 10
-                }
-
-                Label {
-                    text: batteryHealthText
-                    color: "#e4e4ef"
-                    font.family: "Iosevka Term Extended"
-                    font.bold: true
-                }
-            }
-
-            ColumnLayout {
-                Layout.fillWidth: true
-                spacing: 1
-
-                Label {
-                    text: "Cycles"
-                    color: "#777777"
-                    font.family: "Iosevka Term Extended"
-                    font.pixelSize: 10
-                }
-
-                Label {
-                    text: batteryCyclesText
-                    color: "#e4e4ef"
-                    font.family: "Iosevka Term Extended"
-                    font.bold: true
-                }
-            }
-
-            ColumnLayout {
-                Layout.fillWidth: true
-                spacing: 1
-
-                Label {
-                    text: "Charge limit"
-                    color: "#777777"
-                    font.family: "Iosevka Term Extended"
-                    font.pixelSize: 10
-                }
-
-                Label {
-                    text: batteryLimitText
-                    color: "#ffdd33"
-                    font.family: "Iosevka Term Extended"
-                    font.bold: true
-                }
-            }
+            // Rectangle {
+                // Layout.fillWidth: true; Layout.preferredHeight: networkColumn.implicitHeight + 24; radius: 12; color: "#222222"; border.width: 1; border.color: "#303030"
+                // ColumnLayout {
+                    // id: networkColumn; anchors.fill: parent; anchors.margins: 12; spacing: 8
+                    // Label { text: "Network"; color: "#ffdd33"; font.family: "Iosevka Term Extended"; font.pixelSize: 13; font.bold: true }
+                    // RowLayout { Layout.fillWidth: true; Label { text: activeNetworkType === "Ethernet" ? "󰈀  Ethernet" : (activeNetworkType === "Wi-Fi" ? "󰖩  Wi-Fi" : "󰖪  Network"); color: "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true } Item { Layout.fillWidth: true } Label { text: activeNetworkName; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 11; elide: Text.ElideRight; Layout.maximumWidth: 175 } }
+                    // Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: "#303030" }
+                    // GridLayout { Layout.fillWidth: true; columns: 2; columnSpacing: 16; rowSpacing: 7
+                    // Label { text: "↓ Download"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: networkDownText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                    // Label { text: "↑ Upload"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: networkUpText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                    // Label { text: "Received"; color: "#777777"; font.family: "Iosevka Term Extended" } Label { text: networkReceivedText; color: "#b8b8c0"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                    // Label { text: "Sent"; color: "#777777"; font.family: "Iosevka Term Extended" } Label { text: networkSentText; color: "#b8b8c0"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                //}
+            //}
+        //}
+        Rectangle {
+            Layout.fillWidth: true; Layout.preferredHeight: storageGrid.implicitHeight + 24; radius: 12; color: "#222222"; border.width: 1; border.color: "#303030"
+            GridLayout { id: storageGrid; anchors.fill: parent; anchors.margins: 12; columns: 2; columnSpacing: 16; rowSpacing: 7
+            Label { text: "Disk /"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: diskText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+            Label { text: "Uptime"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: uptimeText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
         }
     }
 }
-                    Label { text: "System"; color: "#ffffff"; font.family: "Iosevka Term Extended"; font.pixelSize: 14; font.bold: true }
-                    Rectangle {
-                        Layout.fillWidth: true; Layout.preferredHeight: systemGrid.implicitHeight + 24; radius: 12; color: "#222222"; border.width: 1; border.color: "#303030"
-                        GridLayout {
-                            id: systemGrid; anchors.fill: parent; anchors.margins: 12; columns: 2; columnSpacing: 16; rowSpacing: 7
-                            Label { text: "CPU"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: cpuText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                            Label { text: "RAM"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: ramText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                            Label { text: "Temperature"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: tempText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                            Label { text: "󰁹  Battery"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: batteryText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                            Label { text: "Battery health"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: batteryHealthText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                            Label { text: "Cycles"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: batteryCyclesText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                            Label { text: "Charge limit"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: batteryLimitText; color: "#ffdd33"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                        }
-                    }
-                    Rectangle {
-                        Layout.fillWidth: true; Layout.preferredHeight: networkColumn.implicitHeight + 24; radius: 12; color: "#222222"; border.width: 1; border.color: "#303030"
-                        ColumnLayout {
-                            id: networkColumn; anchors.fill: parent; anchors.margins: 12; spacing: 8
-                            Label { text: "Network"; color: "#ffdd33"; font.family: "Iosevka Term Extended"; font.pixelSize: 13; font.bold: true }
-                            RowLayout { Layout.fillWidth: true; Label { text: activeNetworkType === "Ethernet" ? "󰈀  Ethernet" : (activeNetworkType === "Wi-Fi" ? "󰖩  Wi-Fi" : "󰖪  Network"); color: "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true } Item { Layout.fillWidth: true } Label { text: activeNetworkName; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 11; elide: Text.ElideRight; Layout.maximumWidth: 175 } }
-                            Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: "#303030" }
-                            GridLayout { Layout.fillWidth: true; columns: 2; columnSpacing: 16; rowSpacing: 7
-                                Label { text: "↓ Download"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: networkDownText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                                Label { text: "↑ Upload"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: networkUpText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                                Label { text: "Received"; color: "#777777"; font.family: "Iosevka Term Extended" } Label { text: networkReceivedText; color: "#b8b8c0"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                                Label { text: "Sent"; color: "#777777"; font.family: "Iosevka Term Extended" } Label { text: networkSentText; color: "#b8b8c0"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                            }
-                        }
-                    }
-                    Rectangle {
-                        Layout.fillWidth: true; Layout.preferredHeight: storageGrid.implicitHeight + 24; radius: 12; color: "#222222"; border.width: 1; border.color: "#303030"
-                        GridLayout { id: storageGrid; anchors.fill: parent; anchors.margins: 12; columns: 2; columnSpacing: 16; rowSpacing: 7
-                            Label { text: "Disk /"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: diskText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                            Label { text: "Uptime"; color: "#999999"; font.family: "Iosevka Term Extended" } Label { text: uptimeText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                        }
-                    }
-                }
             }
         }
     }

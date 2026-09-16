@@ -57,12 +57,14 @@ wpctl set-default "$selected_id"
 
 # PipeWire/Pulse applications can keep an already-running stream attached to
 # its old sink after the default changes. Move all current playback streams to
-# the selected sink as well. New streams will use the new default automatically.
+# the selected sink as well. A stream may disappear while iterating; that is a
+# harmless race, so suppress that individual pactl error.
 if command -v pactl >/dev/null 2>&1; then
-    while read -r stream_id; do
+    mapfile -t stream_ids < <(pactl list short sink-inputs 2>/dev/null | awk '{print $1}')
+    for stream_id in "${stream_ids[@]}"; do
         [[ -n "$stream_id" ]] || continue
-        pactl move-sink-input "$stream_id" "$selected_id" || true
-    done < <(pactl list short sink-inputs | awk '{print $1}')
+        pactl move-sink-input "$stream_id" "$selected_id" >/dev/null 2>&1 || true
+    done
 fi
 
 notify-send "Audio output" "${choice#● }"

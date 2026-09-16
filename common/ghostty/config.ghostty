@@ -29,6 +29,10 @@ keybind = alt+7=unbind
 keybind = alt+8=unbind
 keybind = alt+9=unbind
 
+# Ghostty currently sends Option+N as ESC+n instead of processing the
+# German Macintosh dead-tilde key. Emit a literal tilde in the terminal.
+keybind = alt+n=text:~
+
 # Splits
 keybind = ctrl+t>shift+5=new_split:right
 keybind = ctrl+t>shift+2=new_split:down

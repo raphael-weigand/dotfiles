@@ -306,7 +306,7 @@ ShellRoot {
 
     Process {
         id: audioStatus; command: ["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"]
-        stdout: StdioCollector { onStreamFinished: { const match = text.match(/Volume:\\s+([0-9.]+)/); if (match) { volumeLevel = Number(match[1]); volumePercent = Math.round(volumeLevel * 100); volumeMuted = text.indexOf("[MUTED]") !== -1 } } }
+        stdout: StdioCollector { onStreamFinished: { const match = text.match(/Volume:\s+([0-9.]+)/); if (match) { volumeLevel = Number(match[1]); volumePercent = Math.round(volumeLevel * 100); volumeMuted = text.indexOf("[MUTED]") !== -1 } } }
     }
 
     Process {

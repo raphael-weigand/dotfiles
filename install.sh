@@ -177,6 +177,7 @@ install_links() {
         backup_and_link "$DOTFILES_DIR/linux/imv" "$HOME/.config/imv"
         backup_and_link "$DOTFILES_DIR/linux/fuzzel" "$HOME/.config/fuzzel"
         backup_and_link "$DOTFILES_DIR/linux/quickshell" "$HOME/.config/quickshell"
+        find "$DOTFILES_DIR/linux/quickshell" -maxdepth 1 -type f -name '*.sh' -exec chmod +x {} +
     fi
 
     if [ ! -d "$HOME/.config/tmux/plugins/tpm/.git" ]; then

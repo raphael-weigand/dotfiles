@@ -3,10 +3,12 @@ set -euo pipefail
 
 # Build a dynamic list of PipeWire output sinks. IDs are intentionally resolved
 # at runtime because WirePlumber node IDs can change after reconnects/reboots.
+# Use wpctl's human-readable output here: `-n` prints internal PipeWire node
+# names such as alsa_output.pci-..., which are not useful in the UI.
 mapfile -t sinks < <(
-    wpctl status -n | awk '
+    wpctl status | awk '
         /Sinks:/ { in_sinks=1; next }
-        in_sinks && /^[[:space:]]*[├└]─ Sources:/ { exit }
+        in_sinks && /^[[:space:]│]*[├└]─ Sources:/ { exit }
         in_sinks {
             line=$0
             sub(/^[[:space:]│├└─*]+/, "", line)
@@ -25,9 +27,9 @@ mapfile -t sinks < <(
     exit 1
 }
 
-current_id="$(wpctl status -n | awk '
+current_id="$(wpctl status | awk '
     /Sinks:/ { in_sinks=1; next }
-    in_sinks && /^[[:space:]]*[├└]─ Sources:/ { exit }
+    in_sinks && /^[[:space:]│]*[├└]─ Sources:/ { exit }
     in_sinks && /\*/ {
         line=$0
         sub(/^.*\*[[:space:]]*/, "", line)
@@ -52,8 +54,4 @@ selected_id="$(printf '%s' "$menu" | awk -F '\t' -v choice="$choice" '$1 == choi
 [[ -n "$selected_id" ]] || exit 1
 
 wpctl set-default "$selected_id"
-
-# Move currently playing streams to the newly selected default when possible.
-# New streams will automatically use the new default sink.
-wpctl status -n >/dev/null
 notify-send "Audio output" "${choice#● }"

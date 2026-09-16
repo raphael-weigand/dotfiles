@@ -131,6 +131,14 @@ install_t2_arch() {
     sudo install -Dm644 "$DOTFILES_DIR/linux/systemd/amdgpu-t2-performance.service" /etc/systemd/system/amdgpu-t2-performance.service
     sudo systemctl daemon-reload
     sudo systemctl enable --now amdgpu-t2-performance.service
+
+    local charge_limit_path="/sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:104/APP0001:00/battery_charge_limit"
+    if [ -e "$charge_limit_path" ]; then
+        log "Installing T2 battery charge limit service"
+        sudo install -Dm644 "$DOTFILES_DIR/linux/systemd/battery-charge-limit.service" /etc/systemd/system/battery-charge-limit.service
+        sudo systemctl daemon-reload
+        sudo systemctl enable --now battery-charge-limit.service
+    fi
 }
 
 configure_linux_defaults() {

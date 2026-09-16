@@ -19,6 +19,15 @@ ShellRoot {
     property double previousTxBytes: -1
     property double previousNetworkTimestamp: 0
 
+    property bool wifiEnabled: false
+    property string wifiText: "Checking…"
+    property bool bluetoothEnabled: false
+    property string bluetoothText: "Checking…"
+    property real volumeLevel: 0
+    property int volumePercent: 0
+    property bool volumeMuted: false
+    property int brightnessPercent: 1
+
     function formatRate(bytesPerSecond) {
         if (bytesPerSecond >= 1073741824) return (bytesPerSecond / 1073741824).toFixed(1) + " GiB/s"
         if (bytesPerSecond >= 1048576) return (bytesPerSecond / 1048576).toFixed(1) + " MiB/s"
@@ -73,12 +82,12 @@ ShellRoot {
                             radius: 9
                             color: wifiMouse.containsMouse ? "#2b2b2b" : "#222222"
                             border.width: 1
-                            border.color: wifiMouse.containsMouse ? "#ffdd33" : "#303030"
+                            border.color: wifiEnabled ? "#ffdd33" : "#303030"
                             Column {
                                 anchors.centerIn: parent
                                 spacing: 3
-                                Label { anchors.horizontalCenter: parent.horizontalCenter; text: "󰖩  Wi-Fi"; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true }
-                                Label { anchors.horizontalCenter: parent.horizontalCenter; text: "Network settings"; color: "#777777"; font.family: "Iosevka Term Extended"; font.pixelSize: 10 }
+                                Label { anchors.horizontalCenter: parent.horizontalCenter; text: "󰖩  Wi-Fi"; color: wifiEnabled ? "#ffdd33" : "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true }
+                                Label { anchors.horizontalCenter: parent.horizontalCenter; text: wifiText; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 10; elide: Text.ElideRight; width: 145; horizontalAlignment: Text.AlignHCenter }
                             }
                             MouseArea { id: wifiMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: wifiSettings.running = true }
                         }
@@ -89,12 +98,12 @@ ShellRoot {
                             radius: 9
                             color: bluetoothMouse.containsMouse ? "#2b2b2b" : "#222222"
                             border.width: 1
-                            border.color: bluetoothMouse.containsMouse ? "#ffdd33" : "#303030"
+                            border.color: bluetoothEnabled ? "#ffdd33" : "#303030"
                             Column {
                                 anchors.centerIn: parent
                                 spacing: 3
-                                Label { anchors.horizontalCenter: parent.horizontalCenter; text: "󰂯  Bluetooth"; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true }
-                                Label { anchors.horizontalCenter: parent.horizontalCenter; text: "Device settings"; color: "#777777"; font.family: "Iosevka Term Extended"; font.pixelSize: 10 }
+                                Label { anchors.horizontalCenter: parent.horizontalCenter; text: "󰂯  Bluetooth"; color: bluetoothEnabled ? "#ffdd33" : "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true }
+                                Label { anchors.horizontalCenter: parent.horizontalCenter; text: bluetoothText; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 10; elide: Text.ElideRight; width: 145; horizontalAlignment: Text.AlignHCenter }
                             }
                             MouseArea { id: bluetoothMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: bluetoothSettings.running = true }
                         }
@@ -115,7 +124,8 @@ ShellRoot {
 
                             RowLayout {
                                 Layout.fillWidth: true
-                                Label { text: "󰕾  Volume"; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true }
+                                Label { text: (volumeMuted ? "󰝟" : "󰕾") + "  Volume"; color: volumeMuted ? "#999999" : "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true }
+                                Label { text: volumeMuted ? "Muted" : volumePercent + "%"; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 11 }
                                 Item { Layout.fillWidth: true }
                                 Label { text: "Audio settings  ›"; color: audioMouse.containsMouse ? "#ffdd33" : "#777777"; font.family: "Iosevka Term Extended"; font.pixelSize: 11
                                     MouseArea { id: audioMouse; anchors.fill: parent; anchors.margins: -6; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: audioSettings.running = true }
@@ -123,23 +133,37 @@ ShellRoot {
                             }
 
                             Slider {
+                                id: volumeSlider
                                 Layout.fillWidth: true
                                 from: 0
                                 to: 1.5
-                                value: 0.4
-                                onMoved: volumeSet.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", value.toFixed(2)]
-                                onPressedChanged: if (!pressed) volumeSet.running = true
+                                value: volumeLevel
+                                onMoved: {
+                                    volumeLevel = value
+                                    volumePercent = Math.round(value * 100)
+                                    volumeSet.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", value.toFixed(2)]
+                                }
+                                onPressedChanged: if (!pressed) { volumeSet.running = true; Qt.callLater(function() { audioStatus.running = true }) }
                             }
 
-                            Label { text: "󰃠  Brightness"; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true }
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Label { text: "󰃠  Brightness"; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true }
+                                Item { Layout.fillWidth: true }
+                                Label { text: brightnessPercent + "%"; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 11 }
+                            }
 
                             Slider {
+                                id: brightnessSlider
                                 Layout.fillWidth: true
                                 from: 1
                                 to: 100
-                                value: 70
-                                onMoved: brightnessSet.command = ["brightnessctl", "set", Math.round(value) + "%"]
-                                onPressedChanged: if (!pressed) brightnessSet.running = true
+                                value: brightnessPercent
+                                onMoved: {
+                                    brightnessPercent = Math.round(value)
+                                    brightnessSet.command = ["brightnessctl", "set", brightnessPercent + "%"]
+                                }
+                                onPressedChanged: if (!pressed) { brightnessSet.running = true; Qt.callLater(function() { brightnessStatus.running = true }) }
                             }
                         }
                     }
@@ -207,7 +231,14 @@ ShellRoot {
 
     Timer {
         interval: 2000; running: true; repeat: true; triggeredOnStart: true
-        onTriggered: { systemStats.running = true; networkStats.running = true }
+        onTriggered: {
+            systemStats.running = true
+            networkStats.running = true
+            wifiStatus.running = true
+            bluetoothStatus.running = true
+            audioStatus.running = true
+            brightnessStatus.running = true
+        }
     }
 
     Process {
@@ -232,6 +263,30 @@ ShellRoot {
                 previousRxBytes = rx; previousTxBytes = tx; previousNetworkTimestamp = now
             }
         }
+    }
+
+    Process {
+        id: wifiStatus
+        command: ["sh", "-c", "radio=$(nmcli -t -f WIFI general 2>/dev/null); ssid=$(nmcli -t -f ACTIVE,SSID dev wifi 2>/dev/null | sed -n 's/^yes://p' | head -n1); printf '%s|%s\\n' \"$radio\" \"$ssid\""]
+        stdout: StdioCollector { onStreamFinished: { const values = text.trim().split("|"); wifiEnabled = values[0] === "enabled"; wifiText = !wifiEnabled ? "Off" : (values.length > 1 && values[1] !== "" ? values[1] : "On · not connected") } }
+    }
+
+    Process {
+        id: bluetoothStatus
+        command: ["sh", "-c", "powered=$(bluetoothctl show 2>/dev/null | awk '/Powered:/ {print $2; exit}'); count=$(bluetoothctl devices Connected 2>/dev/null | grep -c '^Device ' || true); printf '%s|%s\\n' \"$powered\" \"$count\""]
+        stdout: StdioCollector { onStreamFinished: { const values = text.trim().split("|"); bluetoothEnabled = values[0] === "yes"; bluetoothText = !bluetoothEnabled ? "Off" : ((Number(values[1]) || 0) > 0 ? values[1] + " connected" : "On · no devices") } }
+    }
+
+    Process {
+        id: audioStatus
+        command: ["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"]
+        stdout: StdioCollector { onStreamFinished: { const match = text.match(/Volume:\\s+([0-9.]+)/); if (match) { volumeLevel = Number(match[1]); volumePercent = Math.round(volumeLevel * 100); volumeMuted = text.indexOf("[MUTED]") !== -1 } } }
+    }
+
+    Process {
+        id: brightnessStatus
+        command: ["brightnessctl", "-m"]
+        stdout: StdioCollector { onStreamFinished: { const values = text.trim().split(","); if (values.length >= 4) { const value = Number(values[3].replace("%", "")); if (!isNaN(value)) brightnessPercent = value } } }
     }
 
     Process { id: wifiSettings; command: ["nm-connection-editor"] }

@@ -30,6 +30,10 @@ ShellRoot {
     property bool volumeMuted: false
     property string audioOutputName: "Checking…"
     property int brightnessPercent: 1
+    property string batteryText: "Checking…"
+    property string batteryHealthText: "Checking…"
+    property string batteryCyclesText: "Checking…"
+    property string batteryLimitText: "Checking…"
 
     function formatRate(bytesPerSecond) {
         if (bytesPerSecond >= 1073741824) return (bytesPerSecond / 1073741824).toFixed(1) + " GiB/s"
@@ -56,7 +60,7 @@ ShellRoot {
             color: "transparent"
             anchors { top: true; right: true }
             implicitWidth: 380
-            implicitHeight: 770
+            implicitHeight: 850
             margins.top: 44
             margins.right: 12
 
@@ -209,6 +213,14 @@ ShellRoot {
                             Label { text: ramText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
                             Label { text: "Temperature"; color: "#999999"; font.family: "Iosevka Term Extended" }
                             Label { text: tempText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                            Label { text: "󰁹  Battery"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                            Label { text: batteryText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                            Label { text: "Battery health"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                            Label { text: batteryHealthText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                            Label { text: "Cycles"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                            Label { text: batteryCyclesText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                            Label { text: "Charge limit"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                            Label { text: batteryLimitText; color: "#ffdd33"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
                         }
                     }
 
@@ -260,7 +272,7 @@ ShellRoot {
         onTriggered: {
             systemStats.running = true; networkStats.running = true; connectionStatus.running = true
             wifiStatus.running = true; bluetoothStatus.running = true; audioStatus.running = true
-            audioOutputStatus.running = true; brightnessStatus.running = true
+            audioOutputStatus.running = true; brightnessStatus.running = true; batteryStatus.running = true
         }
     }
 
@@ -324,6 +336,12 @@ ShellRoot {
     Process {
         id: brightnessStatus; command: ["brightnessctl", "-m"]
         stdout: StdioCollector { onStreamFinished: { const values = text.trim().split(","); if (values.length >= 4) { const value = Number(values[3].replace("%", "")); if (!isNaN(value)) brightnessPercent = value } } }
+    }
+
+    Process {
+        id: batteryStatus
+        command: ["sh", "-c", "bat=/sys/class/power_supply/BAT0; limit=/sys/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0A08:00/device:104/APP0001:00/battery_charge_limit; if [ -r \"$bat/capacity\" ]; then capacity=$(cat \"$bat/capacity\"); status=$(cat \"$bat/status\"); full=$(cat \"$bat/charge_full\" 2>/dev/null || echo 0); design=$(cat \"$bat/charge_full_design\" 2>/dev/null || echo 0); cycles=$(cat \"$bat/cycle_count\" 2>/dev/null || echo n/a); health=$(awk -v f=\"$full\" -v d=\"$design\" 'BEGIN {if (d > 0) printf \"%.0f%%\", f*100/d; else printf \"n/a\"}'); if [ -r \"$limit\" ]; then charge_limit=$(cat \"$limit\")%; else charge_limit=n/a; fi; printf '%s%% · %s|%s|%s|%s\\n' \"$capacity\" \"$status\" \"$health\" \"$cycles\" \"$charge_limit\"; else printf 'No battery|n/a|n/a|n/a\\n'; fi"]
+        stdout: StdioCollector { onStreamFinished: { const values = text.trim().split("|"); if (values.length === 4) { batteryText = values[0]; batteryHealthText = values[1]; batteryCyclesText = values[2]; batteryLimitText = values[3] } } }
     }
 
     Process { id: wifiSettings; command: ["nm-connection-editor"] }

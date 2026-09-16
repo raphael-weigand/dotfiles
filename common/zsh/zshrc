@@ -7,11 +7,7 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 [ -s "$ZSH_COMMON/myalias" ] && . "$ZSH_COMMON/myalias"
 [ -s "$ZSH_COMMON/nvm_bash_completion" ] && . "$ZSH_COMMON/nvm_bash_completion"
 [ -s "$ZSH_COMMON/history" ] && . "$ZSH_COMMON/history"
-
-if [ "$(uname -s)" = "Darwin" ]; then
-    [ -s "$DOTFILES_DIR/macos/zsh/git-prompt" ] && . "$DOTFILES_DIR/macos/zsh/git-prompt"
-fi
-
+[ -s "$ZSH_COMMON/git-prompt" ] && . "$ZSH_COMMON/git-prompt"
 [ -s "$ZSH_COMMON/prompt" ] && . "$ZSH_COMMON/prompt"
 
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"

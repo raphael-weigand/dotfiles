@@ -100,13 +100,15 @@ install_arch() {
         ttf-iosevka-nerd noto-fonts-emoji
     sudo systemctl enable --now bluetooth
 
-    log "Installing HyMission overview plugin"
-    hyprpm update
-    if ! hyprpm list 2>/dev/null | grep -q 'hymission'; then
-        hyprpm add https://github.com/gfhdhytghd/hymission
-    fi
-    hyprpm enable hymission
-    hyprpm reload || true
+    # HyMission overview plugin is disabled for now. It caused the hymission:toggle
+    # dispatcher to be unavailable during Hyprland startup.
+    # log "Installing HyMission overview plugin"
+    # hyprpm update
+    # if ! hyprpm list 2>/dev/null | grep -q 'hymission'; then
+    #     hyprpm add https://github.com/gfhdhytghd/hymission
+    # fi
+    # hyprpm enable hymission
+    # hyprpm reload || true
 }
 
 install_linux() {

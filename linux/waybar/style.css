@@ -42,29 +42,15 @@ window#waybar {
     margin: 5px 0;
 }
 
-#tray,
-#network,
-#bluetooth,
-#pulseaudio,
-#battery {
+#custom-control-center {
     background: rgba(24, 24, 24, 0.88);
     color: #e4e4ef;
-    padding: 0 9px;
-    margin: 5px 0;
+    border-radius: 10px;
+    padding: 0 12px;
+    margin: 5px 12px 5px 0;
 }
 
-#tray {
-    border-radius: 10px 0 0 10px;
-    padding-left: 12px;
+#custom-control-center:hover {
+    color: #ffdd33;
+    background: rgba(40, 40, 40, 0.94);
 }
-
-#battery {
-    border-radius: 0 10px 10px 0;
-    margin-right: 8px;
-    padding-right: 12px;
-}
-
-#battery.warning { color: #ff9955; }
-#battery.critical,
-#network.disconnected { color: #f43841; }
-#pulseaudio.muted { color: #95a99f; }

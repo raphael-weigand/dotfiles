@@ -136,6 +136,131 @@ ShellRoot {
                     }
 
                     Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: "#303030" }
+Rectangle {
+    Layout.fillWidth: true
+    Layout.preferredHeight: 112
+    radius: 12
+    color: "#222222"
+    border.width: 1
+    border.color: "#303030"
+
+    ColumnLayout {
+        anchors.fill: parent
+        anchors.margins: 14
+        spacing: 10
+
+        RowLayout {
+            Layout.fillWidth: true
+
+            Rectangle {
+                width: 42
+                height: 42
+                radius: 21
+                color: "#3a3520"
+
+                Label {
+                    anchors.centerIn: parent
+                    text: "󰁹"
+                    color: "#ffdd33"
+                    font.family: "Iosevka Term Extended"
+                    font.pixelSize: 20
+                }
+            }
+
+            ColumnLayout {
+                Layout.leftMargin: 4
+                spacing: 1
+
+                Label {
+                    text: "Battery"
+                    color: "#ffffff"
+                    font.family: "Iosevka Term Extended"
+                    font.bold: true
+                }
+
+                Label {
+                    text: batteryText
+                    color: "#999999"
+                    font.family: "Iosevka Term Extended"
+                    font.pixelSize: 10
+                }
+            }
+
+            Item {
+                Layout.fillWidth: true
+            }
+
+            Label {
+                text: batteryText.split("%")[0] + "%"
+                color: "#ffffff"
+                font.family: "Iosevka Term Extended"
+                font.pixelSize: 22
+                font.bold: true
+            }
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 1
+
+                Label {
+                    text: "Health"
+                    color: "#777777"
+                    font.family: "Iosevka Term Extended"
+                    font.pixelSize: 10
+                }
+
+                Label {
+                    text: batteryHealthText
+                    color: "#e4e4ef"
+                    font.family: "Iosevka Term Extended"
+                    font.bold: true
+                }
+            }
+
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 1
+
+                Label {
+                    text: "Cycles"
+                    color: "#777777"
+                    font.family: "Iosevka Term Extended"
+                    font.pixelSize: 10
+                }
+
+                Label {
+                    text: batteryCyclesText
+                    color: "#e4e4ef"
+                    font.family: "Iosevka Term Extended"
+                    font.bold: true
+                }
+            }
+
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 1
+
+                Label {
+                    text: "Charge limit"
+                    color: "#777777"
+                    font.family: "Iosevka Term Extended"
+                    font.pixelSize: 10
+                }
+
+                Label {
+                    text: batteryLimitText
+                    color: "#ffdd33"
+                    font.family: "Iosevka Term Extended"
+                    font.bold: true
+                }
+            }
+        }
+    }
+}
                     Label { text: "System"; color: "#ffffff"; font.family: "Iosevka Term Extended"; font.pixelSize: 14; font.bold: true }
                     Rectangle {
                         Layout.fillWidth: true; Layout.preferredHeight: systemGrid.implicitHeight + 24; radius: 12; color: "#222222"; border.width: 1; border.color: "#303030"

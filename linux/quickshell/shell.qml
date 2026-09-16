@@ -28,6 +28,7 @@ ShellRoot {
     property real volumeLevel: 0
     property int volumePercent: 0
     property bool volumeMuted: false
+    property string audioOutputName: "Checking…"
     property int brightnessPercent: 1
 
     function formatRate(bytesPerSecond) {
@@ -55,7 +56,7 @@ ShellRoot {
             color: "transparent"
             anchors { top: true; right: true }
             implicitWidth: 380
-            implicitHeight: 742
+            implicitHeight: 770
             margins.top: 44
             margins.right: 12
 
@@ -84,15 +85,12 @@ ShellRoot {
                             color: wifiToggleMouse.containsMouse || wifiSettingsMouse.containsMouse ? "#2b2b2b" : "#222222"
                             border.width: 1
                             border.color: wifiEnabled ? "#ffdd33" : "#303030"
-
                             Row {
                                 anchors.fill: parent
                                 Item {
-                                    width: parent.width - 38
-                                    height: parent.height
+                                    width: parent.width - 38; height: parent.height
                                     Column {
-                                        anchors.centerIn: parent
-                                        spacing: 3
+                                        anchors.centerIn: parent; spacing: 3
                                         Label { anchors.horizontalCenter: parent.horizontalCenter; text: "󰖩  Wi-Fi   " + (wifiEnabled ? "ON" : "OFF"); color: wifiEnabled ? "#ffdd33" : "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true }
                                         Label { anchors.horizontalCenter: parent.horizontalCenter; text: wifiText; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 10; elide: Text.ElideRight; width: 120; horizontalAlignment: Text.AlignHCenter }
                                     }
@@ -100,8 +98,7 @@ ShellRoot {
                                 }
                                 Rectangle { width: 1; height: parent.height - 16; anchors.verticalCenter: parent.verticalCenter; color: "#383838" }
                                 Item {
-                                    width: 37
-                                    height: parent.height
+                                    width: 37; height: parent.height
                                     Label { anchors.centerIn: parent; text: "›"; color: wifiSettingsMouse.containsMouse ? "#ffdd33" : "#999999"; font.pixelSize: 20 }
                                     MouseArea { id: wifiSettingsMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: wifiSettings.running = true }
                                 }
@@ -115,15 +112,12 @@ ShellRoot {
                             color: bluetoothToggleMouse.containsMouse || bluetoothSettingsMouse.containsMouse ? "#2b2b2b" : "#222222"
                             border.width: 1
                             border.color: bluetoothEnabled ? "#ffdd33" : "#303030"
-
                             Row {
                                 anchors.fill: parent
                                 Item {
-                                    width: parent.width - 38
-                                    height: parent.height
+                                    width: parent.width - 38; height: parent.height
                                     Column {
-                                        anchors.centerIn: parent
-                                        spacing: 3
+                                        anchors.centerIn: parent; spacing: 3
                                         Label { anchors.horizontalCenter: parent.horizontalCenter; text: "󰂯  Bluetooth"; color: bluetoothEnabled ? "#ffdd33" : "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true }
                                         Label { anchors.horizontalCenter: parent.horizontalCenter; text: bluetoothText; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 10; elide: Text.ElideRight; width: 120; horizontalAlignment: Text.AlignHCenter }
                                     }
@@ -131,8 +125,7 @@ ShellRoot {
                                 }
                                 Rectangle { width: 1; height: parent.height - 16; anchors.verticalCenter: parent.verticalCenter; color: "#383838" }
                                 Item {
-                                    width: 37
-                                    height: parent.height
+                                    width: 37; height: parent.height
                                     Label { anchors.centerIn: parent; text: "›"; color: bluetoothSettingsMouse.containsMouse ? "#ffdd33" : "#999999"; font.pixelSize: 20 }
                                     MouseArea { id: bluetoothSettingsMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: bluetoothSettings.running = true }
                                 }
@@ -142,7 +135,7 @@ ShellRoot {
 
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 126
+                        Layout.preferredHeight: 154
                         radius: 9
                         color: "#222222"
                         border.width: 1
@@ -151,21 +144,43 @@ ShellRoot {
                         ColumnLayout {
                             anchors.fill: parent
                             anchors.margins: 12
-                            spacing: 8
+                            spacing: 7
+
                             RowLayout {
                                 Layout.fillWidth: true
                                 Label { text: (volumeMuted ? "󰝟" : "󰕾") + "  Volume"; color: volumeMuted ? "#999999" : "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true }
                                 Label { text: volumeMuted ? "Muted" : volumePercent + "%"; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 11 }
                                 Item { Layout.fillWidth: true }
-                                Label { text: "Audio settings  ›"; color: audioMouse.containsMouse ? "#ffdd33" : "#777777"; font.family: "Iosevka Term Extended"; font.pixelSize: 11
+                                Label {
+                                    text: "Audio settings  ›"
+                                    color: audioMouse.containsMouse ? "#ffdd33" : "#777777"
+                                    font.family: "Iosevka Term Extended"; font.pixelSize: 11
                                     MouseArea { id: audioMouse; anchors.fill: parent; anchors.margins: -6; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: audioSettings.running = true }
                                 }
                             }
+
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 25
+                                radius: 5
+                                color: outputMouse.containsMouse ? "#2b2b2b" : "transparent"
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 6
+                                    anchors.rightMargin: 6
+                                    Label { text: "󰓃"; color: "#ffdd33"; font.family: "Iosevka Term Extended" }
+                                    Label { text: audioOutputName; color: outputMouse.containsMouse ? "#ffffff" : "#b8b8c0"; font.family: "Iosevka Term Extended"; font.pixelSize: 11; elide: Text.ElideRight; Layout.fillWidth: true }
+                                    Label { text: "›"; color: outputMouse.containsMouse ? "#ffdd33" : "#777777"; font.pixelSize: 17 }
+                                }
+                                MouseArea { id: outputMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: audioOutputMenu.running = true }
+                            }
+
                             Slider {
                                 Layout.fillWidth: true; from: 0; to: 1.5; value: volumeLevel
                                 onMoved: { volumeLevel = value; volumePercent = Math.round(value * 100); volumeSet.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", value.toFixed(2)] }
                                 onPressedChanged: if (!pressed) { volumeSet.running = true; Qt.callLater(function() { audioStatus.running = true }) }
                             }
+
                             RowLayout {
                                 Layout.fillWidth: true
                                 Label { text: "󰃠  Brightness"; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; font.bold: true }
@@ -242,7 +257,11 @@ ShellRoot {
 
     Timer {
         interval: 2000; running: true; repeat: true; triggeredOnStart: true
-        onTriggered: { systemStats.running = true; networkStats.running = true; connectionStatus.running = true; wifiStatus.running = true; bluetoothStatus.running = true; audioStatus.running = true; brightnessStatus.running = true }
+        onTriggered: {
+            systemStats.running = true; networkStats.running = true; connectionStatus.running = true
+            wifiStatus.running = true; bluetoothStatus.running = true; audioStatus.running = true
+            audioOutputStatus.running = true; brightnessStatus.running = true
+        }
     }
 
     Process {
@@ -276,7 +295,6 @@ ShellRoot {
         command: ["sh", "-c", "radio=$(nmcli -t -f WIFI general 2>/dev/null); ssid=$(nmcli -t -f ACTIVE,SSID dev wifi 2>/dev/null | sed -n 's/^yes://p' | head -n1); printf '%s|%s\\n' \"$radio\" \"$ssid\""]
         stdout: StdioCollector { onStreamFinished: { const values = text.trim().split("|"); wifiEnabled = values[0] === "enabled"; wifiText = !wifiEnabled ? "Off" : (values.length > 1 && values[1] !== "" ? values[1] : "On · not connected") } }
     }
-
     Process { id: wifiToggle; command: ["sh", "-c", "nmcli radio wifi | grep -q enabled && nmcli radio wifi off || nmcli radio wifi on"]; onExited: Qt.callLater(function() { wifiStatus.running = true; connectionStatus.running = true }) }
 
     Process {
@@ -284,12 +302,23 @@ ShellRoot {
         command: ["sh", "-c", "powered=$(bluetoothctl show 2>/dev/null | awk '/Powered:/ {print $2; exit}'); count=$(bluetoothctl devices Connected 2>/dev/null | grep -c '^Device ' || true); printf '%s|%s\\n' \"$powered\" \"$count\""]
         stdout: StdioCollector { onStreamFinished: { const values = text.trim().split("|"); bluetoothEnabled = values[0] === "yes"; bluetoothText = !bluetoothEnabled ? "Off" : ((Number(values[1]) || 0) > 0 ? values[1] + " connected" : "On · no devices") } }
     }
-
     Process { id: bluetoothToggle; command: ["sh", "-c", "bluetoothctl show | grep -q 'Powered: yes' && bluetoothctl power off || bluetoothctl power on"]; onExited: Qt.callLater(function() { bluetoothStatus.running = true }) }
 
     Process {
         id: audioStatus; command: ["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"]
         stdout: StdioCollector { onStreamFinished: { const match = text.match(/Volume:\\s+([0-9.]+)/); if (match) { volumeLevel = Number(match[1]); volumePercent = Math.round(volumeLevel * 100); volumeMuted = text.indexOf("[MUTED]") !== -1 } } }
+    }
+
+    Process {
+        id: audioOutputStatus
+        command: ["sh", "-c", "wpctl status | awk '/Sinks:/ {s=1; next} s && /^[[:space:]│]*[├└]─ Sources:/ {exit} s && /\\*/ {line=$0; sub(/^.*\\*[[:space:]]*/, \"\", line); sub(/^[0-9]+\\.[[:space:]]*/, \"\", line); sub(/[[:space:]]+\\[vol:.*$/, \"\", line); print line; exit}'"]
+        stdout: StdioCollector { onStreamFinished: { const value = text.trim(); audioOutputName = value !== "" ? value : "No output device" } }
+    }
+
+    Process {
+        id: audioOutputMenu
+        command: ["bash", "-lc", "~/.config/quickshell/audio-output-menu.sh"]
+        onExited: Qt.callLater(function() { audioOutputStatus.running = true; audioStatus.running = true })
     }
 
     Process {

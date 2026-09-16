@@ -49,7 +49,7 @@ ShellRoot {
             }
 
             implicitWidth: 380
-            implicitHeight: 620
+            implicitHeight: 690
             margins.top: 44
             margins.right: 12
 
@@ -140,30 +140,92 @@ ShellRoot {
                         font.bold: true
                     }
 
-                    GridLayout {
+                    Rectangle {
                         Layout.fillWidth: true
-                        columns: 2
-                        columnSpacing: 16
-                        rowSpacing: 7
+                        Layout.preferredHeight: systemGrid.implicitHeight + 24
+                        radius: 9
+                        color: "#222222"
+                        border.width: 1
+                        border.color: "#303030"
 
-                        Label { text: "CPU"; color: "#999999"; font.family: "Iosevka Term Extended" }
-                        Label { text: cpuText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                        Label { text: "RAM"; color: "#999999"; font.family: "Iosevka Term Extended" }
-                        Label { text: ramText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                        Label { text: "Network ↓"; color: "#999999"; font.family: "Iosevka Term Extended" }
-                        Label { text: networkDownText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                        Label { text: "Network ↑"; color: "#999999"; font.family: "Iosevka Term Extended" }
-                        Label { text: networkUpText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                        Label { text: "Received"; color: "#999999"; font.family: "Iosevka Term Extended" }
-                        Label { text: networkReceivedText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                        Label { text: "Sent"; color: "#999999"; font.family: "Iosevka Term Extended" }
-                        Label { text: networkSentText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                        Label { text: "Temperature"; color: "#999999"; font.family: "Iosevka Term Extended" }
-                        Label { text: tempText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                        Label { text: "Disk /"; color: "#999999"; font.family: "Iosevka Term Extended" }
-                        Label { text: diskText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
-                        Label { text: "Uptime"; color: "#999999"; font.family: "Iosevka Term Extended" }
-                        Label { text: uptimeText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        GridLayout {
+                            id: systemGrid
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            columns: 2
+                            columnSpacing: 16
+                            rowSpacing: 7
+
+                            Label { text: "CPU"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                            Label { text: cpuText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                            Label { text: "RAM"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                            Label { text: ramText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                            Label { text: "Temperature"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                            Label { text: tempText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        }
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: networkColumn.implicitHeight + 24
+                        radius: 9
+                        color: "#222222"
+                        border.width: 1
+                        border.color: "#303030"
+
+                        ColumnLayout {
+                            id: networkColumn
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            spacing: 8
+
+                            Label {
+                                text: "Network"
+                                color: "#ffdd33"
+                                font.family: "Iosevka Term Extended"
+                                font.pixelSize: 13
+                                font.bold: true
+                            }
+
+                            GridLayout {
+                                Layout.fillWidth: true
+                                columns: 2
+                                columnSpacing: 16
+                                rowSpacing: 7
+
+                                Label { text: "↓ Download"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                                Label { text: networkDownText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                                Label { text: "↑ Upload"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                                Label { text: networkUpText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                                Label { text: "Received"; color: "#777777"; font.family: "Iosevka Term Extended" }
+                                Label { text: networkReceivedText; color: "#b8b8c0"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                                Label { text: "Sent"; color: "#777777"; font.family: "Iosevka Term Extended" }
+                                Label { text: networkSentText; color: "#b8b8c0"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: storageGrid.implicitHeight + 24
+                        radius: 9
+                        color: "#222222"
+                        border.width: 1
+                        border.color: "#303030"
+
+                        GridLayout {
+                            id: storageGrid
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            columns: 2
+                            columnSpacing: 16
+                            rowSpacing: 7
+
+                            Label { text: "Disk /"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                            Label { text: diskText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                            Label { text: "Uptime"; color: "#999999"; font.family: "Iosevka Term Extended" }
+                            Label { text: uptimeText; color: "#e4e4ef"; font.family: "Iosevka Term Extended"; Layout.fillWidth: true; horizontalAlignment: Text.AlignRight }
+                        }
                     }
                 }
             }

@@ -42,15 +42,30 @@ window#waybar {
     margin: 5px 0;
 }
 
+#custom-localsend,
 #custom-control-center {
     background: rgba(24, 24, 24, 0.88);
     color: #e4e4ef;
     border-radius: 10px;
     padding: 0 12px;
-    margin: 5px 12px 5px 0;
+    margin: 5px 0;
 }
 
+#custom-localsend.active {
+    color: #ffdd33;
+    background: rgba(255, 221, 51, 0.12);
+}
+
+#custom-localsend.inactive {
+    color: #95a99f;
+}
+
+#custom-localsend:hover,
 #custom-control-center:hover {
     color: #ffdd33;
     background: rgba(40, 40, 40, 0.94);
+}
+
+#custom-control-center {
+    margin-right: 12px;
 }

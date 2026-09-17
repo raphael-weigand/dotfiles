@@ -12,21 +12,26 @@ xkb_keymap {
     };
 
     xkb_symbols {
+        // NORMAL German PC keyboard. No mac variant.
         include "pc+de+inet(evdev)"
 
-        // Remove original modifier membership.
+        // Remove original real-modifier assignments only where necessary.
         modifier_map None { <LALT>, <RALT>, <LWIN>, <RCTL> };
 
-        // Logitech MX Keys Mini (Mac legends, PC keycodes)
-        replace key <LALT> { [ Super_L ] };          // physical L-CMD
-        replace key <RALT> { [ Super_R ] };          // physical R-CMD
-        replace key <LWIN> { [ Alt_L ] };            // physical L-OPT
-        replace key <RCTL> { [ ISO_Level3_Shift ] }; // physical R-OPT
+        // MX Keys Mini physical labels:
+        replace key <LALT> { [ Super_L ] };          // L-CMD
+        replace key <RALT> { [ Super_R ] };          // R-CMD
+        replace key <LWIN> { [ Alt_L ] };            // L-OPT
 
-        // Assign the new modifiers.
+        // R-OPT behaves exactly like a normal XKB AltGr key.
+        // Do NOT manually assign Mod5 here.
+        replace key <RCTL> {
+            type[Group1] = "ONE_LEVEL",
+            symbols[Group1] = [ ISO_Level3_Shift ]
+        };
+
         modifier_map Mod4 { <LALT>, <RALT> };
         modifier_map Mod1 { <LWIN> };
-        modifier_map Mod5 { <RCTL> };
     };
 
     xkb_geometry {

@@ -1,38 +1,34 @@
 #!/bin/sh
 
-# Keep the internal MacBook display in sync with the physical lid state.
-# This is also run on every Hyprland config reload, because reloading the
-# monitor rule can re-enable the panel without generating a new lid event.
+# Keep the internal MacBook display in sync with Hyprland's lid-switch events.
+# On this T2 MacBook both GPUs expose an internal eDP connector. eDP-1 is the
+# real Apple panel while eDP-2 is a mode-less phantom output. Disable both when
+# the lid closes; when it opens, only enable the real Apple panel.
 
 INTERNAL_DISPLAY="desc:Apple Computer Inc Color LCD"
 INTERNAL_MODE="3072x1920@60, auto, 2"
+PHANTOM_DISPLAY="eDP-2"
 
-case "${1:-sync}" in
+disable_internal_displays() {
+    hyprctl keyword monitor "$PHANTOM_DISPLAY, disable"
+    hyprctl keyword monitor "$INTERNAL_DISPLAY, disable"
+}
+
+enable_internal_display() {
+    # Keep the phantom connector out of the Hyprland layout even with the lid open.
+    hyprctl keyword monitor "$PHANTOM_DISPLAY, disable"
+    hyprctl keyword monitor "$INTERNAL_DISPLAY, $INTERNAL_MODE"
+}
+
+case "${1:-}" in
     closed)
-        hyprctl keyword monitor "$INTERNAL_DISPLAY, disable"
+        disable_internal_displays
         ;;
     open)
-        hyprctl keyword monitor "$INTERNAL_DISPLAY, $INTERNAL_MODE"
-        ;;
-    sync)
-        lid_state=""
-        for state_file in /proc/acpi/button/lid/*/state; do
-            [ -r "$state_file" ] || continue
-            lid_state=$(awk '{print $2}' "$state_file")
-            break
-        done
-
-        case "$lid_state" in
-            closed)
-                hyprctl keyword monitor "$INTERNAL_DISPLAY, disable"
-                ;;
-            open)
-                hyprctl keyword monitor "$INTERNAL_DISPLAY, $INTERNAL_MODE"
-                ;;
-        esac
+        enable_internal_display
         ;;
     *)
-        echo "Usage: $0 [open|closed|sync]" >&2
+        echo "Usage: $0 [open|closed]" >&2
         exit 2
         ;;
 esac

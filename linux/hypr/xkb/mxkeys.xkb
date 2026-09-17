@@ -15,6 +15,9 @@ xkb_keymap {
         // NORMAL German PC keyboard. No mac variant.
         include "pc+de+inet(evdev)"
 
+        // Caps Lock behaves as Escape.
+        replace key <CAPS> { [ Escape ] };
+
         // Remove original real-modifier assignments only where necessary.
         modifier_map None { <LALT>, <RALT>, <LWIN>, <RCTL> };
 

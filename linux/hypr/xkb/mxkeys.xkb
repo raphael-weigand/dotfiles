@@ -1,0 +1,35 @@
+xkb_keymap {
+    xkb_keycodes {
+        include "evdev+aliases(qwertz)"
+    };
+
+    xkb_types {
+        include "complete"
+    };
+
+    xkb_compat {
+        include "complete"
+    };
+
+    xkb_symbols {
+        include "pc+de+inet(evdev)"
+
+        // Remove original modifier membership.
+        modifier_map None { <LALT>, <RALT>, <LWIN>, <RCTL> };
+
+        // Logitech MX Keys Mini (Mac legends, PC keycodes)
+        replace key <LALT> { [ Super_L ] };          // physical L-CMD
+        replace key <RALT> { [ Super_R ] };          // physical R-CMD
+        replace key <LWIN> { [ Alt_L ] };            // physical L-OPT
+        replace key <RCTL> { [ ISO_Level3_Shift ] }; // physical R-OPT
+
+        // Assign the new modifiers.
+        modifier_map Mod4 { <LALT>, <RALT> };
+        modifier_map Mod1 { <LWIN> };
+        modifier_map Mod5 { <RCTL> };
+    };
+
+    xkb_geometry {
+        include "pc(pc105)"
+    };
+};

@@ -18,7 +18,7 @@
     "exec": "~/.config/waybar/localsend-status.sh",
     "return-type": "json",
     "interval": 2,
-    "on-click": "~/.config/waybar/localsend-toggle.sh",
+    "on-click": "~/.config/quickshell/localsend-toggle.sh",
     "tooltip": true
   },
   "custom/control-center": {

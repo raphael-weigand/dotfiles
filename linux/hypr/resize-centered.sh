@@ -2,17 +2,21 @@
 
 set -euo pipefail
 
-STEP=60
-HALF=$((STEP / 2))
-
+# Dwindle stores three side-by-side tiles as nested splits rather than three
+# independent columns. Resize both relevant split levels so the focused middle
+# tile grows/shrinks from both sides while returning focus to the same tile.
 case "${1:-}" in
     wider)
-        hyprctl dispatch resizeactive "$STEP 0"
-        hyprctl dispatch moveactive "-$HALF 0"
+        hyprctl dispatch layoutmsg "splitratio -0.05"
+        hyprctl dispatch movefocus r
+        hyprctl dispatch layoutmsg "splitratio +0.1"
+        hyprctl dispatch movefocus l
         ;;
     narrower)
-        hyprctl dispatch resizeactive "-$STEP 0"
-        hyprctl dispatch moveactive "$HALF 0"
+        hyprctl dispatch layoutmsg "splitratio +0.05"
+        hyprctl dispatch movefocus r
+        hyprctl dispatch layoutmsg "splitratio -0.1"
+        hyprctl dispatch movefocus l
         ;;
     *)
         echo "Usage: $0 {wider|narrower}" >&2

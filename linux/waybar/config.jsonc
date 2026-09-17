@@ -5,7 +5,7 @@
   "spacing": 8,
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["custom/localsend", "custom/control-center"],
+  "modules-right": ["custom/control-center"],
   "hyprland/workspaces": {
     "format": "{name}",
     "on-click": "activate"
@@ -13,13 +13,6 @@
   "clock": {
     "format": "{:%a %d.%m.  %H:%M}",
     "tooltip-format": "<tt>{calendar}</tt>"
-  },
-  "custom/localsend": {
-    "exec": "~/.config/waybar/localsend-status.sh",
-    "return-type": "json",
-    "interval": 2,
-    "on-click": "localsend",
-    "tooltip": true
   },
   "custom/control-center": {
     "format": "󰒓",

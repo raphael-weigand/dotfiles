@@ -182,6 +182,7 @@ install_links() {
     elif [ "$OS" = Linux ]; then
         log "Linking Linux desktop dotfiles"
         find "$DOTFILES_DIR/linux/hypr" -maxdepth 1 -type f -name '*.sh' -exec chmod +x {} +
+        find "$DOTFILES_DIR/linux/waybar" -maxdepth 1 -type f -name '*.sh' -exec chmod +x {} +
         backup_and_link "$DOTFILES_DIR/linux/hypr" "$HOME/.config/hypr"
         backup_and_link "$DOTFILES_DIR/linux/waybar" "$HOME/.config/waybar"
         backup_and_link "$DOTFILES_DIR/linux/mako" "$HOME/.config/mako"

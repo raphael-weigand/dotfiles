@@ -4,19 +4,22 @@ set -euo pipefail
 command -v hyprctl >/dev/null 2>&1 || exit 1
 command -v jq >/dev/null 2>&1 || exit 1
 
-workspace="$(hyprctl activeworkspace -j | jq -r '.id')"
+# Move complete normal workspaces to the currently focused monitor instead of
+# moving their individual windows into one workspace. This preserves each
+# workspace's layout tree and avoids corrupting Dwindle state.
+target_monitor="$(hyprctl activeworkspace -j | jq -r '.monitor')"
 
-# Gather windows from normal workspaces onto the currently active workspace.
-# Special workspaces/scratchpads are deliberately left untouched.
-mapfile -t addresses < <(
-    hyprctl clients -j | jq -r --argjson workspace "$workspace" '
+[[ -n "$target_monitor" && "$target_monitor" != "null" ]] || exit 1
+
+mapfile -t workspaces < <(
+    hyprctl workspaces -j | jq -r --arg monitor "$target_monitor" '
         .[]
-        | select(.workspace.id > 0)
-        | select(.workspace.id != $workspace)
-        | .address
-    '
+        | select(.id > 0)
+        | select(.monitor != $monitor)
+        | .id
+    ' | sort -n
 )
 
-for address in "${addresses[@]}"; do
-    hyprctl dispatch movetoworkspacesilent "$workspace,address:$address"
+for workspace in "${workspaces[@]}"; do
+    hyprctl dispatch moveworkspacetomonitor "$workspace $target_monitor"
 done

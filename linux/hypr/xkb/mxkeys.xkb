@@ -16,6 +16,7 @@ xkb_keymap {
         include "pc+de+inet(evdev)"
 
         // Caps Lock behaves as Escape.
+        modifier_map None { <CAPS> };
         replace key <CAPS> { [ Escape ] };
 
         // Remove original real-modifier assignments only where necessary.

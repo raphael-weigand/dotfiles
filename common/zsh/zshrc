@@ -33,6 +33,7 @@ bindkey '^V' ctrl_v_paste
 bindkey '^[[1;5D' backward-word       # Ctrl-Left
 bindkey '^[[1;5C' forward-word        # Ctrl-Right
 bindkey '^[[3;5~' kill-word           # Ctrl-Delete
+bindkey '^H' backward-kill-word        # Ctrl-Backspace
 
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 export PATH="$PATH:$HOME/.dotnet/tools"

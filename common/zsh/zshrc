@@ -10,5 +10,29 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 [ -s "$ZSH_COMMON/git-prompt" ] && . "$ZSH_COMMON/git-prompt"
 [ -s "$ZSH_COMMON/prompt" ] && . "$ZSH_COMMON/prompt"
 
+# Shell editing: keep Ctrl-V available to terminal applications such as Neovim,
+# but make it paste from the system clipboard while editing the zsh prompt.
+ctrl_v_paste() {
+    local text
+
+    if command -v wl-paste >/dev/null 2>&1; then
+        text="$(wl-paste --no-newline)"
+    elif command -v pbpaste >/dev/null 2>&1; then
+        text="$(pbpaste)"
+    else
+        zle -M "No clipboard reader found (wl-paste/pbpaste)"
+        return 1
+    fi
+
+    LBUFFER+="$text"
+}
+zle -N ctrl_v_paste
+bindkey '^V' ctrl_v_paste
+
+# PC-style word editing/navigation in the zsh prompt.
+bindkey '^[[1;5D' backward-word       # Ctrl-Left
+bindkey '^[[1;5C' forward-word        # Ctrl-Right
+bindkey '^[[3;5~' kill-word           # Ctrl-Delete
+
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 export PATH="$PATH:$HOME/.dotnet/tools"

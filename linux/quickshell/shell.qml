@@ -23,6 +23,11 @@ ShellRoot {
     property bool audioPanelVisible: false
     property bool controlCenterVisible: false
 
+    function refreshAudio() {
+        audioStatus.running = true
+        audioOutputStatus.running = true
+    }
+
     function refreshClock() {
         clockText = Qt.formatDateTime(new Date(), "HH:mm")
     }
@@ -283,6 +288,9 @@ ShellRoot {
             required property var modelData
             screen: modelData
             panelVisible: root.audioPanelVisible
+            onVolumePercentChanged: root.volumePercent = volumePercent
+            onMutedChanged: root.volumeMuted = muted
+            onOutputNameChanged: root.audioOutputName = outputName
         }
     }
 

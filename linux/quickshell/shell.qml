@@ -31,7 +31,7 @@ ShellRoot {
             if (wifiNetworks[i].connected) return wifiNetworks[i]
         return null
     }
-    readonly property string networkIcon: connectedWifi ? "󰖩" : "󰖪"
+    readonly property string networkIcon: "󰈀"
     readonly property var bluetoothAdapter: Bluetooth.defaultAdapter
     readonly property var bluetoothDeviceList: Bluetooth.devices ? Bluetooth.devices.values : []
     readonly property var connectedBluetoothDevices: {

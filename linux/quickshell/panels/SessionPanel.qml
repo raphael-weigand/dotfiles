@@ -9,7 +9,7 @@ PanelWindow {
     property var shell
 
     function close() {
-        if (shell) shell.sessionPanelVisible = false
+        if (shell) shell.closePanel()
     }
 
     visible: panelVisible

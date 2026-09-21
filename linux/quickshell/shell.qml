@@ -8,6 +8,7 @@ import Quickshell.Networking
 import Quickshell.Bluetooth
 import Quickshell.Services.UPower
 import "panels"
+import "components"
 
 ShellRoot {
     id: root
@@ -105,132 +106,32 @@ ShellRoot {
     Process { id: bluetoothSettings; command: ["blueman-manager"] }
     Process { id: audioSettings; command: ["pavucontrol"] }
 
+    function openMenu(rightClick) {
+        if (rightClick) terminal.running = true
+        else launcher.running = true
+    }
+
+    function openNetwork(rightClick) {
+        if (rightClick) networkSettings.running = true
+        else networkPanelVisible = !networkPanelVisible
+    }
+
+    function openBluetooth(rightClick) {
+        if (rightClick) bluetoothSettings.running = true
+        else bluetoothPanelVisible = !bluetoothPanelVisible
+    }
+
+    function changeVolume(step) {
+        if (audioSink && audioSink.audio)
+            audioSink.audio.volume = Math.max(0, Math.min(1.5, audioSink.audio.volume + step))
+    }
+
     Variants {
         model: Quickshell.screens
-
-        PanelWindow {
+        StatusBar {
             required property var modelData
             screen: modelData
-            anchors { top: true; left: true; right: true }
-            implicitHeight: 32
-            color: "#1c1c1c"
-
-            Rectangle {
-                anchors.fill: parent
-                color: "#1c1c1c"
-
-                RowLayout {
-                    anchors.left: parent.left
-                    anchors.leftMargin: 8
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 2
-
-                    Rectangle {
-                        implicitWidth: 32; implicitHeight: 28; radius: 4
-                        color: menuMouse.containsMouse ? "#333333" : "transparent"
-                        Text { anchors.centerIn: parent; text: "󰣇"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 16 }
-                        MouseArea {
-                            id: menuMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                            onClicked: mouse => { if (mouse.button === Qt.RightButton) terminal.running = true; else launcher.running = true }
-                        }
-                    }
-
-                    Item { implicitWidth: 8; implicitHeight: 28 }
-
-                    Repeater {
-                        model: root.workspaceIds()
-                        Rectangle {
-                            required property int modelData
-                            property var workspace: root.workspaceById(modelData)
-                            property bool occupied: workspace !== null && workspace.toplevels.values.length > 0
-                            property bool focused: Hyprland.focusedWorkspace !== null && Hyprland.focusedWorkspace.id === modelData
-                            implicitWidth: 28; implicitHeight: 28; radius: 4
-                            color: wsMouse.containsMouse ? "#333333" : "transparent"
-                            opacity: occupied || focused ? 1 : 0.5
-                            Text {
-                                anchors.centerIn: parent
-                                text: parent.focused ? "󰮯" : (parent.modelData === 10 ? "0" : String(parent.modelData))
-                                color: "#eeeeee"
-                                font.family: "Iosevka Term Extended"
-                                font.pixelSize: 13
-                            }
-                            MouseArea {
-                                id: wsMouse; anchors.fill: parent; hoverEnabled: true
-                                onClicked: Hyprland.dispatch("workspace " + parent.modelData)
-                            }
-                        }
-                    }
-                }
-
-                Text {
-                    anchors.centerIn: parent
-                    text: root.clockText
-                    color: "#eeeeee"
-                    font.family: "Iosevka Term Extended"
-                    font.pixelSize: 13
-                    font.bold: true
-                    MouseArea {
-                        anchors.fill: parent
-                        anchors.margins: -8
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.calendarVisible = !root.calendarVisible
-                    }
-                }
-
-                RowLayout {
-                    anchors.right: parent.right
-                    anchors.rightMargin: 8
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 2
-
-                    Rectangle {
-                        implicitWidth: 30; implicitHeight: 28; radius: 4
-                        color: networkMouse.containsMouse ? "#333333" : "transparent"
-                        Text { anchors.centerIn: parent; text: root.networkIcon; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
-                        MouseArea {
-                            id: networkMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                            onClicked: mouse => { if (mouse.button === Qt.RightButton) networkSettings.running = true; else root.networkPanelVisible = !root.networkPanelVisible }
-                        }
-                    }
-                    Rectangle {
-                        implicitWidth: 30; implicitHeight: 28; radius: 4
-                        color: btMouse.containsMouse ? "#333333" : "transparent"
-                        Text { anchors.centerIn: parent; text: root.bluetoothIcon; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
-                        MouseArea {
-                            id: btMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                            onClicked: mouse => { if (mouse.button === Qt.RightButton) bluetoothSettings.running = true; else root.bluetoothPanelVisible = !root.bluetoothPanelVisible }
-                        }
-                    }
-                    Rectangle {
-                        implicitWidth: 52; implicitHeight: 28; radius: 4
-                        color: audioMouse.containsMouse ? "#333333" : "transparent"
-                        Row { anchors.centerIn: parent; spacing: 5
-                            Text { text: root.volumeMuted ? "󰝟" : "󰕾"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
-                            Text { text: root.volumePercent + "%"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 11 }
-                        }
-                        MouseArea {
-                            id: audioMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                            onClicked: mouse => { if (mouse.button === Qt.RightButton) root.toggleAudioMute(); else root.audioPanelVisible = !root.audioPanelVisible }
-                            onWheel: wheel => {
-if (root.audioSink && root.audioSink.audio) {
-                                    const step = wheel.angleDelta.y > 0 ? 0.05 : -0.05
-                                    root.audioSink.audio.volume = Math.max(0, Math.min(1.5, root.audioSink.audio.volume + step))
-                                }
-                            }
-                        }
-                    }
-                    Rectangle {
-                        visible: root.batteryPercent !== ""
-                        implicitWidth: 62; implicitHeight: 28; radius: 4
-                        color: powerMouse.containsMouse ? "#333333" : "transparent"
-                        Row { anchors.centerIn: parent; spacing: 5
-                            Text { text: root.batteryIcon; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
-                            Text { text: root.batteryPercent; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 11 }
-                        }
-                        MouseArea { id: powerMouse; anchors.fill: parent; hoverEnabled: true; onClicked: root.powerPanelVisible = !root.powerPanelVisible }
-                    }
-                }
-            }
+            shell: root
         }
     }
 
@@ -267,24 +168,10 @@ if (root.audioSink && root.audioSink.audio) {
 
     Variants {
         model: Quickshell.screens
-        PanelWindow {
+        CalendarPanel {
             required property var modelData
             screen: modelData
-            visible: root.calendarVisible
-            anchors { top: true }
-            implicitWidth: 300
-            implicitHeight: 190
-            margins.top: 38
-            color: "transparent"
-            Rectangle {
-                anchors.fill: parent; radius: 10; color: "#1c1c1c"; border.width: 1; border.color: "#3a3a3a"
-                Column {
-                    anchors.centerIn: parent; spacing: 10
-                    Text { anchors.horizontalCenter: parent.horizontalCenter; text: Qt.formatDate(new Date(), "dddd"); color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
-                    Text { anchors.horizontalCenter: parent.horizontalCenter; text: Qt.formatDate(new Date(), "dd. MMMM yyyy"); color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 20; font.bold: true }
-                    Text { anchors.horizontalCenter: parent.horizontalCenter; text: root.clockText; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 36; font.bold: true }
-                }
-            }
+            panelVisible: root.calendarVisible
+            clockText: root.clockText
         }
-    }
-}
+    }}

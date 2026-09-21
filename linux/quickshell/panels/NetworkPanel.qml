@@ -73,7 +73,7 @@ PanelWindow {
     onPanelVisibleChanged: if (panelVisible) { previousRx = -1; previousTx = -1; refresh() }
 
     Rectangle {
-        anchors.fill: parent; radius: 10; color: "#1c1c1c"; border.width: 1; border.color: "#3a3a3a"
+        anchors.fill: parent; radius: 10; color: "#ee1c1c1c"; border.width: 1; border.color: "#553a3a3a"
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 10
             RowLayout {

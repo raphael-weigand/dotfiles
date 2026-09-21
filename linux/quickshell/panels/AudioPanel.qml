@@ -3,12 +3,14 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import Quickshell.Services.Pipewire
 
 PanelWindow {
     id: root
     property bool panelVisible: false
-    property int volumePercent: 0
-    property bool muted: false
+    readonly property var sink: Pipewire.defaultAudioSink
+    readonly property int volumePercent: sink && sink.audio ? Math.round(sink.audio.volume * 100) : 0
+    readonly property bool muted: sink && sink.audio ? sink.audio.muted : false
     property string outputName: ""
     visible: panelVisible
     anchors { top: true; right: true }
@@ -18,26 +20,13 @@ PanelWindow {
     margins.right: 76
     color: "transparent"
 
-    function refresh() { status.running = true; output.running = true }
+    function refresh() { output.running = true }
 
-    Process {
-        id: status
-        command: ["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const m = text.match(/Volume:\s+([0-9.]+)/)
-                if (m) root.volumePercent = Math.round(Number(m[1]) * 100)
-                root.muted = text.indexOf("[MUTED]") !== -1
-            }
-        }
-    }
     Process {
         id: output
         command: ["sh", "-c", "wpctl status | awk '/Sinks:/ {s=1; next} s && /Sources:/ {exit} s && /\\*/ {line=$0; sub(/^.*\\*[[:space:]]*/, \"\", line); sub(/^[0-9]+\\.[[:space:]]*/, \"\", line); sub(/[[:space:]]+\\[vol:.*$/, \"\", line); print line; exit}'"]
         stdout: StdioCollector { onStreamFinished: root.outputName = text.trim() }
     }
-    Process { id: setVolume; onExited: root.refresh() }
-    Process { id: toggleMute; command: ["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]; onExited: root.refresh() }
     Process { id: settings; command: ["pavucontrol"] }
     Process {
         id: outputMenu
@@ -88,7 +77,10 @@ PanelWindow {
                     implicitWidth: 34; implicitHeight: 34; radius: 6
                     color: muteMouse.containsMouse ? "#3a3a3a" : "#292929"
                     Text { anchors.centerIn: parent; text: root.muted ? "󰝟" : "󰕾"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 17 }
-                    MouseArea { id: muteMouse; anchors.fill: parent; hoverEnabled: true; onClicked: toggleMute.running = true }
+                    MouseArea {
+                        id: muteMouse; anchors.fill: parent; hoverEnabled: true
+                        onClicked: if (root.sink && root.sink.audio) root.sink.audio.muted = !root.sink.audio.muted
+                    }
                 }
                 Slider {
                     id: slider
@@ -96,9 +88,8 @@ PanelWindow {
                     from: 0; to: 100
                     value: root.volumePercent
                     onMoved: {
-                        root.volumePercent = Math.round(value)
-                        setVolume.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", Math.round(value) + "%"]
-                        setVolume.running = true
+                        if (root.sink && root.sink.audio)
+                            root.sink.audio.volume = Math.max(0, Math.min(1.5, value / 100))
                     }
                 }
             }

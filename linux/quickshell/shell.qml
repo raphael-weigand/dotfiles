@@ -4,6 +4,8 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 import Quickshell.Services.Pipewire
+import Quickshell.Networking
+import Quickshell.Bluetooth
 import "panels"
 
 ShellRoot {
@@ -17,13 +19,38 @@ ShellRoot {
     PwObjectTracker {
         objects: root.audioSink ? [root.audioSink] : []
     }
-    property string networkIcon: "󰖪"
-    property string bluetoothIcon: "󰂲"
+    readonly property var networkDevices: Networking.devices ? Networking.devices.values : []
+    readonly property var wifiDevice: {
+        for (let i = 0; i < networkDevices.length; i++)
+            if (networkDevices[i].type === DeviceType.Wifi) return networkDevices[i]
+        return null
+    }
+    readonly property var wifiNetworks: wifiDevice && wifiDevice.networks ? wifiDevice.networks.values : []
+    readonly property var connectedWifi: {
+        for (let i = 0; i < wifiNetworks.length; i++)
+            if (wifiNetworks[i].connected) return wifiNetworks[i]
+        return null
+    }
+    readonly property string networkIcon: connectedWifi ? "󰖩" : "󰖪"
+    readonly property var bluetoothAdapter: Bluetooth.defaultAdapter
+    readonly property var bluetoothDeviceList: Bluetooth.devices ? Bluetooth.devices.values : []
+    readonly property var connectedBluetoothDevices: {
+        let result = []
+        for (let i = 0; i < bluetoothDeviceList.length; i++)
+            if (bluetoothDeviceList[i].connected) result.push(bluetoothDeviceList[i])
+        return result
+    }
+    readonly property string bluetoothIcon: !bluetoothAdapter || !bluetoothAdapter.enabled ? "󰂲" : (connectedBluetoothDevices.length > 0 ? "󰂱" : "󰂯")
     property string batteryIcon: "󰁹"
     property string batteryPercent: ""
     property string batteryStatusText: ""
-    property string wifiName: ""
-    property string bluetoothDevices: ""
+    readonly property string wifiName: connectedWifi ? (connectedWifi.name || connectedWifi.ssid || "") : ""
+    readonly property string bluetoothDevices: {
+        let names = []
+        for (let i = 0; i < connectedBluetoothDevices.length; i++)
+            names.push(connectedBluetoothDevices[i].name || connectedBluetoothDevices[i].alias || "Bluetooth device")
+        return names.join(", ")
+    }
     property string audioOutputName: ""
     property bool calendarVisible: false
     property bool audioPanelVisible: false
@@ -65,11 +92,7 @@ ShellRoot {
         repeat: true
         triggeredOnStart: true
         onTriggered: {
-            networkStatus.running = true
-            bluetoothStatus.running = true
             batteryStatus.running = true
-            wifiDetails.running = true
-            bluetoothDetails.running = true
             audioOutputStatus.running = true
         }
     }
@@ -79,29 +102,9 @@ ShellRoot {
             audioSink.audio.muted = !audioSink.audio.muted
     }
 
-    Process {
-        id: networkStatus
-        command: ["sh", "-c", "type=$(nmcli -t -f TYPE connection show --active 2>/dev/null | head -n1); case \"$type\" in 802-11-wireless) echo wifi;; 802-3-ethernet) echo ethernet;; *) echo offline;; esac"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const value = text.trim()
-                root.networkIcon = value === "wifi" ? "󰖩" : (value === "ethernet" ? "󰈀" : "󰖪")
-            }
-        }
-    }
-
-    Process {
-        id: bluetoothStatus
-        command: ["sh", "-c", "bluetoothctl show 2>/dev/null | grep -q 'Powered: yes' && echo on || echo off"]
-        stdout: StdioCollector {
-            onStreamFinished: root.bluetoothIcon = text.trim() === "on" ? "󰂯" : "󰂲"
-        }
-    }
-
-    Process {
-        id: bluetoothToggle
-        command: ["sh", "-c", "bluetoothctl show 2>/dev/null | grep -q 'Powered: yes' && bluetoothctl power off || bluetoothctl power on"]
-        onExited: bluetoothStatus.running = true
+    function toggleBluetooth() {
+        if (bluetoothAdapter)
+            bluetoothAdapter.enabled = !bluetoothAdapter.enabled
     }
 
     Process {
@@ -118,18 +121,6 @@ ShellRoot {
                 root.batteryIcon = p <= 20 ? "󰁺" : (p <= 50 ? "󰁾" : (p <= 80 ? "󰂀" : "󰁹"))
             }
         }
-    }
-
-    Process {
-        id: wifiDetails
-        command: ["sh", "-c", "nmcli -t -f ACTIVE,SSID dev wifi 2>/dev/null | sed -n 's/^yes://p' | head -n1"]
-        stdout: StdioCollector { onStreamFinished: root.wifiName = text.trim() }
-    }
-
-    Process {
-        id: bluetoothDetails
-        command: ["sh", "-c", "bluetoothctl devices Connected 2>/dev/null | sed 's/^Device [^ ]* //' | paste -sd ', ' -"]
-        stdout: StdioCollector { onStreamFinished: root.bluetoothDevices = text.trim() }
     }
 
     Process {
@@ -234,7 +225,7 @@ ShellRoot {
                         Text { anchors.centerIn: parent; text: root.bluetoothIcon; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
                         MouseArea {
                             id: btMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                            onClicked: mouse => { if (mouse.button === Qt.RightButton) bluetoothToggle.running = true; else bluetoothSettings.running = true }
+                            onClicked: mouse => { if (mouse.button === Qt.RightButton) root.toggleBluetooth(); else bluetoothSettings.running = true }
                         }
                     }
                     Rectangle {

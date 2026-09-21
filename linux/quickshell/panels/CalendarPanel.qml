@@ -12,7 +12,7 @@ PanelWindow {
     margins.top: 38
     color: "transparent"
     Rectangle {
-        anchors.fill: parent; radius: 10; color: "#1c1c1c"; border.width: 1; border.color: "#3a3a3a"
+        anchors.fill: parent; radius: 10; color: "#ee1c1c1c"; border.width: 1; border.color: "#553a3a3a"
         Column {
             anchors.centerIn: parent; spacing: 10
             Text { anchors.horizontalCenter: parent.horizontalCenter; text: Qt.formatDate(new Date(), "dddd"); color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }

@@ -55,6 +55,7 @@ PanelWindow {
                 MouseArea { id: btMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
                     onClicked: mouse => shell.openBluetooth(mouse.button === Qt.RightButton) }
             }
+            SystemTray {}
             Rectangle {
                 implicitWidth: 30; implicitHeight: 28; radius: 4; color: audioMouse.containsMouse ? "#333333" : "transparent"
                 Text { anchors.centerIn: parent; text: shell.volumeMuted ? "󰝟" : "󰕾"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }

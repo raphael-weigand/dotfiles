@@ -14,15 +14,6 @@ PanelWindow {
         anchors.fill: parent; color: "#aa1c1c1c"
         RowLayout {
             anchors.left: parent.left; anchors.leftMargin: 8; anchors.verticalCenter: parent.verticalCenter; spacing: 2
-            Rectangle {
-                implicitWidth: 32; implicitHeight: 28; radius: 4
-                color: menuMouse.containsMouse ? "#333333" : "transparent"
-                Text { anchors.centerIn: parent; text: "󰣇"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 16 }
-                MouseArea { id: menuMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                    onClicked: mouse => shell.openMenu(mouse.button === Qt.RightButton)
-                }
-            }
-            Item { implicitWidth: 8; implicitHeight: 28 }
             Repeater {
                 model: shell.workspaceIds()
                 Rectangle {

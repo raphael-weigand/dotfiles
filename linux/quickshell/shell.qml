@@ -55,6 +55,7 @@ ShellRoot {
     property bool calendarVisible: false
     property bool audioPanelVisible: false
     property bool networkPanelVisible: false
+    property bool bluetoothPanelVisible: false
     property bool controlCenterVisible: false
 
     function refreshClock() {
@@ -229,7 +230,7 @@ ShellRoot {
                         Text { anchors.centerIn: parent; text: root.bluetoothIcon; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
                         MouseArea {
                             id: btMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                            onClicked: mouse => { if (mouse.button === Qt.RightButton) root.toggleBluetooth(); else bluetoothSettings.running = true }
+                            onClicked: mouse => { if (mouse.button === Qt.RightButton) bluetoothSettings.running = true; else root.bluetoothPanelVisible = !root.bluetoothPanelVisible }
                         }
                     }
                     Rectangle {
@@ -262,6 +263,13 @@ if (root.audioSink && root.audioSink.audio) {
                     }
                 }
             }
+        }
+    }
+
+    Loader {
+        active: true
+        sourceComponent: BluetoothPanel {
+            panelVisible: root.bluetoothPanelVisible
         }
     }
 

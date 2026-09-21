@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
+import "panels"
 
 ShellRoot {
     id: root
@@ -19,6 +20,7 @@ ShellRoot {
     property string bluetoothDevices: ""
     property string audioOutputName: ""
     property bool calendarVisible: false
+    property bool audioPanelVisible: false
     property bool controlCenterVisible: false
 
     function refreshClock() {
@@ -252,7 +254,7 @@ ShellRoot {
                         }
                         MouseArea {
                             id: audioMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                            onClicked: mouse => { if (mouse.button === Qt.RightButton) audioToggle.running = true; else audioSettings.running = true }
+                            onClicked: mouse => { if (mouse.button === Qt.RightButton) audioToggle.running = true; else root.audioPanelVisible = !root.audioPanelVisible }
                             onWheel: wheel => {
                                 const delta = wheel.angleDelta.y > 0 ? "5%+" : "5%-"
                                 volumeAdjust.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", delta]
@@ -272,6 +274,15 @@ ShellRoot {
                     }
                 }
             }
+        }
+    }
+
+    Variants {
+        model: Quickshell.screens
+        AudioPanel {
+            required property var modelData
+            screen: modelData
+            panelVisible: root.audioPanelVisible
         }
     }
 

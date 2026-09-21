@@ -56,22 +56,16 @@ PanelWindow {
                     onClicked: mouse => shell.openBluetooth(mouse.button === Qt.RightButton) }
             }
             Rectangle {
-                implicitWidth: 52; implicitHeight: 28; radius: 4; color: audioMouse.containsMouse ? "#333333" : "transparent"
-                Row { anchors.centerIn: parent; spacing: 5
-                    Text { text: shell.volumeMuted ? "󰝟" : "󰕾"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
-                    Text { text: shell.volumePercent + "%"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 11 }
-                }
+                implicitWidth: 30; implicitHeight: 28; radius: 4; color: audioMouse.containsMouse ? "#333333" : "transparent"
+                Text { anchors.centerIn: parent; text: shell.volumeMuted ? "󰝟" : "󰕾"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
                 MouseArea { id: audioMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
                     onClicked: mouse => { if (mouse.button === Qt.RightButton) shell.toggleAudioMute(); else shell.audioPanelVisible = !shell.audioPanelVisible }
                     onWheel: wheel => shell.changeVolume(wheel.angleDelta.y > 0 ? 0.05 : -0.05)
                 }
             }
             Rectangle {
-                visible: shell.batteryPercent !== ""; implicitWidth: 62; implicitHeight: 28; radius: 4; color: powerMouse.containsMouse ? "#333333" : "transparent"
-                Row { anchors.centerIn: parent; spacing: 5
-                    Text { text: shell.batteryIcon; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
-                    Text { text: shell.batteryPercent; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 11 }
-                }
+                visible: shell.batteryPercent !== ""; implicitWidth: 30; implicitHeight: 28; radius: 4; color: powerMouse.containsMouse ? "#333333" : "transparent"
+                Text { anchors.centerIn: parent; text: shell.batteryIcon; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
                 MouseArea { id: powerMouse; anchors.fill: parent; hoverEnabled: true; onClicked: shell.powerPanelVisible = !shell.powerPanelVisible }
             }
         }

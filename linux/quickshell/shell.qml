@@ -54,16 +54,19 @@ ShellRoot {
             names.push(connectedBluetoothDevices[i].name || connectedBluetoothDevices[i].alias || "Bluetooth device")
         return names.join(", ")
     }
-    property bool calendarVisible: false
-    property bool audioPanelVisible: false
-    property bool networkPanelVisible: false
-    property bool bluetoothPanelVisible: false
-    property bool powerPanelVisible: false
-    property bool sessionPanelVisible: false
+    property string activePanel: ""
+
+    function togglePanel(name) {
+        activePanel = activePanel === name ? "" : name
+    }
+
+    function closePanel() {
+        activePanel = ""
+    }
 
     IpcHandler {
         target: "session"
-        function toggle(): void { root.sessionPanelVisible = !root.sessionPanelVisible }
+        function toggle(): void { root.togglePanel("session") }
     }
 
     function refreshClock() {
@@ -119,12 +122,12 @@ ShellRoot {
 
     function openNetwork(rightClick) {
         if (rightClick) networkSettings.running = true
-        else networkPanelVisible = !networkPanelVisible
+        else togglePanel("network")
     }
 
     function openBluetooth(rightClick) {
         if (rightClick) bluetoothSettings.running = true
-        else bluetoothPanelVisible = !bluetoothPanelVisible
+        else togglePanel("bluetooth")
     }
 
     function changeVolume(step) {
@@ -145,21 +148,21 @@ ShellRoot {
         active: true
         sourceComponent: SessionPanel {
             shell: root
-            panelVisible: root.sessionPanelVisible
+            panelVisible: root.activePanel === "session"
         }
     }
 
     Loader {
         active: true
         sourceComponent: PowerPanel {
-            panelVisible: root.powerPanelVisible
+            panelVisible: root.activePanel === "power"
         }
     }
 
     Loader {
         active: true
         sourceComponent: BluetoothPanel {
-            panelVisible: root.bluetoothPanelVisible
+            panelVisible: root.activePanel === "bluetooth"
         }
     }
 
@@ -167,7 +170,7 @@ ShellRoot {
         id: networkPanelLoader
         active: true
         sourceComponent: NetworkPanel {
-            panelVisible: root.networkPanelVisible
+            panelVisible: root.activePanel === "network"
         }
     }
 
@@ -176,7 +179,7 @@ ShellRoot {
         AudioPanel {
             required property var modelData
             screen: modelData
-            panelVisible: root.audioPanelVisible
+            panelVisible: root.activePanel === "audio"
         }
     }
 
@@ -185,7 +188,7 @@ ShellRoot {
         CalendarPanel {
             required property var modelData
             screen: modelData
-            panelVisible: root.calendarVisible
+            panelVisible: root.activePanel === "calendar"
             clockText: root.clockText
         }
     }}

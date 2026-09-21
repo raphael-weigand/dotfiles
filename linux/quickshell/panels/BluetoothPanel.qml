@@ -34,7 +34,7 @@ PanelWindow {
     }
 
     Rectangle {
-        anchors.fill: parent; radius: 10; color: "#ee1c1c1c"; border.width: 1; border.color: "#553a3a3a"
+        anchors.fill: parent; radius: 10; color: "#c41c1c1c"; border.width: 1; border.color: "#553a3a3a"
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 10
             RowLayout {

@@ -69,7 +69,7 @@ PanelWindow {
         }
     }
 
-    Timer { interval: 1000; running: root.panelVisible; repeat: true; triggeredOnStart: true; onTriggered: root.refresh() }
+    Timer { interval: 1000; running: true; repeat: true; triggeredOnStart: true; onTriggered: root.refresh() }
     onPanelVisibleChanged: if (panelVisible) { previousRx = -1; previousTx = -1; refresh() }
 
     Rectangle {

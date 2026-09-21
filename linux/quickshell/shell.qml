@@ -59,7 +59,7 @@ ShellRoot {
     }
 
     Timer {
-        interval: 3000
+        interval: 500
         running: true
         repeat: true
         triggeredOnStart: true

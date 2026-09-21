@@ -3,14 +3,16 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
+import Quickshell.Services.Pipewire
 import "panels"
 
 ShellRoot {
     id: root
 
     property string clockText: ""
-    property int volumePercent: 0
-    property bool volumeMuted: false
+    readonly property var audioSink: Pipewire.defaultAudioSink
+    readonly property int volumePercent: audioSink && audioSink.audio ? Math.round(audioSink.audio.volume * 100) : 0
+    readonly property bool volumeMuted: audioSink && audioSink.audio ? audioSink.audio.muted : false
     property string networkIcon: "󰖪"
     property string bluetoothIcon: "󰂲"
     property string batteryIcon: "󰁹"
@@ -22,11 +24,6 @@ ShellRoot {
     property bool calendarVisible: false
     property bool audioPanelVisible: false
     property bool controlCenterVisible: false
-
-    function refreshAudio() {
-        audioStatus.running = true
-        audioOutputStatus.running = true
-    }
 
     function refreshClock() {
         clockText = Qt.formatDateTime(new Date(), "HH:mm")
@@ -64,7 +61,6 @@ ShellRoot {
         repeat: true
         triggeredOnStart: true
         onTriggered: {
-            audioStatus.running = true
             networkStatus.running = true
             bluetoothStatus.running = true
             batteryStatus.running = true
@@ -74,22 +70,9 @@ ShellRoot {
         }
     }
 
-    Process {
-        id: audioStatus
-        command: ["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const m = text.match(/Volume:\s+([0-9.]+)/)
-                if (m) root.volumePercent = Math.round(Number(m[1]) * 100)
-                root.volumeMuted = text.indexOf("[MUTED]") !== -1
-            }
-        }
-    }
-
-    Process {
-        id: audioToggle
-        command: ["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]
-        onExited: audioStatus.running = true
+    function toggleAudioMute() {
+        if (audioSink && audioSink.audio)
+            audioSink.audio.muted = !audioSink.audio.muted
     }
 
     Process {
@@ -259,11 +242,12 @@ ShellRoot {
                         }
                         MouseArea {
                             id: audioMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                            onClicked: mouse => { if (mouse.button === Qt.RightButton) audioToggle.running = true; else root.audioPanelVisible = !root.audioPanelVisible }
+                            onClicked: mouse => { if (mouse.button === Qt.RightButton) root.toggleAudioMute(); else root.audioPanelVisible = !root.audioPanelVisible }
                             onWheel: wheel => {
-                                const delta = wheel.angleDelta.y > 0 ? "5%+" : "5%-"
-                                volumeAdjust.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", delta]
-                                volumeAdjust.running = true
+if (root.audioSink && root.audioSink.audio) {
+                                    const step = wheel.angleDelta.y > 0 ? 0.05 : -0.05
+                                    root.audioSink.audio.volume = Math.max(0, Math.min(1.5, root.audioSink.audio.volume + step))
+                                }
                             }
                         }
                     }
@@ -288,15 +272,8 @@ ShellRoot {
             required property var modelData
             screen: modelData
             panelVisible: root.audioPanelVisible
-            onVolumePercentChanged: root.volumePercent = volumePercent
-            onMutedChanged: root.volumeMuted = muted
             onOutputNameChanged: root.audioOutputName = outputName
         }
-    }
-
-    Process {
-        id: volumeAdjust
-        onExited: audioStatus.running = true
     }
 
     Variants {

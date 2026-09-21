@@ -25,7 +25,7 @@ PanelWindow {
         command: ["wpctl", "get-volume", "@DEFAULT_AUDIO_SINK@"]
         stdout: StdioCollector {
             onStreamFinished: {
-                const m = text.match(/Volume:\\s+([0-9.]+)/)
+                const m = text.match(/Volume:\s+([0-9.]+)/)
                 if (m) root.volumePercent = Math.round(Number(m[1]) * 100)
                 root.muted = text.indexOf("[MUTED]") !== -1
             }

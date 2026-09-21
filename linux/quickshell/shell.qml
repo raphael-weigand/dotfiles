@@ -287,43 +287,4 @@ if (root.audioSink && root.audioSink.audio) {
             }
         }
     }
-
-    // Keep the richer system controls available from the battery area without
-    // making the status bar depend on Omarchy's shell host.
-    Variants {
-        model: Quickshell.screens
-
-        PanelWindow {
-            required property var modelData
-            screen: modelData
-            visible: root.controlCenterVisible
-            anchors { top: true; right: true }
-            implicitWidth: 330
-            implicitHeight: 230
-            margins.top: 38
-            margins.right: 8
-            color: "transparent"
-
-            Rectangle {
-                anchors.fill: parent
-                radius: 10
-                color: "#1c1c1c"
-                border.width: 1
-                border.color: "#3a3a3a"
-
-                ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 16
-                    spacing: 10
-                    Text { text: "System"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 17; font.bold: true }
-                    Text { text: "Network   " + root.networkIcon + (root.wifiName !== "" ? "  " + root.wifiName : ""); color: "#dddddd"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
-                    Text { text: "Bluetooth " + root.bluetoothIcon + (root.bluetoothDevices !== "" ? "  " + root.bluetoothDevices : ""); color: "#dddddd"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
-                    Text { text: "Audio     " + (root.volumeMuted ? "Muted" : root.volumePercent + "%") + (root.audioOutputName !== "" ? "  ·  " + root.audioOutputName : ""); color: "#dddddd"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
-                    Text { visible: root.batteryPercent !== ""; text: "Battery   " + root.batteryPercent; color: "#dddddd"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
-                    Item { Layout.fillHeight: true }
-                    Text { text: "Click the bar icons for settings"; color: "#888888"; font.family: "Iosevka Term Extended"; font.pixelSize: 11 }
-                }
-            }
-        }
-    }
 }

@@ -13,7 +13,7 @@ PanelWindow {
     visible: panelVisible
     anchors { top: true; right: true }
     implicitWidth: 360
-    implicitHeight: 190
+    implicitHeight: 230
     margins.top: 38
     margins.right: 76
     color: "transparent"
@@ -39,6 +39,21 @@ PanelWindow {
     Process { id: setVolume; onExited: root.refresh() }
     Process { id: toggleMute; command: ["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"]; onExited: root.refresh() }
     Process { id: settings; command: ["pavucontrol"] }
+    Process {
+        id: outputMenu
+        command: ["sh", "-c", "~/.config/quickshell/audio-output-menu.sh"]
+        onExited: {
+            root.refresh()
+            delayedRefresh.restart()
+        }
+    }
+
+    Timer {
+        id: delayedRefresh
+        interval: 500
+        repeat: false
+        onTriggered: root.refresh()
+    }
 
     onPanelVisibleChanged: if (panelVisible) refresh()
 
@@ -81,10 +96,17 @@ PanelWindow {
                     from: 0; to: 100
                     value: root.volumePercent
                     onMoved: {
+                        root.volumePercent = Math.round(value)
                         setVolume.command = ["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", Math.round(value) + "%"]
                         setVolume.running = true
                     }
                 }
+            }
+            Rectangle {
+                Layout.fillWidth: true; implicitHeight: 34; radius: 6
+                color: outputMouse.containsMouse ? "#3a3a3a" : "#292929"
+                Text { anchors.centerIn: parent; text: "Switch output"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 12 }
+                MouseArea { id: outputMouse; anchors.fill: parent; hoverEnabled: true; onClicked: outputMenu.running = true }
             }
             Item { Layout.fillHeight: true }
             Rectangle {

@@ -11,6 +11,12 @@ PanelWindow {
     anchors { top: true; bottom: true; left: true; right: true }
     color: "#99000000"
     exclusiveZone: 0
+    focusable: true
+
+    onPanelVisibleChanged: {
+        if (panelVisible)
+            keyHandler.forceActiveFocus()
+    }
 
     function run(command) {
         root.panelVisible = false
@@ -19,6 +25,13 @@ PanelWindow {
     }
 
     Process { id: action }
+
+    Item {
+        id: keyHandler
+        anchors.fill: parent
+        focus: root.panelVisible
+        Keys.onEscapePressed: root.panelVisible = false
+    }
 
     Rectangle {
         width: 520

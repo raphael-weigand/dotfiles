@@ -53,12 +53,10 @@ ShellRoot {
             names.push(connectedBluetoothDevices[i].name || connectedBluetoothDevices[i].alias || "Bluetooth device")
         return names.join(", ")
     }
-    property string audioOutputName: ""
     property bool calendarVisible: false
     property bool audioPanelVisible: false
     property bool networkPanelVisible: false
     property bool bluetoothPanelVisible: false
-    property bool controlCenterVisible: false
     property bool powerPanelVisible: false
 
     function refreshClock() {
@@ -91,16 +89,6 @@ ShellRoot {
         onTriggered: root.refreshClock()
     }
 
-    Timer {
-        interval: 500
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: {
-            audioOutputStatus.running = true
-        }
-    }
-
     function toggleAudioMute() {
         if (audioSink && audioSink.audio)
             audioSink.audio.muted = !audioSink.audio.muted
@@ -109,12 +97,6 @@ ShellRoot {
     function toggleBluetooth() {
         if (bluetoothAdapter)
             bluetoothAdapter.enabled = !bluetoothAdapter.enabled
-    }
-
-    Process {
-        id: audioOutputStatus
-        command: ["sh", "-c", "wpctl status | awk '/Sinks:/ {s=1; next} s && /Sources:/ {exit} s && /\\*/ {line=$0; sub(/^.*\\*[[:space:]]*/, \"\", line); sub(/^[0-9]+\\.[[:space:]]*/, \"\", line); sub(/[[:space:]]+\\[vol:.*$/, \"\", line); print line; exit}'"]
-        stdout: StdioCollector { onStreamFinished: root.audioOutputName = text.trim() }
     }
 
     Process { id: launcher; command: ["fuzzel"] }
@@ -280,7 +262,6 @@ if (root.audioSink && root.audioSink.audio) {
             required property var modelData
             screen: modelData
             panelVisible: root.audioPanelVisible
-            onOutputNameChanged: root.audioOutputName = outputName
         }
     }
 

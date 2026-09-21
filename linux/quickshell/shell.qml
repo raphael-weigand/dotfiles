@@ -144,6 +144,7 @@ ShellRoot {
     Loader {
         active: true
         sourceComponent: SessionPanel {
+            shell: root
             panelVisible: root.sessionPanelVisible
         }
     }

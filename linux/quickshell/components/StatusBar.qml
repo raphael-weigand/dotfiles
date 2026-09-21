@@ -39,7 +39,7 @@ PanelWindow {
         }
         Text {
             anchors.centerIn: parent; text: shell.clockText; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 13; font.bold: true
-            MouseArea { anchors.fill: parent; anchors.margins: -8; cursorShape: Qt.PointingHandCursor; onClicked: shell.calendarVisible = !shell.calendarVisible }
+            MouseArea { anchors.fill: parent; anchors.margins: -8; cursorShape: Qt.PointingHandCursor; onClicked: shell.togglePanel("calendar") }
         }
         RowLayout {
             anchors.right: parent.right; anchors.rightMargin: 8; anchors.verticalCenter: parent.verticalCenter; spacing: 2
@@ -60,14 +60,14 @@ PanelWindow {
                 implicitWidth: 30; implicitHeight: 28; radius: 4; color: audioMouse.containsMouse ? "#333333" : "transparent"
                 Text { anchors.centerIn: parent; text: shell.volumeMuted ? "󰝟" : "󰕾"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
                 MouseArea { id: audioMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                    onClicked: mouse => { if (mouse.button === Qt.RightButton) shell.toggleAudioMute(); else shell.audioPanelVisible = !shell.audioPanelVisible }
+                    onClicked: mouse => { if (mouse.button === Qt.RightButton) shell.toggleAudioMute(); else shell.togglePanel("audio") }
                     onWheel: wheel => shell.changeVolume(wheel.angleDelta.y > 0 ? 0.05 : -0.05)
                 }
             }
             Rectangle {
                 visible: shell.batteryPercent !== ""; implicitWidth: 30; implicitHeight: 28; radius: 4; color: powerMouse.containsMouse ? "#333333" : "transparent"
                 Text { anchors.centerIn: parent; text: shell.batteryIcon; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
-                MouseArea { id: powerMouse; anchors.fill: parent; hoverEnabled: true; onClicked: shell.powerPanelVisible = !shell.powerPanelVisible }
+                MouseArea { id: powerMouse; anchors.fill: parent; hoverEnabled: true; onClicked: shell.togglePanel("power") }
             }
         }
     }

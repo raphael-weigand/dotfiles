@@ -60,9 +60,9 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         radius: 10
-        color: "#1c1c1c"
+        color: "#ee1c1c1c"
         border.width: 1
-        border.color: "#3a3a3a"
+        border.color: "#553a3a3a"
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: 16

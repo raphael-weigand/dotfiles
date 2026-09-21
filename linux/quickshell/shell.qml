@@ -6,6 +6,7 @@ import Quickshell.Hyprland
 import Quickshell.Services.Pipewire
 import Quickshell.Networking
 import Quickshell.Bluetooth
+import Quickshell.Services.UPower
 import "panels"
 
 ShellRoot {
@@ -41,9 +42,10 @@ ShellRoot {
         return result
     }
     readonly property string bluetoothIcon: !bluetoothAdapter || !bluetoothAdapter.enabled ? "󰂲" : (connectedBluetoothDevices.length > 0 ? "󰂱" : "󰂯")
-    property string batteryIcon: "󰁹"
-    property string batteryPercent: ""
-    property string batteryStatusText: ""
+    readonly property var batteryDevice: UPower.displayDevice
+    readonly property int batteryLevel: batteryDevice ? Math.round(batteryDevice.percentage * 100) : 0
+    readonly property string batteryPercent: batteryDevice ? batteryLevel + "%" : ""
+    readonly property string batteryIcon: batteryLevel <= 20 ? "󰁺" : (batteryLevel <= 50 ? "󰁾" : (batteryLevel <= 80 ? "󰂀" : "󰁹"))
     readonly property string wifiName: connectedWifi ? (connectedWifi.name || connectedWifi.ssid || "") : ""
     readonly property string bluetoothDevices: {
         let names = []
@@ -57,6 +59,7 @@ ShellRoot {
     property bool networkPanelVisible: false
     property bool bluetoothPanelVisible: false
     property bool controlCenterVisible: false
+    property bool powerPanelVisible: false
 
     function refreshClock() {
         clockText = Qt.formatDateTime(new Date(), "HH:mm")
@@ -94,7 +97,6 @@ ShellRoot {
         repeat: true
         triggeredOnStart: true
         onTriggered: {
-            batteryStatus.running = true
             audioOutputStatus.running = true
         }
     }
@@ -107,22 +109,6 @@ ShellRoot {
     function toggleBluetooth() {
         if (bluetoothAdapter)
             bluetoothAdapter.enabled = !bluetoothAdapter.enabled
-    }
-
-    Process {
-        id: batteryStatus
-        command: ["sh", "-c", "bat=$(find /sys/class/power_supply -maxdepth 1 -name 'BAT*' | head -n1); [ -n \"$bat\" ] || exit 0; cat \"$bat/capacity\""]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const p = Number(text.trim())
-                if (isNaN(p)) {
-                    root.batteryPercent = ""
-                    return
-                }
-                root.batteryPercent = p + "%"
-                root.batteryIcon = p <= 20 ? "󰁺" : (p <= 50 ? "󰁾" : (p <= 80 ? "󰂀" : "󰁹"))
-            }
-        }
     }
 
     Process {
@@ -259,10 +245,17 @@ if (root.audioSink && root.audioSink.audio) {
                             Text { text: root.batteryIcon; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
                             Text { text: root.batteryPercent; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 11 }
                         }
-                        MouseArea { id: powerMouse; anchors.fill: parent; hoverEnabled: true; onClicked: root.controlCenterVisible = !root.controlCenterVisible }
+                        MouseArea { id: powerMouse; anchors.fill: parent; hoverEnabled: true; onClicked: root.powerPanelVisible = !root.powerPanelVisible }
                     }
                 }
             }
+        }
+    }
+
+    Loader {
+        active: true
+        sourceComponent: PowerPanel {
+            panelVisible: root.powerPanelVisible
         }
     }
 

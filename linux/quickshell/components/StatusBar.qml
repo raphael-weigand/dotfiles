@@ -8,10 +8,10 @@ PanelWindow {
     property var shell
     anchors { top: true; left: true; right: true }
     implicitHeight: 32
-    color: "#1c1c1c"
+    color: "#dd1c1c1c"
 
     Rectangle {
-        anchors.fill: parent; color: "#1c1c1c"
+        anchors.fill: parent; color: "#dd1c1c1c"
         RowLayout {
             anchors.left: parent.left; anchors.leftMargin: 8; anchors.verticalCenter: parent.verticalCenter; spacing: 2
             Rectangle {

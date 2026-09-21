@@ -215,13 +215,9 @@ ShellRoot {
                     spacing: 2
 
                     Rectangle {
-                        implicitWidth: 118; implicitHeight: 28; radius: 4
+                        implicitWidth: 30; implicitHeight: 28; radius: 4
                         color: networkMouse.containsMouse ? "#333333" : "transparent"
-                        Row {
-                            anchors.centerIn: parent; spacing: 5
-                            Text { text: root.networkIcon; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
-                            Text { text: networkPanelLoader.item ? "↓" + networkPanelLoader.item.formatRate(networkPanelLoader.item.downloadRate).replace("/s", "") + " ↑" + networkPanelLoader.item.formatRate(networkPanelLoader.item.uploadRate).replace("/s", "") : ""; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 10 }
-                        }
+                        Text { anchors.centerIn: parent; text: root.networkIcon; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
                         MouseArea {
                             id: networkMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
                             onClicked: mouse => { if (mouse.button === Qt.RightButton) networkSettings.running = true; else root.networkPanelVisible = !root.networkPanelVisible }

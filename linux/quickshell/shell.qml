@@ -59,6 +59,7 @@ ShellRoot {
     property bool networkPanelVisible: false
     property bool bluetoothPanelVisible: false
     property bool powerPanelVisible: false
+    property bool sessionPanelVisible: false
 
     function refreshClock() {
         clockText = Qt.formatDateTime(new Date(), "HH:mm")
@@ -132,6 +133,13 @@ ShellRoot {
             required property var modelData
             screen: modelData
             shell: root
+        }
+    }
+
+    Loader {
+        active: true
+        sourceComponent: SessionPanel {
+            panelVisible: root.sessionPanelVisible
         }
     }
 

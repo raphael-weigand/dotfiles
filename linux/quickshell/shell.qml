@@ -13,6 +13,10 @@ ShellRoot {
     readonly property var audioSink: Pipewire.defaultAudioSink
     readonly property int volumePercent: audioSink && audioSink.audio ? Math.round(audioSink.audio.volume * 100) : 0
     readonly property bool volumeMuted: audioSink && audioSink.audio ? audioSink.audio.muted : false
+
+    PwObjectTracker {
+        objects: root.audioSink ? [root.audioSink] : []
+    }
     property string networkIcon: "󰖪"
     property string bluetoothIcon: "󰂲"
     property string batteryIcon: "󰁹"

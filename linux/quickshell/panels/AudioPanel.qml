@@ -15,7 +15,7 @@ PanelWindow {
     PwObjectTracker {
         objects: root.sink ? [root.sink] : []
     }
-    property string outputName: ""
+    readonly property string outputName: sink ? (sink.description || sink.nick || sink.name || "Default output") : "Default output"
     visible: panelVisible
     anchors { top: true; right: true }
     implicitWidth: 360
@@ -24,31 +24,13 @@ PanelWindow {
     margins.right: 76
     color: "transparent"
 
-    function refresh() { output.running = true }
-
-    Process {
-        id: output
-        command: ["sh", "-c", "wpctl status | awk '/Sinks:/ {s=1; next} s && /Sources:/ {exit} s && /\\*/ {line=$0; sub(/^.*\\*[[:space:]]*/, \"\", line); sub(/^[0-9]+\\.[[:space:]]*/, \"\", line); sub(/[[:space:]]+\\[vol:.*$/, \"\", line); print line; exit}'"]
-        stdout: StdioCollector { onStreamFinished: root.outputName = text.trim() }
-    }
     Process { id: settings; command: ["pavucontrol"] }
     Process {
         id: outputMenu
         command: ["sh", "-c", "~/.config/quickshell/audio-output-menu.sh"]
-        onExited: {
-            root.refresh()
-            delayedRefresh.restart()
-        }
+
     }
 
-    Timer {
-        id: delayedRefresh
-        interval: 500
-        repeat: false
-        onTriggered: root.refresh()
-    }
-
-    onPanelVisibleChanged: if (panelVisible) refresh()
 
     Rectangle {
         anchors.fill: parent

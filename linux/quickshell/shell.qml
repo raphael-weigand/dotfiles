@@ -14,6 +14,11 @@ ShellRoot {
     property string bluetoothIcon: "󰂲"
     property string batteryIcon: "󰁹"
     property string batteryPercent: ""
+    property string batteryStatusText: ""
+    property string wifiName: ""
+    property string bluetoothDevices: ""
+    property string audioOutputName: ""
+    property bool calendarVisible: false
     property bool controlCenterVisible: false
 
     function refreshClock() {
@@ -56,6 +61,9 @@ ShellRoot {
             networkStatus.running = true
             bluetoothStatus.running = true
             batteryStatus.running = true
+            wifiDetails.running = true
+            bluetoothDetails.running = true
+            audioOutputStatus.running = true
         }
     }
 
@@ -116,6 +124,24 @@ ShellRoot {
                 root.batteryIcon = p <= 20 ? "󰁺" : (p <= 50 ? "󰁾" : (p <= 80 ? "󰂀" : "󰁹"))
             }
         }
+    }
+
+    Process {
+        id: wifiDetails
+        command: ["sh", "-c", "nmcli -t -f ACTIVE,SSID dev wifi 2>/dev/null | sed -n 's/^yes://p' | head -n1"]
+        stdout: StdioCollector { onStreamFinished: root.wifiName = text.trim() }
+    }
+
+    Process {
+        id: bluetoothDetails
+        command: ["sh", "-c", "bluetoothctl devices Connected 2>/dev/null | sed 's/^Device [^ ]* //' | paste -sd ', ' -"]
+        stdout: StdioCollector { onStreamFinished: root.bluetoothDevices = text.trim() }
+    }
+
+    Process {
+        id: audioOutputStatus
+        command: ["sh", "-c", "wpctl status | awk '/Sinks:/ {s=1; next} s && /Sources:/ {exit} s && /\\*/ {line=$0; sub(/^.*\\*[[:space:]]*/, \"\", line); sub(/^[0-9]+\\.[[:space:]]*/, \"\", line); sub(/[[:space:]]+\\[vol:.*$/, \"\", line); print line; exit}'"]
+        stdout: StdioCollector { onStreamFinished: root.audioOutputName = text.trim() }
     }
 
     Process { id: launcher; command: ["fuzzel"] }
@@ -188,6 +214,12 @@ ShellRoot {
                     font.family: "Iosevka Term Extended"
                     font.pixelSize: 13
                     font.bold: true
+                    MouseArea {
+                        anchors.fill: parent
+                        anchors.margins: -8
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.calendarVisible = !root.calendarVisible
+                    }
                 }
 
                 RowLayout {
@@ -248,6 +280,29 @@ ShellRoot {
         onExited: audioStatus.running = true
     }
 
+    Variants {
+        model: Quickshell.screens
+        PanelWindow {
+            required property var modelData
+            screen: modelData
+            visible: root.calendarVisible
+            anchors { top: true }
+            implicitWidth: 300
+            implicitHeight: 190
+            margins.top: 38
+            color: "transparent"
+            Rectangle {
+                anchors.fill: parent; radius: 10; color: "#1c1c1c"; border.width: 1; border.color: "#3a3a3a"
+                Column {
+                    anchors.centerIn: parent; spacing: 10
+                    Text { anchors.horizontalCenter: parent.horizontalCenter; text: Qt.formatDate(new Date(), "dddd"); color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
+                    Text { anchors.horizontalCenter: parent.horizontalCenter; text: Qt.formatDate(new Date(), "dd. MMMM yyyy"); color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 20; font.bold: true }
+                    Text { anchors.horizontalCenter: parent.horizontalCenter; text: root.clockText; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 36; font.bold: true }
+                }
+            }
+        }
+    }
+
     // Keep the richer system controls available from the battery area without
     // making the status bar depend on Omarchy's shell host.
     Variants {
@@ -276,9 +331,9 @@ ShellRoot {
                     anchors.margins: 16
                     spacing: 10
                     Text { text: "System"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 17; font.bold: true }
-                    Text { text: "Network   " + root.networkIcon; color: "#dddddd"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
-                    Text { text: "Bluetooth " + root.bluetoothIcon; color: "#dddddd"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
-                    Text { text: "Audio     " + (root.volumeMuted ? "Muted" : root.volumePercent + "%"); color: "#dddddd"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
+                    Text { text: "Network   " + root.networkIcon + (root.wifiName !== "" ? "  " + root.wifiName : ""); color: "#dddddd"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
+                    Text { text: "Bluetooth " + root.bluetoothIcon + (root.bluetoothDevices !== "" ? "  " + root.bluetoothDevices : ""); color: "#dddddd"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
+                    Text { text: "Audio     " + (root.volumeMuted ? "Muted" : root.volumePercent + "%") + (root.audioOutputName !== "" ? "  ·  " + root.audioOutputName : ""); color: "#dddddd"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
                     Text { visible: root.batteryPercent !== ""; text: "Battery   " + root.batteryPercent; color: "#dddddd"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
                     Item { Layout.fillHeight: true }
                     Text { text: "Click the bar icons for settings"; color: "#888888"; font.family: "Iosevka Term Extended"; font.pixelSize: 11 }

@@ -61,6 +61,11 @@ ShellRoot {
     property bool powerPanelVisible: false
     property bool sessionPanelVisible: false
 
+    IpcHandler {
+        target: "session"
+        function toggle(): void { root.sessionPanelVisible = !root.sessionPanelVisible }
+    }
+
     function refreshClock() {
         clockText = Qt.formatDateTime(new Date(), "HH:mm")
     }

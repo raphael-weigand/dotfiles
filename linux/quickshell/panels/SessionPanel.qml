@@ -6,6 +6,11 @@ import Quickshell.Io
 PanelWindow {
     id: root
     property bool panelVisible: false
+    property var shell
+
+    function close() {
+        if (shell) shell.sessionPanelVisible = false
+    }
 
     visible: panelVisible
     anchors { top: true; bottom: true; left: true; right: true }
@@ -19,7 +24,7 @@ PanelWindow {
     }
 
     function run(command) {
-        root.panelVisible = false
+        root.close()
         action.command = ["sh", "-c", command]
         action.running = true
     }
@@ -30,7 +35,7 @@ PanelWindow {
         id: keyHandler
         anchors.fill: parent
         focus: root.panelVisible
-        Keys.onEscapePressed: root.panelVisible = false
+        Keys.onEscapePressed: root.close()
     }
 
     Rectangle {
@@ -96,6 +101,6 @@ PanelWindow {
     MouseArea {
         anchors.fill: parent
         z: -1
-        onClicked: root.panelVisible = false
+        onClicked: root.close()
     }
 }

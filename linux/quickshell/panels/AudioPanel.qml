@@ -11,6 +11,10 @@ PanelWindow {
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property int volumePercent: sink && sink.audio ? Math.round(sink.audio.volume * 100) : 0
     readonly property bool muted: sink && sink.audio ? sink.audio.muted : false
+
+    PwObjectTracker {
+        objects: root.sink ? [root.sink] : []
+    }
     property string outputName: ""
     visible: panelVisible
     anchors { top: true; right: true }

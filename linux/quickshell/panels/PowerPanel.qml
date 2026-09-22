@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import ".."
 import Quickshell.Io
 import Quickshell.Services.UPower
 
@@ -47,7 +48,7 @@ PanelWindow {
     Timer { interval: 2000; running: root.panelVisible; repeat: true; triggeredOnStart: true; onTriggered: root.refreshProfile() }
 
     Rectangle {
-        anchors.fill: parent; radius: 10; color: "#c41c1c1c"; border.width: 1; border.color: "#553a3a3a"
+        anchors.fill: parent; radius: 10; color: Theme.panelBackground; border.width: 1; border.color: "#553a3a3a"
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 12
             RowLayout {

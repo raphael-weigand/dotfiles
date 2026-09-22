@@ -344,3 +344,8 @@ vim.opt.listchars = {
     tab = "» ",
     trail = "·",
 }
+
+-- CTRL-Backspace is like normal delete
+vim.keymap.set("i", "<C-BS>", "<C-w>", {
+  desc = "Delete previous word",
+})

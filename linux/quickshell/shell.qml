@@ -70,7 +70,7 @@ ShellRoot {
     }
 
     function refreshClock() {
-        clockText = Qt.formatDateTime(new Date(), "HH:mm")
+        clockText = Qt.formatDateTime(new Date(), "MMM dd, HH:mm")
     }
 
     function workspaceById(id) {
@@ -189,6 +189,6 @@ ShellRoot {
             required property var modelData
             screen: modelData
             panelVisible: root.activePanel === "calendar"
-            clockText: root.clockText
+            clockText: Qt.formatDateTime(new Date(), "HH:mm")
         }
     }}

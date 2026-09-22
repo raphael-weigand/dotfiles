@@ -72,7 +72,7 @@ ShellRoot {
 
     function refreshClock() {
         clockText = Qt.formatDateTime(new Date(), "MMM dd, HH:mm")
-        clockTextPanel = Qt.formatDateTime(new Date(), "HH:mm")
+        clockTextPanel = Qt.formatDateTime(new Date(), "HH:mm:ss")
     }
 
     function workspaceById(id) {

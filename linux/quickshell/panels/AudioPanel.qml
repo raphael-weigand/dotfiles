@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
+import ".."
 import Quickshell.Io
 import Quickshell.Services.Pipewire
 import Quickshell.Services.Mpris
@@ -60,7 +61,7 @@ PanelWindow {
     Rectangle {
         anchors.fill: parent
         radius: 10
-        color: "#c41c1c1c"
+        color: Theme.panelBackground
         border.width: 1
         border.color: "#553a3a3a"
         ColumnLayout {

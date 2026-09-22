@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import ".."
 import Quickshell.Io
 
 PanelWindow {
@@ -73,7 +74,7 @@ PanelWindow {
     onPanelVisibleChanged: if (panelVisible) { previousRx = -1; previousTx = -1; refresh() }
 
     Rectangle {
-        anchors.fill: parent; radius: 10; color: "#c41c1c1c"; border.width: 1; border.color: "#553a3a3a"
+        anchors.fill: parent; radius: 10; color: Theme.panelBackground; border.width: 1; border.color: "#553a3a3a"
         ColumnLayout {
             anchors.fill: parent; anchors.margins: 16; spacing: 10
             RowLayout {

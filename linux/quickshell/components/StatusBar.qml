@@ -2,16 +2,17 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
+import ".."
 
 PanelWindow {
     id: bar
     property var shell
     anchors { top: true; left: true; right: true }
     implicitHeight: 32
-    color: "#aa1c1c1c"
+    color: Theme.barBackground
 
     Rectangle {
-        anchors.fill: parent; color: "#aa1c1c1c"
+        anchors.fill: parent; color: Theme.barBackground
         RowLayout {
             anchors.left: parent.left; anchors.leftMargin: 8; anchors.verticalCenter: parent.verticalCenter; spacing: 2
             Repeater {

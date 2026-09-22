@@ -14,6 +14,7 @@ ShellRoot {
     id: root
 
     property string clockText: ""
+    property string clockTextPanel: ""
     readonly property var audioSink: Pipewire.defaultAudioSink
     readonly property int volumePercent: audioSink && audioSink.audio ? Math.round(audioSink.audio.volume * 100) : 0
     readonly property bool volumeMuted: audioSink && audioSink.audio ? audioSink.audio.muted : false
@@ -71,6 +72,7 @@ ShellRoot {
 
     function refreshClock() {
         clockText = Qt.formatDateTime(new Date(), "MMM dd, HH:mm")
+        clockTextPanel = Qt.formatDateTime(new Date(), "HH:mm")
     }
 
     function workspaceById(id) {
@@ -189,6 +191,6 @@ ShellRoot {
             required property var modelData
             screen: modelData
             panelVisible: root.activePanel === "calendar"
-            clockText: Qt.formatDateTime(new Date(), "HH:mm")
+            clockText: clockTextPanel
         }
     }}

@@ -18,23 +18,11 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 zmodload zsh/complist
 
-# Keep the completion dump in the cache directory. Rebuild it once per day;
-# otherwise let compinit trust the existing dump and skip its security scan.
-ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
-ZSH_COMPDUMP="$ZSH_CACHE_DIR/zcompdump-${ZSH_VERSION}"
-mkdir -p "$ZSH_CACHE_DIR"
-
-if [[ ! -s "$ZSH_COMPDUMP" || "$ZSH_COMPDUMP" -ot "$ZSH_CACHE_DIR" ]]; then
-  compinit -d "$ZSH_COMPDUMP"
-  touch "$ZSH_CACHE_DIR"
-else
-  compinit -C -d "$ZSH_COMPDUMP"
-fi
+compinit -C
 
 _comp_options+=(globdots)
 
-# zsh-autosuggestions: use fixed install paths to avoid spawning Homebrew
-# during every shell startup.
+# zsh-autosuggestions: fixed install paths avoid spawning Homebrew during startup.
 if [ -s /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
   . /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 elif [ -s /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then

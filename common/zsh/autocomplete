@@ -17,13 +17,28 @@ zstyle ':completion:*' matcher-list \
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 
 zmodload zsh/complist
-compinit -C
+
+# Keep the completion dump in the cache directory. Rebuild it once per day;
+# otherwise let compinit trust the existing dump and skip its security scan.
+ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+ZSH_COMPDUMP="$ZSH_CACHE_DIR/zcompdump-${ZSH_VERSION}"
+mkdir -p "$ZSH_CACHE_DIR"
+
+if [[ ! -s "$ZSH_COMPDUMP" || "$ZSH_COMPDUMP" -ot "$ZSH_CACHE_DIR" ]]; then
+  compinit -d "$ZSH_COMPDUMP"
+  touch "$ZSH_CACHE_DIR"
+else
+  compinit -C -d "$ZSH_COMPDUMP"
+fi
+
 _comp_options+=(globdots)
 
-# zsh-autosuggestions: Homebrew on macOS, system package on Linux/Arch.
-if command -v brew >/dev/null 2>&1; then
-  BREW_ZSH_AUTOSUGGESTIONS="$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-  [ -s "$BREW_ZSH_AUTOSUGGESTIONS" ] && . "$BREW_ZSH_AUTOSUGGESTIONS"
+# zsh-autosuggestions: use fixed install paths to avoid spawning Homebrew
+# during every shell startup.
+if [ -s /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  . /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+elif [ -s /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  . /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 elif [ -s /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
   . /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 elif [ -s /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then

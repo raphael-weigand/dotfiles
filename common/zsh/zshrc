@@ -37,3 +37,4 @@ bindkey '^H' backward-kill-word        # Ctrl-Backspace
 
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 export PATH="$PATH:$HOME/.dotnet/tools"
+eval "$(fnm env --use-on-cd --shell zsh)"

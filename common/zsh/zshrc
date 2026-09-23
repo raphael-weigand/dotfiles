@@ -5,7 +5,6 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
 [ -s "$ZSH_COMMON/autocomplete" ] && . "$ZSH_COMMON/autocomplete"
 [ -s "$ZSH_COMMON/myalias" ] && . "$ZSH_COMMON/myalias"
-[ -s "$ZSH_COMMON/nvm_bash_completion" ] && . "$ZSH_COMMON/nvm_bash_completion"
 [ -s "$ZSH_COMMON/history" ] && . "$ZSH_COMMON/history"
 [ -s "$ZSH_COMMON/git-prompt" ] && . "$ZSH_COMMON/git-prompt"
 [ -s "$ZSH_COMMON/prompt" ] && . "$ZSH_COMMON/prompt"
@@ -37,4 +36,23 @@ bindkey '^H' backward-kill-word        # Ctrl-Backspace
 
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 export PATH="$PATH:$HOME/.dotnet/tools"
-eval "$(fnm env --use-on-cd --shell zsh)"
+
+# fnm is relatively expensive because "fnm env" starts an external process.
+# Initialize it only when a Node-related command is used for the first time.
+# After initialization, fnm's --use-on-cd hook handles directory changes normally.
+_lazy_load_fnm() {
+    unset -f fnm node npm npx corepack _lazy_load_fnm
+
+    if (( ! $+commands[fnm] )); then
+        print -u2 "fnm: command not found"
+        return 127
+    fi
+
+    eval "$($commands[fnm] env --use-on-cd --shell zsh)"
+}
+
+fnm()     { _lazy_load_fnm && fnm "$@"; }
+node()    { _lazy_load_fnm && node "$@"; }
+npm()     { _lazy_load_fnm && npm "$@"; }
+npx()     { _lazy_load_fnm && npx "$@"; }
+corepack(){ _lazy_load_fnm && corepack "$@"; }

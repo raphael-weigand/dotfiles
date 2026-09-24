@@ -163,6 +163,13 @@ ShellRoot {
 
     Loader {
         active: true
+        sourceComponent: DeskPanel {
+            panelVisible: root.activePanel === "desk"
+        }
+    }
+
+    Loader {
+        active: true
         sourceComponent: BluetoothPanel {
             panelVisible: root.activePanel === "bluetooth"
         }

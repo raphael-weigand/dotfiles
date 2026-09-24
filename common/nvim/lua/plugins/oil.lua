@@ -14,6 +14,18 @@ return {
             ["<C-p>"] = "actions.preview",
             ["-"] = { "actions.close", mode = "n" },
             ["_"] = { "actions.open_cwd", mode = "n" },
+            ["<leader>cd"] = {
+                callback = function()
+                    local dir = require("oil").get_current_dir()
+                    if not dir then
+                        return
+                    end
+
+                    vim.cmd.cd(vim.fn.fnameescape(dir))
+                    vim.notify("Root: " .. dir)
+                end,
+                desc = "Set Oil directory as root",
+            },
         },
         view_options = {
             show_hidden = false,

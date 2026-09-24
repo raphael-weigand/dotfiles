@@ -29,6 +29,9 @@ zle -N ctrl_v_paste
 bindkey '^V' ctrl_v_paste
 
 # PC-style word editing/navigation in the zsh prompt.
+# Treat punctuation/path separators as word boundaries, like typical GUI editors.
+WORDCHARS=''
+
 bindkey '^[[1;5D' backward-word       # Ctrl-Left
 bindkey '^[[1;5C' forward-word        # Ctrl-Right
 bindkey '^[[3;5~' kill-word           # Ctrl-Delete

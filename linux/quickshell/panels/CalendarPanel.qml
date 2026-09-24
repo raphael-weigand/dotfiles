@@ -12,6 +12,16 @@ PanelWindow {
     implicitHeight: 190
     margins.top: 38
     color: "transparent"
+    function refreshDate() {
+        clockText = Qt.formatDateTime(new Date(), "MMM dd, HH:mm")
+    }
+    Timer {
+        interval: (5000 * 20 * 60)
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: root.refreshClock()
+    }
     Rectangle {
         anchors.fill: parent; radius: 10; color: Theme.panelBackground; border.width: 1; border.color: "#553a3a3a"
         Column {

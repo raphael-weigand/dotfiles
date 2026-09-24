@@ -36,6 +36,11 @@ PanelWindow {
         RowLayout {
             anchors.right: parent.right; anchors.rightMargin: 8; anchors.verticalCenter: parent.verticalCenter; spacing: 2
             Rectangle {
+                implicitWidth: 30; implicitHeight: 28; radius: 4; color: deskMouse.containsMouse ? "#333333" : "transparent"
+                Text { anchors.centerIn: parent; text: "󰇄"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
+                MouseArea { id: deskMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: shell.togglePanel("desk") }
+            }
+            Rectangle {
                 implicitWidth: 30; implicitHeight: 28; radius: 4; color: networkMouse.containsMouse ? "#333333" : "transparent"
                 Text { anchors.centerIn: parent; text: shell.networkIcon; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }
                 MouseArea { id: networkMouse; anchors.fill: parent; hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton

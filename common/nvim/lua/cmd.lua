@@ -267,7 +267,7 @@ local function make_target()
     end)
 end
 
-vim.keymap.set("n", "<leader>b", make_target, { desc = "Select Make target" })
+vim.keymap.set("n", "<leader>bt", make_target, { desc = "Select Make target" })
 vim.keymap.set("n", "<leader>bb", "<cmd>make<CR>", { desc = "Build with :make" })
 
 -- Quickfix

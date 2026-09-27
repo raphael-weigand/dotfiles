@@ -99,6 +99,12 @@ install_omarchy() {
     sudo pacman -S --needed --noconfirm \
         base-devel curl git jq neovim tree-sitter-cli tmux zsh zsh-autosuggestions ripgrep fd trash-cli ghostty
     # Do not replace Omarchy-managed Hyprland, bar, launcher or system services.
+    # Set Zsh as the user login shell; Omarchy system scripts retain their shebangs.
+    local zsh_path; zsh_path="$(command -v zsh)"
+    if [ "$(getent passwd "$USER" | cut -d: -f7)" != "$zsh_path" ]; then
+        log "Switching user login shell to Zsh (password may be required)"
+        chsh -s "$zsh_path"
+    fi
 }
 
 install_arch() {

@@ -1,3 +1,6 @@
 # Omarchy: launch Zsh in Ghostty without changing the system login shell.
 # Shared settings are loaded separately from ~/.config/ghostty/config.ghostty.
 command = /usr/bin/zsh
+
+# Keep clipboard functionality without the copied-to-clipboard toast.
+app-notifications = no-clipboard-copy

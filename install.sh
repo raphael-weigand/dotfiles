@@ -89,6 +89,18 @@ install_debian() {
     install_tree_sitter_linux
 }
 
+is_omarchy() {
+    [ -r /etc/os-release ] && grep -qiE '^(ID|ID_LIKE)=.*omarchy' /etc/os-release && return 0
+    command -v omarchy >/dev/null 2>&1 || command -v omarchy-menu >/dev/null 2>&1
+}
+
+install_omarchy() {
+    log "Installing Omarchy development tools (preserving Omarchy desktop configuration)"
+    sudo pacman -Syu --needed --noconfirm \
+        base-devel curl git jq neovim tree-sitter-cli tmux zsh zsh-autosuggestions ripgrep fd trash-cli ghostty
+    # Do not replace Omarchy-managed Hyprland, bar, launcher or system services.
+}
+
 install_arch() {
     log "Installing Arch development and Hyprland desktop tools"
     sudo pacman -Syu --needed --noconfirm \
@@ -115,7 +127,8 @@ install_linux() {
     if [ -r /etc/os-release ]; then # shellcheck disable=SC1091
         . /etc/os-release
     fi
-    if command -v pacman >/dev/null 2>&1; then install_arch
+    if command -v pacman >/dev/null 2>&1; then
+        if is_omarchy; then install_omarchy; else install_arch; fi
     elif command -v apt-get >/dev/null 2>&1; then install_debian
     else printf 'Linux distribution is not supported automatically yet.\n' >&2; exit 1
     fi
@@ -127,6 +140,9 @@ install_t2_arch() {
     # shellcheck disable=SC1091
     . /etc/os-release
     [ "${ID:-}" = arch ] || return
+    is_omarchy && return
+    # Only apply the T2-specific service on the T2 kernel.
+    uname -r | grep -qi t2 || return
     [ -e /sys/bus/pci/drivers/amdgpu/0000:03:00.0 ] || return
 
     log "Installing T2 AMDGPU stability service"
@@ -167,11 +183,22 @@ install_links() {
     backup_and_link "$DOTFILES_DIR/common/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
     backup_and_link "$DOTFILES_DIR/common/zsh/zshrc" "$HOME/.zshrc"
 
+    if [ "$OS" = Linux ] && is_omarchy; then
+        log "Configuring Zsh in Ghostty while preserving Bash for Omarchy system startup"
+        # Ghostty loads config.ghostty automatically; use a small local override.
+        # Keep the shared Ghostty file as the main configuration below.
+        :
+    fi
+
     # Ghostty uses the XDG config path on both Linux and macOS.
     # Keep the shared settings here so both platforms behave the same.
     ensure_real_directory "$HOME/.config/ghostty"
     backup_and_link "$DOTFILES_DIR/common/ghostty/config.ghostty" "$HOME/.config/ghostty/config.ghostty"
-    [ ! -e "$HOME/.config/ghostty/config" ] && [ ! -L "$HOME/.config/ghostty/config" ] || rm -f "$HOME/.config/ghostty/config"
+    if [ "$OS" = Linux ] && is_omarchy; then
+        backup_and_link "$DOTFILES_DIR/linux/omarchy/ghostty-config" "$HOME/.config/ghostty/config"
+    else
+        [ ! -e "$HOME/.config/ghostty/config" ] && [ ! -L "$HOME/.config/ghostty/config" ] || rm -f "$HOME/.config/ghostty/config"
+    fi
 
     if [ "$OS" = Darwin ]; then
         log "Linking macOS dotfiles"
@@ -180,6 +207,10 @@ install_links() {
         [ ! -e "$dir/config" ] && [ ! -L "$dir/config" ] || rm -f "$dir/config"
         backup_and_link "$DOTFILES_DIR/macos/ghostty/config.ghostty" "$dir/config.ghostty"
     elif [ "$OS" = Linux ]; then
+        if is_omarchy; then
+            log "Preserving Omarchy desktop dotfiles (Hyprland, Waybar, launcher, etc.)"
+            return
+        fi
         log "Linking Linux desktop dotfiles"
         find "$DOTFILES_DIR/linux/hypr" -maxdepth 1 -type f -name '*.sh' -exec chmod +x {} +
         find "$DOTFILES_DIR/linux/waybar" -maxdepth 1 -type f -name '*.sh' -exec chmod +x {} +
@@ -202,10 +233,13 @@ install_links() {
 main() {
     case "$OS" in Darwin) install_macos ;; Linux) install_linux ;; *) printf 'Unsupported operating system: %s\n' "$OS" >&2; exit 1 ;; esac
     install_links
-    configure_linux_defaults
+    if [ "$OS" != Linux ] || ! is_omarchy; then configure_linux_defaults; fi
     install_t2_arch
     log "Installed"
     printf 'OS: %s\nArch: %s\n' "$OS" "$ARCH"
+    if [ "$OS" = Linux ] && is_omarchy; then
+        printf '\nGhostty will launch Zsh; keep Bash as the Omarchy login shell.\n'
+    fi
     printf '\nStart a new shell, then use: tmx\n'
 }
 

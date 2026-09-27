@@ -212,6 +212,7 @@ install_links() {
             # Omarchy 4 loads the user Lua file from hyprland.lua.
             # Link only personal bindings; never replace Omarchy's bootstrap.
             backup_and_link "$DOTFILES_DIR/linux/omarchy/bindings.lua" "$HOME/.config/hypr/bindings.lua"
+            backup_and_link "$DOTFILES_DIR/linux/omarchy/input.lua" "$HOME/.config/hypr/input.lua"
             return
         fi
         log "Linking Linux desktop dotfiles"

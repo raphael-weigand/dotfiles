@@ -21,13 +21,13 @@ bind("SUPER + SHIFT + W", "WhatsApp", "chromium --app=https://web.whatsapp.com/"
 bind("SUPER + SHIFT + Y", "YouTube", "chromium --app=https://youtube.com/")
 
 -- Windows and Vim-style movement
-bind("SUPER + Q", "Close window", hl.dsp.window.close())
-bind("SUPER + F", "Fullscreen", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
-dispatch("SUPER + SHIFT + V", "Floating full width", "togglefloating && hyprctl dispatch fullscreen 1")
+bind("SUPER + Q", "Close window", "hyprctl dispatch killactive")
+bind("SUPER + F", "Fullscreen", "hyprctl dispatch fullscreen 0")
+bind("SUPER + SHIFT + V", "Floating full width", "hyprctl dispatch togglefloating && hyprctl dispatch fullscreen 1")
 local dirs = { H = "l", J = "d", K = "u", L = "r" }
 for key, dir in pairs(dirs) do
-  bind("SUPER + " .. key, "Focus " .. dir, hl.dsp.focus({ direction = dir }))
-  bind("SUPER + CTRL + " .. key, "Move window " .. dir, hl.dsp.window.swap({ direction = dir }))
+  bind("SUPER + " .. key, "Focus " .. dir, "hyprctl dispatch movefocus " .. dir)
+  bind("SUPER + CTRL + " .. key, "Move window " .. dir, "hyprctl dispatch movewindow " .. dir)
 end
 local sizes = { H = "-50 0", J = "0 50", K = "0 -50", L = "50 0" }
 for key, delta in pairs(sizes) do
@@ -40,21 +40,21 @@ dispatch("SUPER + SHIFT + F", "Split ratio 133%", "layoutmsg 'splitratio 1.333 e
 bind("SUPER + SHIFT + A", "Gather workspaces", os.getenv("HOME") .. "/dotfiles/linux/hypr/gather-workspaces.sh")
 
 -- Group mode uses Hyprland's native submap dispatchers.
-dispatch("SUPER + G", "Group mode", "submap group")
+-- Group submap requires a separate compatible Lua definition; do not bind a dead shortcut.
 -- Submap bindings are defined separately by the installer in the optional legacy
 -- config only if a future Omarchy release exposes submap configuration in Lua.
 
 -- Workspaces
 for n = 1, 9 do
   local key = "code:" .. tostring(n + 9)
-  bind("SUPER + " .. key, "Workspace " .. n, hl.dsp.focus({ workspace = tostring(n) }))
-  bind("SUPER + SHIFT + " .. key, "Move to workspace " .. n, hl.dsp.window.move({ workspace = tostring(n) }))
+  bind("SUPER + " .. key, "Workspace " .. n, "hyprctl dispatch workspace " .. n)
+  bind("SUPER + SHIFT + " .. key, "Move to workspace " .. n, "hyprctl dispatch movetoworkspace " .. n)
 end
-bind("SUPER + N", "Next workspace", hl.dsp.focus({ workspace = "r+1" }))
-bind("SUPER + B", "Previous workspace", hl.dsp.focus({ workspace = "r-1" }))
-bind("SUPER + SHIFT + N", "Move to next workspace", hl.dsp.window.move({ workspace = "r+1" }))
-bind("SUPER + SHIFT + B", "Move to previous workspace", hl.dsp.window.move({ workspace = "r-1" }))
-bind("SUPER + P", "Scratchpad", hl.dsp.workspace.toggle_special("scratchpad"))
-bind("SUPER + SHIFT + P", "Move to scratchpad", hl.dsp.window.move({ workspace = "special:scratchpad" }))
+bind("SUPER + N", "Next workspace", "hyprctl dispatch workspace r+1")
+bind("SUPER + B", "Previous workspace", "hyprctl dispatch workspace r-1")
+bind("SUPER + SHIFT + N", "Move to next workspace", "hyprctl dispatch movetoworkspace r+1")
+bind("SUPER + SHIFT + B", "Move to previous workspace", "hyprctl dispatch movetoworkspace r-1")
+bind("SUPER + P", "Scratchpad", "hyprctl dispatch togglespecialworkspace scratchpad")
+bind("SUPER + SHIFT + P", "Move to scratchpad", "hyprctl dispatch movetoworkspace special:scratchpad")
 
 -- Omarchy owns session/lock, audio, media and screenshots. Retain its defaults.

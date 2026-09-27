@@ -208,7 +208,8 @@ install_links() {
         backup_and_link "$DOTFILES_DIR/macos/ghostty/config.ghostty" "$dir/config.ghostty"
     elif [ "$OS" = Linux ]; then
         if is_omarchy; then
-            log "Preserving Omarchy desktop dotfiles (Hyprland, Waybar, launcher, etc.)"
+            log "Preserving Omarchy desktop; installing personal keybindings only"
+            backup_and_link "$DOTFILES_DIR/linux/omarchy/bindings.lua" "$HOME/.config/hypr/bindings.lua"
             return
         fi
         log "Linking Linux desktop dotfiles"

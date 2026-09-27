@@ -47,9 +47,9 @@ bind("SUPER + SHIFT + F", "Split ratio 133%", hl.dsp.layout("splitratio 1.333 ex
 
 -- Workspaces: normal number keys (not layout-dependent keycodes)
 for n = 1, 9 do
-  bind("SUPER + " .. n, "Workspace " .. n, hl.dsp.focus({ workspace = n }))
+  bind("SUPER + " .. n, "Workspace " .. n, hl.dsp.focus({ workspace = tostring(n) }))
   bind("SUPER + SHIFT + " .. n, "Move to workspace " .. n,
-    hl.dsp.window.move({ workspace = n }))
+    hl.dsp.window.move({ workspace = tostring(n) }))
 end
 bind("SUPER + N", "Next workspace", hl.dsp.focus({ workspace = "r+1" }))
 bind("SUPER + B", "Previous workspace", hl.dsp.focus({ workspace = "r-1" }))

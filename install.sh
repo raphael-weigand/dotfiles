@@ -96,7 +96,7 @@ is_omarchy() {
 
 install_omarchy() {
     log "Installing Omarchy development tools (preserving Omarchy desktop configuration)"
-    sudo pacman -Syu --needed --noconfirm \
+    sudo pacman -S --needed --noconfirm \
         base-devel curl git jq neovim tree-sitter-cli tmux zsh zsh-autosuggestions ripgrep fd trash-cli ghostty
     # Do not replace Omarchy-managed Hyprland, bar, launcher or system services.
 }

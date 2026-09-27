@@ -209,8 +209,9 @@ install_links() {
     elif [ "$OS" = Linux ]; then
         if is_omarchy; then
             log "Preserving Omarchy desktop; installing personal keybindings only"
-            # Omarchy 4 uses Lua-managed bindings; do not inject legacy Hyprland bindings.
-            # Configure after inspecting the installed Omarchy Lua entrypoint.
+            # Omarchy 4 loads the user Lua file from hyprland.lua.
+            # Link only personal bindings; never replace Omarchy's bootstrap.
+            backup_and_link "$DOTFILES_DIR/linux/omarchy/bindings.lua" "$HOME/.config/hypr/bindings.lua"
             return
         fi
         log "Linking Linux desktop dotfiles"

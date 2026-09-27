@@ -63,6 +63,9 @@ bind("SUPER + SHIFT + P", "Move to scratchpad",
 
 -- Native grouping (without legacy submap or shell dispatchers).
 bind("SUPER + G", "Toggle window grouping", hl.dsp.group.toggle())
+-- Vim-friendly group tab navigation; unlike SUPER+G these never toggle grouping.
+bind("SUPER + ALT + H", "Previous group tab", hl.dsp.group.prev())
+bind("SUPER + ALT + L", "Next group tab", hl.dsp.group.next())
 bind("SUPER + ALT + TAB", "Next grouped window", hl.dsp.group.next())
 bind("SUPER + SHIFT + ALT + TAB", "Previous grouped window", hl.dsp.group.prev())
 bind("SUPER + ALT + G", "Move active window out of group",

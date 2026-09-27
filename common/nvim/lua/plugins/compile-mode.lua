@@ -6,7 +6,7 @@ return {
     },
     config = function()
         vim.g.compile_mode = {
-            default_command = "make -k ",
+            default_command = "",
             focus_compilation_buffer = true,
             auto_scroll = true,
         }

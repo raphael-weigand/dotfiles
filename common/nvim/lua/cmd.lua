@@ -312,7 +312,7 @@ local function toggle_terminal()
     vim.cmd("startinsert")
 end
 
-vim.keymap.set({ "n", "t" }, "<leader>t", toggle_terminal, { desc = "Toggle terminal" })
+vim.keymap.set({ "n", "t" }, "<leader>ö", toggle_terminal, { desc = "Toggle terminal" })
 vim.keymap.set("t", "<C-g>", [[<C-\><C-n>]], { desc = "Terminal normal mode" })
 vim.keymap.set("n", "<C-g>", function()
     if vim.bo.buftype == "terminal" then

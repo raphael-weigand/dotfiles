@@ -61,15 +61,25 @@ bind("SUPER + P", "Scratchpad", hl.dsp.workspace.toggle_special("scratchpad"))
 bind("SUPER + SHIFT + P", "Move to scratchpad",
   hl.dsp.window.move({ workspace = "special:scratchpad" }))
 
--- Native grouping (without legacy submap or shell dispatchers).
-bind("SUPER + G", "Toggle window grouping", hl.dsp.group.toggle())
--- Vim-friendly group tab navigation; unlike SUPER+G these never toggle grouping.
-bind("SUPER + ALT + H", "Previous group tab", hl.dsp.group.prev())
-bind("SUPER + ALT + L", "Next group tab", hl.dsp.group.next())
-bind("SUPER + ALT + TAB", "Next grouped window", hl.dsp.group.next())
-bind("SUPER + SHIFT + ALT + TAB", "Previous grouped window", hl.dsp.group.prev())
-bind("SUPER + ALT + G", "Move active window out of group",
-  hl.dsp.window.move({ out_of_group = true }))
+-- Same two-key group mode as linux/hypr/keybinds.conf on master.
+-- A submap prevents SUPER+G from toggling the group before H/L is pressed.
+bind("SUPER + G", "Group mode", hl.dsp.submap("personal_group"))
+
+local function group_action(key, description, action)
+  hl.bind(key, function()
+    hl.dispatch(action)
+    hl.dispatch(hl.dsp.submap("reset"))
+  end, { description = description })
+end
+
+hl.define_submap("personal_group", function()
+  group_action("G", "Toggle window group", hl.dsp.group.toggle())
+  group_action("H", "Previous group tab", hl.dsp.group.prev())
+  group_action("L", "Next group tab", hl.dsp.group.next())
+  group_action("M", "Move active window out of group",
+    hl.dsp.window.move({ out_of_group = true }))
+  hl.bind("ESCAPE", hl.dsp.submap("reset"), { description = "Exit group mode" })
+end)
 
 -- Omarchy owns session, lock, screenshots, clipboard, audio and brightness.
 -- No T2-specific input or display overrides are installed here.

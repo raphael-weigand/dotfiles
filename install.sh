@@ -209,7 +209,10 @@ install_links() {
     elif [ "$OS" = Linux ]; then
         if is_omarchy; then
             log "Preserving Omarchy desktop; installing personal keybindings only"
-            backup_and_link "$DOTFILES_DIR/linux/omarchy/bindings.lua" "$HOME/.config/hypr/bindings.lua"
+            backup_and_link "$DOTFILES_DIR/linux/omarchy/bindings.conf" "$HOME/.config/hypr/personal-bindings.conf"
+            if [ -f "$HOME/.config/hypr/bindings.conf" ] && ! grep -Fq "source = ~/.config/hypr/personal-bindings.conf" "$HOME/.config/hypr/bindings.conf"; then
+                printf '\n# Personal dotfiles overrides\nsource = ~/.config/hypr/personal-bindings.conf\n' >> "$HOME/.config/hypr/bindings.conf"
+            fi
             return
         fi
         log "Linking Linux desktop dotfiles"

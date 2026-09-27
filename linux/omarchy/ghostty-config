@@ -1,3 +1,3 @@
-# Omarchy: retain Bash as system shell, launch Zsh in Ghostty.
+# Omarchy: launch Zsh in Ghostty without changing the system login shell.
+# Shared settings are loaded separately from ~/.config/ghostty/config.ghostty.
 command = /usr/bin/zsh
-config-file = ../../common/ghostty/config.ghostty

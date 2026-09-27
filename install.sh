@@ -183,12 +183,6 @@ install_links() {
     backup_and_link "$DOTFILES_DIR/common/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf"
     backup_and_link "$DOTFILES_DIR/common/zsh/zshrc" "$HOME/.zshrc"
 
-    if [ "$OS" = Linux ] && is_omarchy; then
-        log "Configuring Zsh in Ghostty while preserving Bash for Omarchy system startup"
-        # Ghostty loads config.ghostty automatically; use a small local override.
-        # Keep the shared Ghostty file as the main configuration below.
-        :
-    fi
 
     # Ghostty uses the XDG config path on both Linux and macOS.
     # Keep the shared settings here so both platforms behave the same.

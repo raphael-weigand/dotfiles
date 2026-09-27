@@ -1,0 +1,3 @@
+# Omarchy: retain Bash as system shell, launch Zsh in Ghostty.
+command = /usr/bin/zsh
+config-file = ../../common/ghostty/config.ghostty

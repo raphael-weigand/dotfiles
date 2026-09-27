@@ -210,8 +210,12 @@ install_links() {
         if is_omarchy; then
             log "Preserving Omarchy desktop; installing personal keybindings only"
             backup_and_link "$DOTFILES_DIR/linux/omarchy/bindings.conf" "$HOME/.config/hypr/personal-bindings.conf"
-            if [ -f "$HOME/.config/hypr/bindings.conf" ] && ! grep -Fq "source = ~/.config/hypr/personal-bindings.conf" "$HOME/.config/hypr/bindings.conf"; then
-                printf '\n# Personal dotfiles overrides\nsource = ~/.config/hypr/personal-bindings.conf\n' >> "$HOME/.config/hypr/bindings.conf"
+            # Load personal bindings last, regardless of Omarchy\x27s bindings.conf layout.
+            # Back up the existing entrypoint before editing it.
+            local hypr_entry="$HOME/.config/hypr/hyprland.conf"
+            if [ -f "$hypr_entry" ] && ! grep -Fq "source = ~/.config/hypr/personal-bindings.conf" "$hypr_entry"; then
+                cp -p "$hypr_entry" "${hypr_entry}.backup-${TIMESTAMP}"
+                printf '\n# Personal dotfiles bindings (load after Omarchy defaults)\nsource = ~/.config/hypr/personal-bindings.conf\n' >> "$hypr_entry"
             fi
             return
         fi

@@ -13,11 +13,25 @@ return {
 
             telescope.setup({
                 defaults = {
+                    sorting_strategy = "ascending",
+                    layout_config = {
+                        prompt_position = "top",
+                    },
                     mappings = {
                         i = {
                             ["<C-k>"] = "move_selection_previous",
                             ["<C-j>"] = "move_selection_next",
                         },
+                    },
+                },
+                pickers = {
+                    find_files = {
+                        theme = "dropdown",
+                        previewer = false,
+                    },
+                    buffers = {
+                        theme = "dropdown",
+                        previewer = false,
                     },
                 },
                 extensions = {

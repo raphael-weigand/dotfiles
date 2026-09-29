@@ -179,7 +179,7 @@ vim.keymap.set("n", "<leader>sr", function()
     end)
 end, { desc = "Replace word under cursor" })
 
--- Move the current line in Normal or Insert mode, preserving cursor column.
+-- Move the current line in Insert mode, preserving cursor column.
 -- The API edit keeps Insert mode active and does not touch the yank register.
 local function move_current_line(direction)
     local buf = vim.api.nvim_get_current_buf()
@@ -195,8 +195,8 @@ local function move_current_line(direction)
     vim.api.nvim_win_set_cursor(0, { target, col })
 end
 
-vim.keymap.set({ "n", "i" }, "<C-k>", function() move_current_line(-1) end, { desc = "Move current line up" })
-vim.keymap.set({ "n", "i" }, "<C-j>", function() move_current_line(1) end, { desc = "Move current line down" })
+vim.keymap.set("i", "<C-k>", function() move_current_line(-1) end, { desc = "Move current line up" })
+vim.keymap.set("i", "<C-j>", function() move_current_line(1) end, { desc = "Move current line down" })
 
 -- Move selected lines while keeping the selection
 vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
@@ -217,7 +217,8 @@ vim.keymap.set("n", "]b", "<cmd>bnext<CR>", { desc = "Next buffer" })
 
 -- Windows/splits: keep the same spatial navigation used in Visual Studio.
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Focus window left" })
--- <C-j>/<C-k> now move lines; use native <C-w>j/<C-w>k for window navigation.
+vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Focus window below" })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Focus window above" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Focus window right" })
 vim.keymap.set("n", "<leader>sh", "<cmd>split<CR>", { desc = "Horizontal split" })
 vim.keymap.set("n", "<leader>sv", "<cmd>vsplit<CR>", { desc = "Vertical split" })

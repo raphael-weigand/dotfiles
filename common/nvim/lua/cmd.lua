@@ -183,6 +183,15 @@ end, { desc = "Replace word under cursor" })
 vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
 
+-- Duplicate the current line with yy, keeping the cursor column on the copy.
+-- Note: yy now duplicates rather than only yanking; Y remains available to yank a line.
+vim.keymap.set("n", "yy", function()
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local line = vim.api.nvim_get_current_line()
+    vim.api.nvim_buf_set_lines(0, row, row, false, { line })
+    vim.api.nvim_win_set_cursor(0, { row + 1, col })
+end, { desc = "Duplicate line and keep cursor column" })
+
 -- Buffers: same bindings as VsVim's previous/next document.
 vim.keymap.set("n", "[b", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
 vim.keymap.set("n", "]b", "<cmd>bnext<CR>", { desc = "Next buffer" })

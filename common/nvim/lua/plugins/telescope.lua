@@ -14,6 +14,7 @@ return {
             telescope.setup({
                 defaults = {
                     sorting_strategy = "ascending",
+                    preview = false,
                     layout_config = {
                         prompt_position = "top",
                     },

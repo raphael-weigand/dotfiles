@@ -51,6 +51,9 @@ alias ll="ls -lh"
 if command -v brew >/dev/null 2>&1; then
     alias sync="echo 'brew update...'; brew update -v"
     alias upgrade="echo 'brew upgrade...'; brew upgrade; echo 'brew cleanup...'; brew cleanup -s; echo 'brew autoremove...'; brew autoremove"
+elif command -v pacman >/dev/null 2>&1; then
+    alias sync="sudo pacman -Sy; yay -Sy"
+    alias upgrade="sudo pacman -Syu; yay -Syu; echo 'Current kernel: $(uname -r), latest kernel: $(pacman -Q linux) ... reboot if diverge'"
 fi
 
 if [ "$(uname -s)" = "Darwin" ]; then
@@ -60,7 +63,7 @@ if [ "$(uname -s)" = "Darwin" ]; then
 fi
 
 # Attach to the main session or create it in the programming directory.
-alias tmx="tmux new-session -A -s main -c ~/Programming/"
+alias tmx="tmux attach || tmux new-session -A -s main -c ~/Programming/"
 
 # Better defaults if installed.
 # command -v eza >/dev/null 2>&1 && alias ls="eza"

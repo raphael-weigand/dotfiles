@@ -16,7 +16,7 @@ PanelWindow {
         clockText = Qt.formatDateTime(new Date(), "MMM dd, HH:mm")
     }
     Timer {
-        interval: (5000 * 20 * 60)
+        interval: 5000 * 20 // once every minute
         running: true
         repeat: true
         triggeredOnStart: true

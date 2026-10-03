@@ -198,7 +198,7 @@ vim.keymap.set("n", "<leader>sc", "<cmd>close<CR>", { desc = "Close split" })
 vim.keymap.set("n", "<leader>sx", "<C-w>x", { desc = "Swap split" })
 
 -- Documents: mirror the VsVim window/document workflow.
-vim.keymap.set("n", "<leader>ws", "<cmd>write<CR>", { desc = "Save buffer" })
+vim.keymap.set("n", "<leader>ww", "<cmd>write<CR>", { desc = "Save buffer" })
 vim.keymap.set("n", "<leader>wa", "<cmd>wall<CR>", { desc = "Save all buffers" })
 vim.keymap.set("n", "<leader>wc", "<cmd>bdelete<CR>", { desc = "Close buffer" })
 vim.keymap.set("n", "<leader>wo", "<cmd>only<CR>", { desc = "Close other windows" })

@@ -12,7 +12,7 @@ return {
         }
     end,
     keys = {
-        { "<leader>cc", "<cmd>Compile<cr>", desc = "Compile" },
+        { "<C-c>", "<cmd>Compile<cr>", desc = "Compile" },
         { "<leader>cr", "<cmd>Recompile<cr>", desc = "Recompile" },
         { "<leader>ck", "<cmd>CompileInterrupt<cr>", desc = "Stop compilation" },
         { "<leader>cn", "<cmd>NextError<cr>", desc = "Next compile error" },

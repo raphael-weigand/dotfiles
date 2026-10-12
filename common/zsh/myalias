@@ -48,13 +48,67 @@ fi
 alias la="ls -lah"
 alias ll="ls -lh"
 
-if command -v brew >/dev/null 2>&1; then
-    alias sync="echo 'brew update...'; brew update -v"
-    alias upgrade="echo 'brew upgrade...'; brew upgrade; echo 'brew cleanup...'; brew cleanup -s; echo 'brew autoremove...'; brew autoremove"
-elif command -v pacman >/dev/null 2>&1; then
-    alias sync="sudo pacman -Sy; yay -Sy"
-    alias upgrade="sudo pacman -Syu; yay -Syu; echo 'Current kernel: $(uname -r), latest kernel: $(pacman -Q linux) ... reboot if diverge'"
-fi
+# if command -v brew >/dev/null 2>&1; then
+#     alias sync="echo 'brew update...'; brew update -v"
+#     alias upgrade="echo 'brew upgrade...'; brew upgrade; echo 'brew cleanup...'; brew cleanup -s; echo 'brew autoremove...'; brew autoremove"
+# elif command -v pacman >/dev/null 2>&1; then
+#     alias sync="sudo pacman -Sy; yay -Sy"
+#     alias upgrade="sudo pacman -Syu; yay -Syu; echo 'Current kernel: $(uname -r), latest kernel: $(pacman -Q linux) ... reboot if diverge'"
+# fi
+
+function sync() {
+    echo "==> Arch Updates"
+    checkupdates
+
+    echo "\n==> AUR Updates"
+    yay -Qua
+}
+
+updates() {
+    echo "==> Arch Updates"
+    checkupdates
+
+    echo
+    echo "==> AUR Updates"
+    yay -Qua
+}
+
+upgrade() {
+    local running_kernel installed_kernel kernel_pkg
+    local kernel_file
+
+    running_kernel=$(uname -r)
+
+    # Paket ermitteln, das den laufenden Kernel bereitstellt
+    kernel_file="/usr/lib/modules/$running_kernel/pkgbase"
+
+    if [[ -f "$kernel_file" ]]; then
+        kernel_pkg=$(<"$kernel_file")
+    fi
+
+    echo "==> Systemupgrade"
+    yay -Syu || return 1
+
+    echo
+    echo "==> Kernel-Prüfung"
+
+    if [[ -z "$kernel_pkg" ]]; then
+        echo "Kernel-Paket konnte nicht ermittelt werden."
+        echo "Laufender Kernel: $running_kernel"
+        return 0
+    fi
+
+    # Prüfen, ob die Kernel-Version nach dem Upgrade
+    # noch als installiertes Modulverzeichnis existiert
+    if [[ ! -d "/usr/lib/modules/$running_kernel" ]]; then
+        echo "⚠ Kernel wurde aktualisiert!"
+        echo "Laufender Kernel: $running_kernel"
+        echo "Ein Neustart wird empfohlen."
+    else
+        echo "✓ Laufender Kernel: $running_kernel"
+        echo "Kein Kernel-Neustart erforderlich."
+    fi
+}
 
 if [ "$(uname -s)" = "Darwin" ]; then
     alias flushdns="echo 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder...'; sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"

@@ -12,14 +12,20 @@ PanelWindow {
     property int displayedMonth: today.getMonth()
     readonly property int firstWeekday: (new Date(displayedYear, displayedMonth, 1).getDay() + 6) % 7
     readonly property int daysInMonth: new Date(displayedYear, displayedMonth + 1, 0).getDate()
-    readonly property int cellCount: Math.ceil((firstWeekday + daysInMonth) / 7) * 7
+    readonly property int cellCount: 42
+    function isoWeek(date) {
+        const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7))
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+    }
     readonly property int yearDays: Math.round((new Date(today.getFullYear() + 1, 0, 1) - new Date(today.getFullYear(), 0, 1)) / 86400000)
     readonly property int dayOfYear: Math.floor((Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - Date.UTC(today.getFullYear(), 0, 1)) / 86400000) + 1
     readonly property real yearProgress: Math.max(0, Math.min(1, (Date.now() - new Date(today.getFullYear(), 0, 1).getTime()) / (new Date(today.getFullYear() + 1, 0, 1).getTime() - new Date(today.getFullYear(), 0, 1).getTime())))
     visible: panelVisible
     anchors { top: true }
-    implicitWidth: 336
-    implicitHeight: 390
+    implicitWidth: 350
+    implicitHeight: 440
     margins.top: 38
     color: "transparent"
 
@@ -97,15 +103,15 @@ PanelWindow {
             }
         }
         GridLayout {
-            columns: 7
+            columns: 8
             rowSpacing: 5
             columnSpacing: 3
             Layout.fillWidth: true
             Repeater {
-                model: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+                model: ["KW", "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
                 Text {
                     required property string modelData
-                    Layout.preferredWidth: 39
+                    Layout.preferredWidth: 35
                     Layout.preferredHeight: 24
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -116,20 +122,23 @@ PanelWindow {
                 }
             }
             Repeater {
-                model: root.cellCount
+                model: 48
                 Rectangle {
                     required property int index
-                    readonly property int dayNumber: index - root.firstWeekday + 1
-                    readonly property bool inMonth: dayNumber >= 1 && dayNumber <= root.daysInMonth
-                    readonly property bool isToday: inMonth && dayNumber === root.today.getDate() && root.displayedMonth === root.today.getMonth() && root.displayedYear === root.today.getFullYear()
-                    Layout.preferredWidth: 39
+                    readonly property bool weekColumn: index % 8 === 0
+                    readonly property int weekRow: Math.floor(index / 8)
+                    readonly property int dayNumber: weekRow * 7 + (index % 8) - root.firstWeekday
+                    readonly property date cellDate: new Date(root.displayedYear, root.displayedMonth, dayNumber)
+                    readonly property bool inMonth: cellDate.getMonth() === root.displayedMonth && cellDate.getFullYear() === root.displayedYear
+                    readonly property bool isToday: !weekColumn && cellDate.getDate() === root.today.getDate() && cellDate.getMonth() === root.today.getMonth() && cellDate.getFullYear() === root.today.getFullYear()
+                    Layout.preferredWidth: 35
                     Layout.preferredHeight: 29
                     radius: 5
                     color: isToday ? "#647fba" : "transparent"
                     Text {
                         anchors.centerIn: parent
-                        text: inMonth ? String(dayNumber) : ""
-                        color: "#eeeeee"
+                        text: weekColumn ? String(root.isoWeek(new Date(root.displayedYear, root.displayedMonth, 1 - root.firstWeekday + weekRow * 7))) : String(cellDate.getDate())
+                        color: weekColumn ? "#91a9e6" : (inMonth ? "#eeeeee" : "#777777")
                         font.bold: isToday
                         font.family: "Iosevka Term Extended"
                         font.pixelSize: 13
@@ -145,7 +154,7 @@ PanelWindow {
         }
         Rectangle {
             Layout.fillWidth: true
-            height: 7
+            Layout.preferredHeight: 7
             radius: 4
             color: "#444444"
             Rectangle {
@@ -160,6 +169,5 @@ PanelWindow {
             Text { text: root.dayOfYear + " von " + root.yearDays + " Tagen"; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 11; Layout.fillWidth: true }
             Text { text: (root.yearDays - root.dayOfYear) + " Tage übrig"; color: "#999999"; font.family: "Iosevka Term Extended"; font.pixelSize: 11 }
         }
-        Item { Layout.fillHeight: true }
     }
 }

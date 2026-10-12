@@ -41,7 +41,7 @@ install_macos() {
         if [ -x /usr/local/bin/brew ]; then eval "$(/usr/local/bin/brew shellenv)"; elif [ -x /opt/homebrew/bin/brew ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
     fi
     log "Installing macOS development tools"
-    brew install neovim tree-sitter tmux zsh-autosuggestions ripgrep fd
+    brew install neovim tree-sitter tmux zsh-autosuggestions zsh-syntax-highlighting fzf zoxide ripgrep fd
 }
 
 install_neovim_linux() {
@@ -97,7 +97,7 @@ is_omarchy() {
 install_omarchy() {
     log "Installing Omarchy development tools (preserving Omarchy desktop configuration)"
     sudo pacman -S --needed --noconfirm \
-        base-devel curl git jq neovim tree-sitter-cli tmux zsh zsh-autosuggestions ripgrep fd trash-cli ghostty
+        base-devel curl git jq neovim tree-sitter-cli tmux zsh zsh-autosuggestions zsh-syntax-highlighting zsh-completions fzf zoxide ripgrep fd trash-cli ghostty
     # Do not replace Omarchy-managed Hyprland, bar, launcher or system services.
     # Set Zsh as the user login shell; Omarchy system scripts retain their shebangs.
     local zsh_path; zsh_path="$(command -v zsh)"
@@ -237,6 +237,15 @@ install_links() {
 main() {
     case "$OS" in Darwin) install_macos ;; Linux) install_linux ;; *) printf 'Unsupported operating system: %s\n' "$OS" >&2; exit 1 ;; esac
     install_links
+    if command -v zsh >/dev/null 2>&1 && command -v git >/dev/null 2>&1; then
+        log "Installing fzf-tab"
+        mkdir -p "$HOME/.local/share"
+        if [ -d "$HOME/.local/share/fzf-tab/.git" ]; then
+            git -C "$HOME/.local/share/fzf-tab" pull --ff-only
+        else
+            git clone --depth 1 https://github.com/Aloxaf/fzf-tab "$HOME/.local/share/fzf-tab"
+        fi
+    fi
     if [ "$OS" != Linux ] || ! is_omarchy; then configure_linux_defaults; fi
     install_t2_arch
     log "Installed"

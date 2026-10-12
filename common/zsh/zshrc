@@ -59,3 +59,11 @@ node()    { _lazy_load_fnm && node "$@"; }
 npm()     { _lazy_load_fnm && npm "$@"; }
 npx()     { _lazy_load_fnm && npx "$@"; }
 corepack(){ _lazy_load_fnm && corepack "$@"; }
+
+function websearch () {
+    local query="${(j: :)@}"
+    local encoded="${query// /+}"
+    w3m "https://html.duckduckgo.com/html/?q=${encoded}"
+}
+
+alias '?'=websearch

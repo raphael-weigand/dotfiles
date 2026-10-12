@@ -161,6 +161,13 @@ vim.keymap.set("x", "<leader>x", function()
     vim.api.nvim_buf_set_text(0, row, start_col, row, end_col, { swapped })
 end, { desc = "Swap selection by separator" })
 
+-- Wort unter Cursor ersetzen
+vim.keymap.set(
+    "n",
+    "<leader>ss",
+    [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]
+)
+
 -- Replace the word under the cursor throughout the current buffer.
 vim.keymap.set("n", "<leader>sr", function()
     local word = vim.fn.expand("<cword>")
@@ -168,7 +175,7 @@ vim.keymap.set("n", "<leader>sr", function()
         return
     end
 
-    vim.ui.input({ prompt = "Replace '" .. word .. "' with: " }, function(replacement)
+    vim.ui.input({ prompt = "Replace '" .. word .. "' with: ", default = word}, function(replacement)
         if replacement == nil then
             return
         end
@@ -226,7 +233,7 @@ vim.keymap.set("n", "<leader>sc", "<cmd>close<CR>", { desc = "Close split" })
 vim.keymap.set("n", "<leader>sx", "<C-w>x", { desc = "Swap split" })
 
 -- Documents: mirror the VsVim window/document workflow.
-vim.keymap.set("n", "<leader>ws", "<cmd>write<CR>", { desc = "Save buffer" })
+vim.keymap.set("n", "<leader>ww", "<cmd>write<CR>", { desc = "Save buffer" })
 vim.keymap.set("n", "<leader>wa", "<cmd>wall<CR>", { desc = "Save all buffers" })
 vim.keymap.set("n", "<leader>wc", "<cmd>bdelete<CR>", { desc = "Close buffer" })
 vim.keymap.set("n", "<leader>wo", "<cmd>only<CR>", { desc = "Close other windows" })
@@ -377,3 +384,14 @@ vim.opt.listchars = {
 vim.keymap.set("i", "<C-BS>", "<C-w>", {
   desc = "Delete previous word",
 })
+
+-- Paste ohne Yank zu zerstören
+vim.keymap.set("x", "<leader>p", [["_dP]])
+
+-- Delete ohne Yank zu zerstören
+vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
+
+-- Beim Scrollen Cursor zentrieren
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
+

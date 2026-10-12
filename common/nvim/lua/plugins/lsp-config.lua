@@ -52,13 +52,13 @@ return {
                     end
 
                     -- Code navigation: keep IDE-style actions grouped under <leader>g.
-                    map("<leader>gd", vim.lsp.buf.definition, "LSP: Go to definition")
-                    map("<leader>gi", vim.lsp.buf.implementation, "LSP: Go to implementation")
-                    map("<leader>gr", vim.lsp.buf.references, "LSP: References")
-                    map("K", vim.lsp.buf.hover, "LSP: Hover")
+                    -- map("<leader>gd", vim.lsp.buf.definition, "LSP: Go to definition")
+                    -- map("<leader>gi", vim.lsp.buf.implementation, "LSP: Go to implementation")
+                    -- map("<leader>gr", vim.lsp.buf.references, "LSP: References")
+                    -- map("K", vim.lsp.buf.hover, "LSP: Hover")
 
-                    map("<leader>ca", vim.lsp.buf.code_action, "LSP: Code action")
-                    map("<leader>rn", vim.lsp.buf.rename, "LSP: Rename")
+                    -- map("<leader>ca", vim.lsp.buf.code_action, "LSP: Code action")
+                    -- map("<leader>rn", vim.lsp.buf.rename, "LSP: Rename")
                     map("<leader>gf", function()
                         vim.lsp.buf.format({ async = true })
                     end, "LSP: Format buffer")

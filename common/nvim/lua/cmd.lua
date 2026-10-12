@@ -39,134 +39,130 @@ vim.on_key(function(key)
     end
 end, search_highlight_ns)
 
--- Toggle comments using Neovim's native, language-aware commenting.
-vim.keymap.set("n", "<leader>/", "gcc", { remap = true, desc = "Toggle comment" })
-vim.keymap.set("x", "<leader>/", "gc", { remap = true, desc = "Toggle comment selection" })
-
-local function swap_text(text, separator, keep_prefix)
-    local separator_start, separator_end = text:find(separator, 1, true)
-    if not separator_start then
-        return nil
-    end
-
-    local left = text:sub(1, separator_start - 1)
-    local right = text:sub(separator_end + 1)
-    local prefix = ""
-
-    if keep_prefix then
-        local before, operand = left:match("^(.-)([^%s]+)%s*$")
-        if operand then
-            prefix = before
-            left = operand .. (left:match("%s*$") or "")
-        end
-    end
-
-    local left_leading = left:match("^%s*") or ""
-    local left_space = left:match("%s*$") or ""
-    local right_space = right:match("^%s*") or ""
-    local suffix_space = right:match("%s*$") or ""
-
-    local left_value = left:sub(#left_leading + 1, #left - #left_space)
-    local right_body = right:sub(#right_space + 1, #right - #suffix_space)
-    local punctuation = right_body:match("[;,]+$") or ""
-    local right_value = right_body:sub(1, #right_body - #punctuation)
-
-    return prefix
-        .. left_leading
-        .. right_value
-        .. left_space
-        .. separator
-        .. right_space
-        .. left_value
-        .. punctuation
-        .. suffix_space
-end
-
-local function read_separator()
-    local separator = vim.fn.getcharstr()
-    if separator == "" or separator == "\27" then
-        return nil
-    end
-    return separator
-end
+-- local function swap_text(text, separator, keep_prefix)
+--     local separator_start, separator_end = text:find(separator, 1, true)
+--     if not separator_start then
+--         return nil
+--     end
+--
+--     local left = text:sub(1, separator_start - 1)
+--     local right = text:sub(separator_end + 1)
+--     local prefix = ""
+--
+--     if keep_prefix then
+--         local before, operand = left:match("^(.-)([^%s]+)%s*$")
+--         if operand then
+--             prefix = before
+--             left = operand .. (left:match("%s*$") or "")
+--         end
+--     end
+--
+--     local left_leading = left:match("^%s*") or ""
+--     local left_space = left:match("%s*$") or ""
+--     local right_space = right:match("^%s*") or ""
+--     local suffix_space = right:match("%s*$") or ""
+--
+--     local left_value = left:sub(#left_leading + 1, #left - #left_space)
+--     local right_body = right:sub(#right_space + 1, #right - #suffix_space)
+--     local punctuation = right_body:match("[;,]+$") or ""
+--     local right_value = right_body:sub(1, #right_body - #punctuation)
+--
+--     return prefix
+--         .. left_leading
+--         .. right_value
+--         .. left_space
+--         .. separator
+--         .. right_space
+--         .. left_value
+--         .. punctuation
+--         .. suffix_space
+-- end
+--
+-- local function read_separator()
+--     local separator = vim.fn.getcharstr()
+--     if separator == "" or separator == "\27" then
+--         return nil
+--     end
+--     return separator
+-- end
 
 -- Normal mode: swap around a separator on the current expression/line.
 -- `hello_world` + <leader>x_ -> `world_hello`
 -- `unsigned long amount_fresh = 1;` + <leader>x= -> `unsigned long 1 = amount_fresh;`
-vim.keymap.set("n", "<leader>x", function()
-    local separator = read_separator()
-    if not separator then
-        return
-    end
-
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    local line = vim.api.nvim_get_current_line()
-
-    -- Prefer the WORD under the cursor when it already contains the separator.
-    local word_start = col + 1
-    while word_start > 1 and not line:sub(word_start - 1, word_start - 1):match("%s") do
-        word_start = word_start - 1
-    end
-
-    local word_end = col + 1
-    while word_end < #line and not line:sub(word_end + 1, word_end + 1):match("%s") do
-        word_end = word_end + 1
-    end
-
-    local word = line:sub(word_start, word_end)
-    if word:find(separator, 1, true) then
-        local swapped = swap_text(word, separator, false)
-        if swapped then
-            vim.api.nvim_buf_set_text(0, row - 1, word_start - 1, row - 1, word_end, { swapped })
-        end
-        return
-    end
-
-    -- Otherwise swap the operand before the separator with the value after it,
-    -- while preserving declarations/indentation before the left operand.
-    local swapped = swap_text(line, separator, true)
-    if not swapped then
-        vim.notify("Separator '" .. separator .. "' not found on current line", vim.log.levels.WARN)
-        return
-    end
-
-    vim.api.nvim_set_current_line(swapped)
-end, { desc = "Swap around separator" })
+-- vim.keymap.set("n", "<leader>x", function()
+--     local separator = read_separator()
+--     if not separator then
+--         return
+--     end
+--
+--     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+--     local line = vim.api.nvim_get_current_line()
+--
+--     -- Prefer the WORD under the cursor when it already contains the separator.
+--     local word_start = col + 1
+--     while word_start > 1 and not line:sub(word_start - 1, word_start - 1):match("%s") do
+--         word_start = word_start - 1
+--     end
+--
+--     local word_end = col + 1
+--     while word_end < #line and not line:sub(word_end + 1, word_end + 1):match("%s") do
+--         word_end = word_end + 1
+--     end
+--
+--     local word = line:sub(word_start, word_end)
+--     if word:find(separator, 1, true) then
+--         local swapped = swap_text(word, separator, false)
+--         if swapped then
+--             vim.api.nvim_buf_set_text(0, row - 1, word_start - 1, row - 1, word_end, { swapped })
+--         end
+--         return
+--     end
+--
+--     -- Otherwise swap the operand before the separator with the value after it,
+--     -- while preserving declarations/indentation before the left operand.
+--     local swapped = swap_text(line, separator, true)
+--     if not swapped then
+--         vim.notify("Separator '" .. separator .. "' not found on current line", vim.log.levels.WARN)
+--         return
+--     end
+--
+--     vim.api.nvim_set_current_line(swapped)
+-- end, { desc = "Swap around separator" })
 
 -- Visual mode: swap the two sides of the selected text.
-vim.keymap.set("x", "<leader>x", function()
-    local start_pos = vim.fn.getpos("v")
-    local end_pos = vim.fn.getpos(".")
-
-    if start_pos[2] ~= end_pos[2] then
-        vim.notify("Swap by separator currently supports a single line", vim.log.levels.WARN)
-        return
-    end
-
-    local row = start_pos[2] - 1
-    local start_col = math.min(start_pos[3], end_pos[3]) - 1
-    local end_col = math.max(start_pos[3], end_pos[3])
-    local text = vim.api.nvim_buf_get_text(0, row, start_col, row, end_col, {})[1]
-    local separator = read_separator()
-    if not separator then
-        return
-    end
-
-    local swapped = swap_text(text, separator, false)
-    if not swapped then
-        vim.notify("Separator '" .. separator .. "' not found in selection", vim.log.levels.WARN)
-        return
-    end
-
-    vim.api.nvim_buf_set_text(0, row, start_col, row, end_col, { swapped })
-end, { desc = "Swap selection by separator" })
+-- vim.keymap.set("x", "<leader>x", function()
+--     local start_pos = vim.fn.getpos("v")
+--     local end_pos = vim.fn.getpos(".")
+--
+--     if start_pos[2] ~= end_pos[2] then
+--         vim.notify("Swap by separator currently supports a single line", vim.log.levels.WARN)
+--         return
+--     end
+--
+--     local row = start_pos[2] - 1
+--     local start_col = math.min(start_pos[3], end_pos[3]) - 1
+--     local end_col = math.max(start_pos[3], end_pos[3])
+--     local text = vim.api.nvim_buf_get_text(0, row, start_col, row, end_col, {})[1]
+--     local separator = read_separator()
+--     if not separator then
+--         return
+--     end
+--
+--     local swapped = swap_text(text, separator, false)
+--     if not swapped then
+--         vim.notify("Separator '" .. separator .. "' not found in selection", vim.log.levels.WARN)
+--         return
+--     end
+--
+--     vim.api.nvim_buf_set_text(0, row, start_col, row, end_col, { swapped })
+-- end, { desc = "Swap selection by separator" })
 
 -- Wort unter Cursor ersetzen
-vim.keymap.set(
-    "n",
-    "<leader>ss",
-    [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]
-)
+-- vim.keymap.set(
+--     "n",
+--     "<leader>ss",
+--     [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]
+-- )
 
 -- Replace the word under the cursor throughout the current buffer.
 vim.keymap.set("n", "<leader>sr", function()
@@ -188,55 +184,40 @@ end, { desc = "Replace word under cursor" })
 
 -- Move the current line in Insert mode, preserving cursor column.
 -- The API edit keeps Insert mode active and does not touch the yank register.
-local function move_current_line(direction)
-    local buf = vim.api.nvim_get_current_buf()
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    local count = vim.api.nvim_buf_line_count(buf)
-    local target = row + direction
-    if target < 1 or target > count then
-        return
-    end
+-- local function move_current_line(direction)
+--     local buf = vim.api.nvim_get_current_buf()
+--     local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+--     local count = vim.api.nvim_buf_line_count(buf)
+--     local target = row + direction
+--     if target < 1 or target > count then
+--         return
+--     end
+--
+--     local lines = vim.api.nvim_buf_get_lines(buf, math.min(row, target) - 1, math.max(row, target), false)
+--     vim.api.nvim_buf_set_lines(buf, math.min(row, target) - 1, math.max(row, target), false, { lines[2], lines[1] })
+--     vim.api.nvim_win_set_cursor(0, { target, col })
+-- end
 
-    local lines = vim.api.nvim_buf_get_lines(buf, math.min(row, target) - 1, math.max(row, target), false)
-    vim.api.nvim_buf_set_lines(buf, math.min(row, target) - 1, math.max(row, target), false, { lines[2], lines[1] })
-    vim.api.nvim_win_set_cursor(0, { target, col })
-end
-
-vim.keymap.set("i", "<C-k>", function() move_current_line(-1) end, { desc = "Move current line up" })
-vim.keymap.set("i", "<C-j>", function() move_current_line(1) end, { desc = "Move current line down" })
+-- vim.keymap.set("i", "<C-k>", function() move_current_line(-1) end, { desc = "Move current line up" })
+-- vim.keymap.set("i", "<C-j>", function() move_current_line(1) end, { desc = "Move current line down" })
 
 -- Move selected lines while keeping the selection
 vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
-
--- yy keeps its native yank-only behavior.
--- <leader>yd duplicates the current line below, retaining the cursor column.
-vim.keymap.set("n", "<leader>yd", function()
-    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-    local line = vim.api.nvim_get_current_line()
-    vim.api.nvim_buf_set_lines(0, row, row, false, { line })
-    vim.api.nvim_win_set_cursor(0, { row + 1, col })
-end, { desc = "Duplicate current line below" })
 
 -- Buffers: same bindings as VsVim's previous/next document.
 vim.keymap.set("n", "[b", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
 vim.keymap.set("n", "]b", "<cmd>bnext<CR>", { desc = "Next buffer" })
 
 -- Windows/splits: keep the same spatial navigation used in Visual Studio.
-vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Focus window left" })
-vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Focus window below" })
-vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Focus window above" })
-vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Focus window right" })
-vim.keymap.set("n", "<leader>sh", "<cmd>split<CR>", { desc = "Horizontal split" })
-vim.keymap.set("n", "<leader>sv", "<cmd>vsplit<CR>", { desc = "Vertical split" })
-vim.keymap.set("n", "<leader>sc", "<cmd>close<CR>", { desc = "Close split" })
-vim.keymap.set("n", "<leader>sx", "<C-w>x", { desc = "Swap split" })
+-- vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Focus window left" })
+-- vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Focus window below" })
+-- vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Focus window above" })
+-- vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Focus window right" })
 
 -- Documents: mirror the VsVim window/document workflow.
 vim.keymap.set("n", "<leader>ww", "<cmd>write<CR>", { desc = "Save buffer" })
 vim.keymap.set("n", "<leader>wa", "<cmd>wall<CR>", { desc = "Save all buffers" })
-vim.keymap.set("n", "<leader>wc", "<cmd>bdelete<CR>", { desc = "Close buffer" })
-vim.keymap.set("n", "<leader>wo", "<cmd>only<CR>", { desc = "Close other windows" })
 
 -- Build gets its own namespace; <leader>m remains reserved for multi-cursor.
 local function find_makefile()
@@ -348,12 +329,12 @@ local function toggle_terminal()
 end
 
 vim.keymap.set({ "n", "t" }, "<leader>ö", toggle_terminal, { desc = "Toggle terminal" })
-vim.keymap.set("t", "<C-g>", [[<C-\><C-n>]], { desc = "Terminal normal mode" })
-vim.keymap.set("n", "<C-g>", function()
-    if vim.bo.buftype == "terminal" then
-        vim.cmd("startinsert")
-    end
-end, { desc = "Terminal input mode" })
+-- vim.keymap.set("t", "<C-g>", [[<C-\><C-n>]], { desc = "Terminal normal mode" })
+-- vim.keymap.set("n", "<C-g>", function()
+--     if vim.bo.buftype == "terminal" then
+--         vim.cmd("startinsert")
+--     end
+-- end, { desc = "Terminal input mode" })
 
 -- Show whitespace only while selecting text
 local visual_list_group = vim.api.nvim_create_augroup("VisualListChars", { clear = true })

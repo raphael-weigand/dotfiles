@@ -8,9 +8,9 @@ return {
         },
         keymaps = {
             ["<C-n>"] = { "actions.parent", mode = "n" },
-            ["<C-s>"] = { "actions.select", opts = { vertical = true } },
-            ["<C-h>"] = { "actions.select", opts = { horizontal = true } },
-            ["<C-t>"] = { "actions.select", opts = { tab = true } },
+            -- ["<C-s>"] = { "actions.select", opts = { vertical = true } },
+            -- ["<C-h>"] = { "actions.select", opts = { horizontal = true } },
+            -- ["<C-t>"] = { "actions.select", opts = { tab = true } },
             ["<C-p>"] = "actions.preview",
             ["-"] = { "actions.close", mode = "n" },
             ["_"] = { "actions.open_cwd", mode = "n" },
@@ -40,7 +40,7 @@ return {
                     [".venv"] = true,
                     ["venv"] = true,
                     ["dist"] = true,
-                    ["build"] = true,
+                    -- ["build"] = true,
                 }
 
                 return hidden[name]

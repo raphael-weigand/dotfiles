@@ -72,11 +72,10 @@ return {
             map("<leader>fS", builtin.lsp_dynamic_workspace_symbols, "Workspace symbols")
             map("<leader>fd", builtin.diagnostics, "Diagnostics")
             map("<leader>fh", builtin.help_tags, "Help tags")
-            map("<leader>gc", builtin.git_commits, "Git commits")
-            map("<leader>gf", builtin.git_bcommits, "File commits")
-            map("<leader>gs", builtin.git_status, "Git status")
+            map("<leader>Gc", builtin.git_commits, "Git commits")
+            map("<leader>Gf", builtin.git_bcommits, "File commits")
+            map("<leader>Gs", builtin.git_status, "Git status")
             map("<leader>fq", builtin.quickfix, "Search quickfix list")
-            map("<leader>f/", builtin.current_buffer_fuzzy_find, "Search current buffer")
         end,
     },
 }

@@ -1,11 +1,10 @@
+# Native Zsh completion. Keep the standard completion functions available to fzf-tab.
 autoload -Uz compinit
-
 zstyle ':completion:*' menu select
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' verbose yes
 zstyle ':completion:*' list-dirs-first true
 zstyle ':completion:*' squeeze-slashes true
-# zstyle ':completion:*' special-dirs true
 zstyle ':completion:*' completer _extensions _complete _approximate
 zstyle ':completion:*:descriptions' format '%B%d%b'
 zstyle ':completion:*:corrections' format 'Did you mean: %B%d%b'
@@ -13,22 +12,56 @@ zstyle ':completion:*' matcher-list \
   'm:{a-z}={A-Za-z}' \
   'r:|=*' \
   'l:|=* r:|=*'
-
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 zmodload zsh/complist
-
 compinit -C
-
 _comp_options+=(globdots)
 
-# zsh-autosuggestions: fixed install paths avoid spawning Homebrew during startup.
-if [ -s /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-  . /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-elif [ -s /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-  . /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-elif [ -s /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-  . /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-elif [ -s /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-  . /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+# fzf-tab must load after compinit and before autosuggestions/highlighting.
+if [[ -f "$HOME/.local/share/fzf-tab/fzf-tab.plugin.zsh" ]]; then
+  source "$HOME/.local/share/fzf-tab/fzf-tab.plugin.zsh"
+  zstyle ':fzf-tab:*' switch-group '<' '>'
 fi
+
+# fzf keybindings: Ctrl-R history, Ctrl-T files, Alt-C directories.
+if (( $+commands[fzf] )); then
+  if fzf --zsh >/dev/null 2>&1; then
+    source <(fzf --zsh)
+  elif [[ -f /usr/share/fzf/key-bindings.zsh ]]; then
+    source /usr/share/fzf/key-bindings.zsh
+  fi
+fi
+
+# Learn frequently visited directories.
+if (( $+commands[zoxide] )); then
+  eval "$(zoxide init zsh)"
+fi
+
+# Autosuggestions (system packages on Arch, Debian, and Homebrew).
+for _zsh_plugin in \
+  /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh \
+  /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh; do
+  if [[ -r "$_zsh_plugin" ]]; then
+    source "$_zsh_plugin"
+    break
+  fi
+done
+unset _zsh_plugin
+
+# Highlighting last, so it can wrap the other ZLE widgets.
+for _zsh_plugin in \
+  /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+  /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+  /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+  /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; do
+  if [[ -r "$_zsh_plugin" ]]; then
+    source "$_zsh_plugin"
+    break
+  fi
+done
+unset _zsh_plugin

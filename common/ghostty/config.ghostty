@@ -1,5 +1,4 @@
 # Shared Ghostty configuration (macOS + Linux)
-# theme = Catppuccin Mocha
 theme = Gruber Darker
 font-size = 16
 font-family = Iosevka Term Extended
@@ -22,3 +21,5 @@ keybind = alt+n=text:~
 font-feature = -calt
 font-feature = -liga
 font-feature = -dlig
+
+keybind = performable:ctrl+v=paste_from_selection

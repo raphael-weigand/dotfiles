@@ -18,17 +18,17 @@ return {
         end,
         keys = {
             {
-                "<leader>gp",
+                "gpt",
                 "<cmd>Glance definitions<CR>",
                 desc = "Peek definition",
             },
             {
-                "<leader>gpi",
+                "gpi",
                 "<cmd>Glance implementations<CR>",
                 desc = "Peek implementation",
             },
             {
-                "<leader>gpr",
+                "gpr",
                 "<cmd>Glance references<CR>",
                 desc = "Peek references",
             },

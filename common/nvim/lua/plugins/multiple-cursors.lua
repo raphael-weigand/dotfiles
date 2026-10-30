@@ -28,13 +28,13 @@ return {
                 desc = "Multi-cursor: all matches",
             },
             {
-                "<leader>mn",
+                "<M-.>",
                 "<cmd>MultipleCursorsAddJumpNextMatch<CR>",
                 mode = { "n", "x" },
                 desc = "Multi-cursor: add next match",
             },
             {
-                "<leader>mp",
+                "<M-,>",
                 "<cmd>MultipleCursorsAddJumpPrevMatch<CR>",
                 mode = { "n", "x" },
                 desc = "Multi-cursor: add previous match",
@@ -70,13 +70,13 @@ return {
                 desc = "Multi-cursor: toggle lock",
             },
             {
-                "<C-Up>",
+                "<M-k>",
                 "<cmd>MultipleCursorsAddUp<CR>",
                 mode = { "n", "i", "x" },
                 desc = "Multi-cursor: add above",
             },
             {
-                "<C-Down>",
+                "<M-j>",
                 "<cmd>MultipleCursorsAddDown<CR>",
                 mode = { "n", "i", "x" },
                 desc = "Multi-cursor: add below",

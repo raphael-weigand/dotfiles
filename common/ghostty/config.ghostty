@@ -1,7 +1,7 @@
 # Shared Ghostty configuration (macOS + Linux)
 theme = Gruber Darker
 font-size = 16
-font-family = Iosevka Term Extended
+font-family = Iosevka Nerd Font Mono
 shell-integration-features = no-cursor,sudo,no-title,ssh-env,ssh-terminfo
 window-padding-balance = true
 window-save-state = always
@@ -15,11 +15,9 @@ clipboard-write = allow
 # Pass all standard Ghostty shortcuts through to terminal applications.
 # Keep the explicit Alt+N translation for the German Mac keyboard.
 keybind = clear
-keybind = alt+n=text:~
+# keybind = alt+n=text:~
 
 # Disable ligatures
 font-feature = -calt
 font-feature = -liga
 font-feature = -dlig
-
-keybind = performable:ctrl+v=paste_from_selection

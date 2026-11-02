@@ -36,8 +36,18 @@ vim.g.clipboard = "osc52"
 
 -- Command-line completion
 vim.opt.wildmenu = true
-vim.opt.wildmode = { "longest:full", "full" }
+vim.opt.wildmode = { "noselect:lastused", "longest:full", "full" }
 vim.opt.path:append("**")
+vim.opt.wildoptions = { "pum", "fuzzy" }
+vim.opt.wildignorecase = true
+vim.opt.pumheight = 12
+-- IDO-like command-line completion
+vim.api.nvim_create_autocmd("CmdlineChanged", {
+    pattern = { ":", "/", "?" },
+    callback = function()
+        vim.fn.wildtrigger()
+    end,
+})
 
 -- Persistent session data
 vim.opt.shada = "!,'1000,<50,s10,h"
@@ -57,3 +67,4 @@ vim.diagnostic.config({
         source = true,
     },
 })
+

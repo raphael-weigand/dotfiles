@@ -41,17 +41,17 @@ sync_displays() {
     # is still required before Hyprland allocates framebuffers.
     while IFS= read -r output; do
         [[ "$output" =~ ^[A-Za-z0-9._-]+$ ]] || continue
-        hyprctl keyword monitor "$output, disable" >/dev/null
+        hyprctl eval "hl.monitor({ output = \"$output\", disabled = true })" >/dev/null
     done < <(monitors | jq -r '.[] | select(.description == "" and .make == "" and .model == "" and (.availableModes | length == 0)) | .name')
 
-    if lid_closed && external_active; then
-        hyprctl keyword monitor "$internal, disable" >/dev/null
+    if [[ "${1:-sync}" == "closed" ]] && external_active || { [[ "${1:-sync}" == "sync" ]] && lid_closed && external_active; }; then
+        hyprctl eval "hl.monitor({ output = \"$internal\", disabled = true })" >/dev/null
     else
-        hyprctl keyword monitor "$internal, $INTERNAL_MODE" >/dev/null
+        hyprctl eval "hl.monitor({ output = \"$internal\", mode = \"3072x1920@60\", position = \"auto\", scale = 2, disabled = false })" >/dev/null
     fi
 }
 
 case "${1:-sync}" in
-    sync|open|closed) sync_displays ;;
+    sync|open|closed) sync_displays "$1" ;;
     *) echo "Usage: $0 [sync|open|closed]" >&2; exit 2 ;;
 esac

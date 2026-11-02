@@ -59,7 +59,7 @@ hl.animation({ leaf = "workspaces", enabled = false })
 
 hl.bind("switch:on:Lid Switch", hl.dsp.exec_cmd("~/.config/hypr/lid-display.sh closed"), { locked = true })
 hl.bind("switch:off:Lid Switch", hl.dsp.exec_cmd("~/.config/hypr/lid-display.sh open"), { locked = true })
--- Equivalent to exec: run at startup and after configuration reloads.
+-- Reconcile lid state at startup and reload; keep eDP-2 disabled before startup.
 hl.on("hyprland.start", function()
     hl.exec_cmd("~/.config/hypr/lid-display.sh sync")
 end)

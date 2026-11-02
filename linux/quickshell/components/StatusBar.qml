@@ -25,7 +25,7 @@ PanelWindow {
                     implicitWidth: 28; implicitHeight: 28; radius: 4
                     color: wsMouse.containsMouse ? "#333333" : "transparent"; opacity: occupied || focused ? 1 : 0.5
                     Text { anchors.centerIn: parent; text: parent.focused ? "󰮯" : (parent.modelData === 10 ? "0" : String(parent.modelData)); color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
-                    MouseArea { id: wsMouse; anchors.fill: parent; hoverEnabled: true; onClicked: Hyprland.dispatch("workspace " + parent.modelData) }
+                    MouseArea { id: wsMouse; anchors.fill: parent; hoverEnabled: true; onClicked: Hyprland.dispatch('hl.dsp.focus({ workspace = "' + parent.modelData + '" })') }
                 }
             }
         }

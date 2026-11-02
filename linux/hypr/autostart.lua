@@ -1,6 +1,6 @@
 -- Start services once per Hyprland session, as in autostart.conf.
 hl.on("hyprland.start", function()
-    -- Status bar
+    -- Reconcile displays when an external monitor is plugged or unplugged.\n    hl.exec_cmd("bash ~/.config/hypr/monitor-watch.sh")\n    -- Status bar
     hl.exec_cmd("quickshell")
     -- Notifications
     hl.exec_cmd("mako")

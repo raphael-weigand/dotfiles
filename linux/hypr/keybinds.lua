@@ -116,6 +116,33 @@ hl.define_submap("window", function()
         end
         hl.dispatch(hl.dsp.submap("reset"))
     end)
+    -- Vim-style window movement.
+    for _, direction in ipairs({ "H", "J", "K", "L" }) do
+        local dir = ({ H = "l", J = "d", K = "u", L = "r" })[direction]
+        hl.bind(direction, once(hl.dsp.window.move({ direction = dir })))
+    end
+
+    -- T: next numeric workspace; t: first unoccupied positive workspace.
+    hl.bind("SHIFT + T", function()
+        local workspace = hl.get_active_workspace()
+        if workspace then
+            hl.dispatch(hl.dsp.window.move({ workspace = tostring(workspace.id + 1), follow = true }))
+        end
+        hl.dispatch(hl.dsp.submap("reset"))
+    end)
+    hl.bind("T", function()
+        local used = {}
+        for _, workspace in pairs(hl.get_workspaces()) do
+            if workspace.id and workspace.id > 0 then used[workspace.id] = true end
+        end
+        local target = 1
+        while used[target] do target = target + 1 end
+        hl.dispatch(hl.dsp.window.move({ workspace = tostring(target), follow = true }))
+        hl.dispatch(hl.dsp.submap("reset"))
+    end)
+
+    -- Swap the two branches of the focused dwindle split.
+    hl.bind("R", once(hl.dsp.layout("swapsplit")))
     hl.bind("ESCAPE", hl.dsp.submap("reset"))
 end)
 
@@ -178,6 +205,8 @@ hl.bind("SUPER + ALT + 9", hl.dsp.window.move({ workspace = "9", follow = false 
 -- N = next, B = back. P stays reserved for the scratchpad below.
 hl.bind("SUPER + N", hl.dsp.focus({ workspace = "r+1" }))
 hl.bind("SUPER + B", hl.dsp.focus({ workspace = "r-1" }))
+-- Toggle the previous workspace, analogous to Vim's alternate buffer.
+hl.bind("SUPER + TAB", hl.dsp.focus({ workspace = "previous" }))
 hl.bind("SUPER + SHIFT + N", hl.dsp.window.move({ workspace = "r+1", follow = true }))
 hl.bind("SUPER + SHIFT + B", hl.dsp.window.move({ workspace = "r-1", follow = true }))
 

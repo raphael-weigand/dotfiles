@@ -37,16 +37,25 @@ PanelWindow {
             anchors.right: parent.right; anchors.rightMargin: 8; anchors.verticalCenter: parent.verticalCenter; spacing: 2
             Rectangle {
                 visible: shell.codexEnabled
-                Layout.preferredWidth: visible ? 52 : 0
+                Layout.preferredWidth: visible ? 72 : 0
                 Layout.preferredHeight: 28
                 radius: 4
                 color: codexMouse.containsMouse ? "#333333" : "transparent"
-                Text {
+                RowLayout {
                     anchors.centerIn: parent
-                    text: "󰚩 " + (shell.sessionPercent === null ? "—" : Math.round(shell.sessionPercent) + "%")
-                    color: "#eeeeee"
-                    font.family: "Iosevka Term Extended"
-                    font.pixelSize: 12
+                    spacing: 12
+                    Text {
+                        text: "󰚩"
+                        color: "#eeeeee"
+                        font.family: "Iosevka Term Extended"
+                        font.pixelSize: 12
+                    }
+                    Text {
+                        text: shell.sessionPercent === null ? "—" : Math.round(shell.sessionPercent) + "%"
+                        color: "#eeeeee"
+                        font.family: "Iosevka Term Extended"
+                        font.pixelSize: 12
+                    }
                 }
                 MouseArea {
                     id: codexMouse

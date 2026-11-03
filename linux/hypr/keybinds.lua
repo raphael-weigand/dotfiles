@@ -58,10 +58,17 @@ hl.bind("SUPER + SHIFT + F", hl.dsp.layout("splitratio 1.333 exact"))
 hl.bind("SUPER + G", hl.dsp.submap("group"))
 
 hl.define_submap("group", function()
-    hl.bind("G", hl.dsp.exec_cmd("hyprctl dispatch togglegroup && hyprctl dispatch submap reset"))
-    hl.bind("H", hl.dsp.exec_cmd("hyprctl dispatch changegroupactive b && hyprctl dispatch submap reset"))
-    hl.bind("L", hl.dsp.exec_cmd("hyprctl dispatch changegroupactive f && hyprctl dispatch submap reset"))
-    hl.bind("M", hl.dsp.exec_cmd("hyprctl dispatch moveoutofgroup && hyprctl dispatch submap reset"))
+    local function once(dispatcher)
+        return function()
+            hl.dispatch(dispatcher)
+            hl.dispatch(hl.dsp.submap("reset"))
+        end
+    end
+
+    hl.bind("G", once(hl.dsp.group.toggle()))
+    hl.bind("H", once(hl.dsp.group.prev()))
+    hl.bind("L", once(hl.dsp.group.next()))
+    hl.bind("M", once(hl.dsp.window.move({ out_of_group = true })))
     hl.bind("ESCAPE", hl.dsp.submap("reset"))
 end)
 

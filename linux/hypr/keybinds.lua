@@ -30,12 +30,6 @@ hl.bind("SUPER + J", hl.dsp.focus({ direction = "d" }))
 hl.bind("SUPER + K", hl.dsp.focus({ direction = "u" }))
 hl.bind("SUPER + L", hl.dsp.focus({ direction = "r" }))
 
--- Vim-style tile resizing
-hl.bind("SUPER + SHIFT + H", hl.dsp.window.resize({ x = -50, y = 0, relative = true }))
-hl.bind("SUPER + SHIFT + J", hl.dsp.window.resize({ x = 0, y = 50, relative = true }))
-hl.bind("SUPER + SHIFT + K", hl.dsp.window.resize({ x = 0, y = -50, relative = true }))
-hl.bind("SUPER + SHIFT + L", hl.dsp.window.resize({ x = 50, y = 0, relative = true }))
-
 -- Dwindle split-ratio presets for the active tile.
 -- Left-to-right on the home row means smaller-to-larger.
 hl.bind("SUPER + SHIFT + A", hl.dsp.layout("splitratio 0.5 exact"))
@@ -141,8 +135,29 @@ hl.define_submap("window", function()
         hl.dispatch(hl.dsp.submap("reset"))
     end)
 
+    -- Enter a persistent resize mode; keys remain active until ESC.
+    hl.bind("S", hl.dsp.submap("resize"))
+
     -- Swap the two branches of the focused dwindle split.
     hl.bind("R", once(hl.dsp.layout("swapsplit")))
+    hl.bind("ESCAPE", hl.dsp.submap("reset"))
+end)
+
+-- Persistent Vim-style resize mode: SUPER+W, S, then H/J/K/L.
+-- Repeating keys stay in this submap; SHIFT provides 10px fine adjustments.
+hl.define_submap("resize", function()
+    local steps = {
+        H = { -1, 0 }, J = { 0, 1 },
+        K = { 0, -1 }, L = { 1, 0 },
+    }
+    for key, direction in pairs(steps) do
+        hl.bind(key, hl.dsp.window.resize({
+            x = direction[1] * 50, y = direction[2] * 50, relative = true
+        }), { repeating = true })
+        hl.bind("SHIFT + " .. key, hl.dsp.window.resize({
+            x = direction[1] * 10, y = direction[2] * 10, relative = true
+        }), { repeating = true })
+    end
     hl.bind("ESCAPE", hl.dsp.submap("reset"))
 end)
 

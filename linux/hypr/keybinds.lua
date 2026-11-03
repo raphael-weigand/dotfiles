@@ -156,12 +156,6 @@ hl.define_submap("desk", function()
     hl.bind("ESCAPE", hl.dsp.submap("reset"))
 end)
 
--- Move windows directly while keeping Vim-style directions
-hl.bind("SUPER + CTRL + H", hl.dsp.window.move({ direction = "l" }))
-hl.bind("SUPER + CTRL + J", hl.dsp.window.move({ direction = "d" }))
-hl.bind("SUPER + CTRL + K", hl.dsp.window.move({ direction = "u" }))
-hl.bind("SUPER + CTRL + L", hl.dsp.window.move({ direction = "r" }))
-
 -- Mouse window control
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })

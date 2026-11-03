@@ -18,7 +18,10 @@ hl.bind("SUPER + SHIFT + Y", hl.dsp.exec_cmd("~/dotfiles/linux/hypr/focus-or-lau
 -- Windows
 hl.bind("SUPER + Q", hl.dsp.window.close())
 hl.bind("SUPER + F", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
-hl.bind("SUPER + SHIFT + V", hl.dsp.exec_cmd("hyprctl dispatch togglefloating && hyprctl dispatch fullscreen 1"))
+hl.bind("SUPER + SHIFT + V", function()
+    hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+    hl.dispatch(hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))
+end)
 -- bind = SUPER, TAB, hymission:toggle
 
 -- Vim-style focus navigation: mirrors Ctrl+H/J/K/L in Neovim
@@ -134,7 +137,6 @@ hl.bind("SUPER + B", hl.dsp.focus({ workspace = "r-1" }))
 hl.bind("SUPER + SHIFT + N", hl.dsp.window.move({ workspace = "r+1", follow = true }))
 hl.bind("SUPER + SHIFT + B", hl.dsp.window.move({ workspace = "r-1", follow = true }))
 
-hl.bind("SUPER + SHIFT + A", hl.dsp.exec_cmd("~/.config/hypr/gather-workspaces.sh"))
 hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
 

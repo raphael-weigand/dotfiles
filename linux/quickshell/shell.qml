@@ -56,6 +56,41 @@ ShellRoot {
         return names.join(", ")
     }
     property string activePanel: ""
+    property bool codexEnabled: true
+    property var sessionPercent: null
+    property var weekPercent: null
+    property string errorText: ""
+    function hideCodex() {
+        codexEnabled = false
+        if (activePanel === "codex") closePanel()
+    }
+    function refreshCodex() {
+        if (codexEnabled && !codexProcess.running) codexProcess.running = true
+    }
+    Process {
+        id: codexProcess
+        command: ["python3", Quickshell.shellDir + "/codex-usage.py"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const data = JSON.parse(text.trim())
+                    root.sessionPercent = data.session
+                    root.weekPercent = data.week
+                    root.errorText = data.error || ""
+                } catch (error) {
+                    root.errorText = "Codex-Daten konnten nicht gelesen werden"
+                }
+            }
+        }
+    }
+    Timer {
+        interval: 60000
+        repeat: true
+        running: root.codexEnabled
+        triggeredOnStart: true
+        onTriggered: root.refreshCodex()
+    }
+
 
     function togglePanel(name) {
         activePanel = activePanel === name ? "" : name
@@ -144,6 +179,11 @@ ShellRoot {
             screen: modelData
             shell: root
         }
+    }
+
+    Loader {
+        active: root.codexEnabled
+        sourceComponent: CodexPanel { usage: root; panelVisible: root.activePanel === "codex" }
     }
 
     Loader {

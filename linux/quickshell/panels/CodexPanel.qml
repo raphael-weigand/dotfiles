@@ -36,7 +36,7 @@ PanelWindow {
                 Text { text: "Codex Usage"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 17; font.bold: true }
                 Item { Layout.fillWidth: true }
                 Text { text: "󰑐"; color: "#aaaaaa"; font.pixelSize: 17
-                    MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: root.usage.refreshCodex() }
+                    MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: root.usage.refreshCodex(true) }
                 }
             }
 

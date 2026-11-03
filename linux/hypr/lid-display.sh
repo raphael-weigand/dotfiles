@@ -37,7 +37,7 @@ sync_displays() {
         return 1
     }
 
-    # Keep empty AMD phantom outputs disabled. The Lua startup rule for eDP-2
+    # Keep empty AMD phantom outputs disabled. The Lua startup detection
     # is still required before Hyprland allocates framebuffers.
     while IFS= read -r output; do
         [[ "$output" =~ ^[A-Za-z0-9._-]+$ ]] || continue

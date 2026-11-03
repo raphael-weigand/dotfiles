@@ -1,10 +1,31 @@
 -- T2 MacBook Pro: Lua port of hyprland.conf.
 -- Previous files are preserved in backup-before-lua-20261102/.
 
--- Keep the verified startup fix: the AMD phantom output crashes framebuffer
--- allocation before lid-display.sh can dynamically disable it.
+-- Connector numbering changes across boots. Disable the mode-less AMD eDP
+-- phantom before framebuffer allocation, while leaving the real panel enabled.
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
-hl.monitor({ output = "eDP-2", disabled = true })
+local function read_sysfs(path)
+    local file = io.open(path, "rb")
+    if not file then return nil end
+    local value = file:read("*a")
+    file:close()
+    return value
+end
+
+-- Only shell glob expansion and printf; no device probes or waiting for IPC.
+local connectors = assert(io.popen("printf '%s\\n' /sys/class/drm/card*-eDP-*", "r"))
+for path in connectors:lines() do
+    local card, output = path:match("^/sys/class/drm/(card%d+)%-([%w%-]+)$")
+    if card
+        and read_sysfs("/sys/class/drm/" .. card .. "/device/vendor") == "0x1002\n"
+        and read_sysfs(path .. "/status") == "connected\n"
+        and read_sysfs(path .. "/modes") == ""
+        and read_sysfs(path .. "/edid") == ""
+    then
+        hl.monitor({ output = output, disabled = true })
+    end
+end
+connectors:close()
 
 hl.config({
     input = {
@@ -59,7 +80,7 @@ hl.animation({ leaf = "workspaces", enabled = false })
 
 hl.bind("switch:on:Lid Switch", hl.dsp.exec_cmd("~/.config/hypr/lid-display.sh closed"), { locked = true })
 hl.bind("switch:off:Lid Switch", hl.dsp.exec_cmd("~/.config/hypr/lid-display.sh open"), { locked = true })
--- Reconcile lid state at startup and reload; keep eDP-2 disabled before startup.
+-- Reconcile lid state at startup and reload; disable the phantom before startup.
 hl.on("hyprland.start", function()
     hl.exec_cmd("~/.config/hypr/lid-display.sh sync")
 end)

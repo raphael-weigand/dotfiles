@@ -55,6 +55,15 @@ ShellRoot {
             names.push(connectedBluetoothDevices[i].name || connectedBluetoothDevices[i].alias || "Bluetooth device")
         return names.join(", ")
     }
+    // Hyprland emits a "submap" event whenever the active keymap changes.
+    property string activeSubmap: ""
+    Connections {
+        target: Hyprland
+        function onRawEvent(event) {
+            if (event.name === "submap")
+                root.activeSubmap = event.data === "reset" ? "" : event.data
+        }
+    }
     property string activePanel: ""
     property bool codexEnabled: true
     property var sessionPercent: null

@@ -105,7 +105,17 @@ hl.define_submap("window", function()
     hl.bind("X", once(hl.dsp.window.swap({ next = true })))
     -- Equalize the current dwindle split (not every split in the workspace).
     hl.bind("SHIFT + 0", once(hl.dsp.layout("splitratio 1.0 exact")))
-    hl.bind("F", once(hl.dsp.window.float({ action = "toggle" })))
+    hl.bind("F", function()
+        local window = hl.get_active_window()
+        if window then
+            local was_floating = window.floating
+            hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+            if not was_floating then
+                hl.dispatch(hl.dsp.window.center())
+            end
+        end
+        hl.dispatch(hl.dsp.submap("reset"))
+    end)
     hl.bind("ESCAPE", hl.dsp.submap("reset"))
 end)
 

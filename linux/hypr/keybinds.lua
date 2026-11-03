@@ -75,6 +75,40 @@ hl.define_submap("group", function()
     hl.bind("ESCAPE", hl.dsp.submap("reset"))
 end)
 
+-- Vim-inspired window mode: SUPER+W, then a command.
+-- Keep direct SUPER+H/J/K/L navigation unchanged.
+hl.bind("SUPER + W", hl.dsp.submap("window"))
+
+hl.define_submap("window", function()
+    local function once(action)
+        return function()
+            hl.dispatch(action)
+            hl.dispatch(hl.dsp.submap("reset"))
+        end
+    end
+
+    -- Like Vim's CTRL-W o, but closes real application windows.
+    -- Only other windows on the focused workspace are affected.
+    hl.bind("O", function()
+        local focused = hl.get_active_window()
+        local workspace = hl.get_active_special_workspace() or hl.get_active_workspace()
+        if focused and workspace then
+            for _, window in pairs(hl.get_windows({ workspace = workspace })) do
+                if window.address ~= focused.address then
+                    hl.dispatch(hl.dsp.window.close({ window = window }))
+                end
+            end
+        end
+        hl.dispatch(hl.dsp.submap("reset"))
+    end)
+
+    hl.bind("X", once(hl.dsp.window.swap({ next = true })))
+    -- Equalize the current dwindle split (not every split in the workspace).
+    hl.bind("equal", once(hl.dsp.layout("splitratio 1.0 exact")))
+    hl.bind("F", once(hl.dsp.window.float({ action = "toggle" })))
+    hl.bind("ESCAPE", hl.dsp.submap("reset"))
+end)
+
 -- Desk control: SUPER+D opens desk mode. U/D/K use the same three profiles as Quickshell.
 hl.bind("SUPER + D", hl.dsp.submap("desk"))
 

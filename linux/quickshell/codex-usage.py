@@ -2,6 +2,7 @@
 """Adapt mryll/codexbar structured JSON (schema v2) for Quickshell."""
 import json
 import subprocess
+import sys
 
 def find_window(windows, seconds, names):
     for window in windows:
@@ -27,7 +28,7 @@ def percentage(window):
 
 try:
     result = subprocess.run(
-        ["codexbar", "--json"], capture_output=True, text=True,
+        ["codexbar", "--json"] + (["--refresh"] if "--refresh" in sys.argv[1:] else []), capture_output=True, text=True,
         timeout=20, check=True
     )
     data = json.loads(result.stdout)

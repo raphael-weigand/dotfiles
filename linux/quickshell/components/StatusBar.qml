@@ -36,6 +36,22 @@ PanelWindow {
         RowLayout {
             anchors.right: parent.right; anchors.rightMargin: 8; anchors.verticalCenter: parent.verticalCenter; spacing: 2
             Rectangle {
+                visible: shell.activeSubmap !== ""
+                Layout.preferredWidth: visible ? submapLabel.implicitWidth + 22 : 0
+                Layout.preferredHeight: 26
+                radius: 4
+                color: "#284957"
+                Text {
+                    id: submapLabel
+                    anchors.centerIn: parent
+                    text: shell.activeSubmap.toUpperCase() + "  ESC"
+                    color: "#eeeeee"
+                    font.family: "Iosevka Term Extended"
+                    font.pixelSize: 12
+                    font.bold: true
+                }
+            }
+            Rectangle {
                 visible: shell.codexEnabled
                 Layout.preferredWidth: visible ? 72 : 0
                 Layout.preferredHeight: 28

@@ -25,7 +25,7 @@ PanelWindow {
                     implicitWidth: 28; implicitHeight: 28; radius: 4
                     color: wsMouse.containsMouse ? "#333333" : "transparent"; opacity: occupied || focused ? 1 : 0.5
                     Text { anchors.centerIn: parent; text: parent.focused ? "󰮯" : (parent.modelData === 10 ? "0" : String(parent.modelData)); color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 13 }
-                    MouseArea { id: wsMouse; anchors.fill: parent; hoverEnabled: true; onClicked: Hyprland.dispatch('hl.dsp.focus({ workspace = "' + parent.modelData + '" })') }
+                    MouseArea { id: wsMouse; anchors.fill: parent; hoverEnabled: true; onClicked: Hyprland.dispatch("workspace " + parent.modelData) }
                 }
             }
         }
@@ -35,6 +35,32 @@ PanelWindow {
         }
         RowLayout {
             anchors.right: parent.right; anchors.rightMargin: 8; anchors.verticalCenter: parent.verticalCenter; spacing: 2
+            Rectangle {
+                visible: shell.codexEnabled
+                Layout.preferredWidth: visible ? 52 : 0
+                Layout.preferredHeight: 28
+                radius: 4
+                color: codexMouse.containsMouse ? "#333333" : "transparent"
+                Text {
+                    anchors.centerIn: parent
+                    text: "󰚩 " + (shell.sessionPercent === null ? "—" : Math.round(shell.sessionPercent) + "%")
+                    color: "#eeeeee"
+                    font.family: "Iosevka Term Extended"
+                    font.pixelSize: 12
+                }
+                MouseArea {
+                    id: codexMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
+                    onClicked: mouse => {
+                        if (mouse.button === Qt.RightButton) shell.hideCodex()
+                        else if (mouse.button === Qt.MiddleButton) shell.refreshCodex()
+                        else shell.togglePanel("codex")
+                    }
+                }
+            }
             Rectangle {
                 implicitWidth: 30; implicitHeight: 28; radius: 4; color: deskMouse.containsMouse ? "#333333" : "transparent"
                 Text { anchors.centerIn: parent; text: "󰇄"; color: "#eeeeee"; font.family: "Iosevka Term Extended"; font.pixelSize: 15 }

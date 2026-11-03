@@ -64,8 +64,10 @@ ShellRoot {
         codexEnabled = false
         if (activePanel === "codex") closePanel()
     }
-    function refreshCodex() {
-        if (codexEnabled && !codexProcess.running) codexProcess.running = true
+    function refreshCodex(force = false) {
+        if (!codexEnabled || codexProcess.running) return
+        codexProcess.command = ["python3", Quickshell.shellDir + "/codex-usage.py"].concat(force ? ["--refresh"] : [])
+        codexProcess.running = true
     }
     Process {
         id: codexProcess

@@ -20,9 +20,11 @@ PanelWindow {
     }
 
     property double nowMs: Date.now()
+    onPanelVisibleChanged: nowMs = Date.now()
     Timer {
         interval: 60000
         running: root.panelVisible
+        triggeredOnStart: true
         repeat: true
         onTriggered: root.nowMs = Date.now()
     }

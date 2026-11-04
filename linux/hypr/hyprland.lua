@@ -30,7 +30,7 @@ connectors:close()
 hl.config({
     input = {
         kb_layout = "de",
-        kb_options = "caps:escape",
+        kb_options = "ctrl:nocaps",
         follow_mouse = 0,
         repeat_delay = 200,
         repeat_rate = 65,

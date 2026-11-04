@@ -68,6 +68,8 @@ ShellRoot {
     property bool codexEnabled: true
     property var sessionPercent: null
     property var weekPercent: null
+    property var sessionReset: null
+    property var weekReset: null
     property string errorText: ""
     function hideCodex() {
         codexEnabled = false
@@ -87,6 +89,8 @@ ShellRoot {
                     const data = JSON.parse(text.trim())
                     root.sessionPercent = data.session
                     root.weekPercent = data.week
+                    root.sessionReset = data.sessionReset ?? null
+                    root.weekReset = data.weekReset ?? null
                     root.errorText = data.error || ""
                 } catch (error) {
                     root.errorText = "Codex-Daten konnten nicht gelesen werden"

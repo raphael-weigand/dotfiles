@@ -18,6 +18,17 @@ def find_window(windows, seconds, names):
             return window
     return None
 
+def reset_time(window):
+    if not window:
+        return None
+    for key in ("resets_at", "reset_at", "resetAt", "resetsAt", "reset_time", "resetTime"):
+        value = window.get(key)
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            return value
+        if isinstance(value, str) and value.strip():
+            return value
+    return None
+
 def percentage(window):
     if not window:
         return None
@@ -43,11 +54,13 @@ try:
         windows = list(windows.values())
     if not isinstance(windows, list):
         raise ValueError("Invalid CodexBar windows")
-    session = percentage(find_window(windows, 18000, ("session", "5h", "5-hour", "5 hour")))
-    week = percentage(find_window(windows, 604800, ("weekly", "week", "7d")))
+    session_window = find_window(windows, 18000, ("session", "5h", "5-hour", "5 hour"))
+    week_window = find_window(windows, 604800, ("weekly", "week", "7d"))
+    session = percentage(session_window)
+    week = percentage(week_window)
     message = ""
     if session is None and week is None:
         message = "Loading Codex usage…" if data.get("loading") else "No usage windows available"
-    print(json.dumps({"session": session, "week": week, "error": message}))
+    print(json.dumps({"session": session, "week": week, "sessionReset": reset_time(session_window), "weekReset": reset_time(week_window), "error": message}))
 except Exception as exc:
     print(json.dumps({"session": None, "week": None, "error": str(exc)}))

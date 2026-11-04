@@ -3,7 +3,7 @@
 hl.bind("SUPER + T", hl.dsp.exec_cmd("ghostty"))
 hl.bind("SUPER + SPACE", hl.dsp.exec_cmd("fuzzel"))
 hl.bind("SUPER + E", hl.dsp.exec_cmd("thunar"))
-hl.bind("SUPER + C", hl.dsp.exec_cmd("chromium"))
+hl.bind("SUPER + C", hl.dsp.exec_cmd("/home/raphael/.local/bin/chromium"))
 hl.bind("SUPER + A", hl.dsp.exec_cmd("localsend"))
 hl.bind("SUPER + R", hl.dsp.exec_cmd("remmina"))
 hl.bind("SUPER + R", hl.dsp.exec_cmd("~/dotfiles/linux/hypr/focus-or-launch.sh org.remmina.Remmina remmina"))
@@ -12,8 +12,8 @@ hl.bind("SUPER + SHIFT + M", hl.dsp.exec_cmd("~/dotfiles/linux/hypr/focus-or-lau
 hl.bind("SUPER + SHIFT + E", hl.dsp.exec_cmd("~/dotfiles/linux/hypr/focus-or-launch.sh Enpass /usr/bin/enpass"))
 hl.bind("SUPER + SHIFT + I", hl.dsp.exec_cmd("~/dotfiles/linux/hypr/focus-or-launch.sh signal /usr/bin/signal-desktop"))
 -- WhatsApp
-hl.bind("SUPER + SHIFT + W", hl.dsp.exec_cmd("~/dotfiles/linux/hypr/focus-or-launch.sh chrome-web.whatsapp.com__-Default chromium --app=https://web.whatsapp.com/"))
-hl.bind("SUPER + SHIFT + Y", hl.dsp.exec_cmd("~/dotfiles/linux/hypr/focus-or-launch.sh chrome-youtube.com__-Default chromium --app=https://youtube.com"))
+hl.bind("SUPER + SHIFT + W", hl.dsp.exec_cmd("~/dotfiles/linux/hypr/focus-or-launch.sh chrome-web.whatsapp.com__-Default /home/raphael/.local/bin/chromium --app=https://web.whatsapp.com/"))
+hl.bind("SUPER + SHIFT + Y", hl.dsp.exec_cmd("~/dotfiles/linux/hypr/focus-or-launch.sh chrome-youtube.com__-Default /home/raphael/.local/bin/chromium --app=https://youtube.com"))
 
 -- Windows
 hl.bind("SUPER + Q", hl.dsp.window.close())

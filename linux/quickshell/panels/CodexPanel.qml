@@ -19,7 +19,15 @@ PanelWindow {
         return value === null || value === undefined ? "—" : Math.round(value) + "%"
     }
 
-    function formatReset(value) {
+    property double nowMs: Date.now()
+    Timer {
+        interval: 60000
+        running: root.panelVisible
+        repeat: true
+        onTriggered: root.nowMs = Date.now()
+    }
+
+    function formatReset(value, weekly) {
         if (value === null || value === undefined || value === "") return "Reset: —"
         let date
         if (typeof value === "number") date = new Date(value < 100000000000 ? value * 1000 : value)
@@ -28,7 +36,13 @@ PanelWindow {
             date = new Date(n < 100000000000 ? n * 1000 : n)
         } else date = new Date(value)
         if (isNaN(date.getTime())) return "Reset: —"
-        return "Reset: " + Qt.formatDateTime(date, "dd.MM. HH:mm")
+        const remaining = Math.max(0, date.getTime() - root.nowMs)
+        const totalMinutes = Math.ceil(remaining / 60000)
+        const hours = Math.floor(totalMinutes / 60)
+        const minutes = totalMinutes % 60
+        const days = Math.floor(hours / 24)
+        const duration = weekly ? (days + "t " + (hours % 24) + "h") : (hours + "h " + minutes + "m")
+        return "Reset: " + Qt.formatDateTime(date, "dd.MM. HH:mm") + " (" + duration + ")"
     }
 
     Rectangle {
@@ -63,8 +77,8 @@ PanelWindow {
 
             Repeater {
                 model: [
-                    { label: "5-Stunden-Limit", value: root.usage.sessionPercent, reset: root.usage.sessionReset },
-                    { label: "Wochenlimit", value: root.usage.weekPercent, reset: root.usage.weekReset }
+                    { label: "5-Stunden-Limit", value: root.usage.sessionPercent, reset: root.usage.sessionReset, weekly: false },
+                    { label: "Wochenlimit", value: root.usage.weekPercent, reset: root.usage.weekReset, weekly: true }
                 ]
                 ColumnLayout {
                     required property var modelData
@@ -77,7 +91,7 @@ PanelWindow {
                         Text { text: root.percent(modelData.value); color: "#eeeeee"; font.pixelSize: 13 }
                     }
                     Text {
-                        text: root.formatReset(modelData.reset)
+                        text: root.formatReset(modelData.reset, modelData.weekly)
                         color: "#aaaaaa"
                         font.pixelSize: 11
                     }

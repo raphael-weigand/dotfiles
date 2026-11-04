@@ -40,7 +40,7 @@ vim.opt.wildmode = { "noselect:lastused", "longest:full", "full" }
 vim.opt.path:append("**")
 vim.opt.wildoptions = { "pum", "fuzzy" }
 vim.opt.wildignorecase = true
-vim.opt.pumheight = 12
+vim.opt.pumheight = 1
 -- IDO-like command-line completion
 vim.api.nvim_create_autocmd("CmdlineChanged", {
     pattern = { ":", "/", "?" },

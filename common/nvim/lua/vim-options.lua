@@ -60,3 +60,4 @@ vim.diagnostic.config({
     },
 })
 
+vim.keymap.set("i", "<C-c>", "<Esc>", { desc = "Exit insert mode", })
